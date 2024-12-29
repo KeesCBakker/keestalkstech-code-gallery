@@ -20,13 +20,24 @@
     }
 
     # Define the task action
-    $Action = New-ScheduledTaskAction -Execute 'PowerShell.exe' -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`""
+    $Action = New-ScheduledTaskAction `
+        -Execute 'PowerShell.exe' `
+        -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$ScriptPath`""
 
     # Create a logon trigger for the current user
     $Trigger = New-ScheduledTaskTrigger -AtLogOn -User $CurrentUser
 
+    # allow the task to run on batteries
+    $Settings = New-ScheduledTaskSettingsSet `
+        -AllowStartIfOnBatteries `
+        -DontStopIfGoingOnBatteries
+
     # Register the task without a delay
-    Register-ScheduledTask -TaskName $TaskName -Action $Action -Trigger $Trigger -Description "Runs the ChangeWallpaper script at user logon." -Settings (New-ScheduledTaskSettingsSet -AllowStartIfOnBatteries -DontStopIfGoingOnBatteries)
+    Register-ScheduledTask -TaskName $TaskName `
+        -Action $Action `
+        -Trigger $Trigger `
+        -Description "Runs the ChangeWallpaper script at user logon." `
+        -Settings $Settings
 
     # Add a 30-second delay to the task using XML configuration
     $Task = Get-ScheduledTask -TaskName $TaskName
@@ -34,5 +45,6 @@
     $Task.Triggers[0].Delay = 'PT30S'  # 30-second delay in ISO 8601 duration format
     $Task | Set-ScheduledTask
 
+    Write-Output ""
     Write-Output "Scheduled task '$TaskName' has been created successfully with a 30-second delay and is allowed to run on battery power."
 }
