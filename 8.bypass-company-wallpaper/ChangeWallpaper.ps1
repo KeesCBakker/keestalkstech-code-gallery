@@ -47,7 +47,7 @@ if (-not $IsAdmin -and $CurrentWallpaper -ne $WallpaperPath) {
 
 if ($CurrentWallpaper -ne $WallpaperPath) {
     Set-ItemProperty -Path $RegistryRootKey -Name Wallpaper -Value $WallpaperPath -ErrorAction SilentlyContinue
-    Set-ItemProperty -Path $RegistryRootKey -Name WallpaperStyle -Value 10
+    Set-ItemProperty -Path $RegistryRootKey -Name WallpaperStyle -Value 4
     Set-ItemProperty -Path $RegistryRootKey -Name TileWallpaper -Value 0
     Write-Output "Registry updated to use $WallpaperPath as the wallpaper."
     $Restart = $true
