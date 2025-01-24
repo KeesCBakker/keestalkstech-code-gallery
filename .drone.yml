@@ -1,0 +1,30 @@
+kind: pipeline
+type: docker
+name: default
+
+concurrency:
+  limit: 1
+
+steps:
+
+  - name: build
+    image: docker:latest
+    volumes:
+      - name: dockersock
+        path: /var/run/docker.sock
+    commands:
+      - echo "$PWD"
+      - compose_files=$(ls docker-compose*.yml | sed 's/^/-f /' | tr '\n' ' ')
+      - docker-compose $compose_files build
+
+volumes:
+  - name: dockersock
+    host:
+      path: /var/run/docker.sock
+  - name: deploy-dir
+    host:
+      path: /projects/deploy/stack/
+
+trigger:
+  branch:
+    - main
