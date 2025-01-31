@@ -9,15 +9,15 @@ public static class JsonTemplateGeneratorExtensions
         return generator.ParseWithManifestResource(Assembly.GetCallingAssembly(), name, input);
     }
 
-    public static dynamic? ParseWithManifestResourceToObject(this IJsonTemplateGenerator generator, string name, object input)
-    {
-        return generator.ParseWithManifestResourceToObject(Assembly.GetCallingAssembly(), name, input);
-    }
-
     public static string ParseWithManifestResource(this IJsonTemplateGenerator generator, Assembly assembly, string name, object input)
     {
         var template = GetManifestTemplate(assembly, name, input);
         return generator.Parse(template, input);
+    }
+
+    public static dynamic? ParseWithManifestResourceToObject(this IJsonTemplateGenerator generator, string name, object input)
+    {
+        return generator.ParseWithManifestResourceToObject(Assembly.GetCallingAssembly(), name, input);
     }
 
     public static dynamic? ParseWithManifestResourceToObject(this IJsonTemplateGenerator generator, Assembly assembly, string name, object input)
