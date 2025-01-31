@@ -266,4 +266,5 @@ dotnet_style_namespace_match_folder = true:suggestion
 dotnet_diagnostic.IDE0090.severity = none
 dotnet_diagnostic.CA1050.severity  = none  # Declare types in namespaces
 dotnet_diagnostic.S3903.severity   = none  # Declare types in namespace
+dotnet_diagnostic.S1643.severity   = none  # Use a StringBuilder instead.
 
