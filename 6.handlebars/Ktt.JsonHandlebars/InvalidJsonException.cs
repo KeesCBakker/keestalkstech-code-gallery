@@ -2,7 +2,6 @@
 
 namespace Ktt.JsonHandlebars;
 
-[Serializable]
 public partial class InvalidJsonException(Exception ex, string jsonText) : Exception(ParseMessage(ex, jsonText), ex)
 {
     public string JsonText { get; } = jsonText;
