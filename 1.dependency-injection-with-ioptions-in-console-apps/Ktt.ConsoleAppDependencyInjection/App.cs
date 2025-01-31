@@ -8,7 +8,7 @@ public class App(ILogger<App> _logger, AppOptions _options)
 
         _logger.LogInformation("Starting...");
         var greeting = string.Format(_options.Greeting, name);
-        _logger.LogDebug($"Greeting: {greeting}");
+        _logger.LogDebug("Greeting: {Greeting}", greeting);
 
         Console.WriteLine(greeting);
 
