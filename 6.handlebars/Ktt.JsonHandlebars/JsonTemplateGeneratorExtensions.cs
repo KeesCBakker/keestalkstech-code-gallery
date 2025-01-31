@@ -11,7 +11,7 @@ public static class JsonTemplateGeneratorExtensions
 
     public static string ParseWithManifestResource(this IJsonTemplateGenerator generator, Assembly assembly, string name, object input)
     {
-        var template = GetManifestTemplate(assembly, name, input);
+        var template = GetManifestTemplate(assembly, name);
         return generator.Parse(template, input);
     }
 
@@ -22,11 +22,11 @@ public static class JsonTemplateGeneratorExtensions
 
     public static dynamic? ParseWithManifestResourceToObject(this IJsonTemplateGenerator generator, Assembly assembly, string name, object input)
     {
-        var template = GetManifestTemplate(assembly, name, input);
+        var template = GetManifestTemplate(assembly, name);
         return generator.ParseToObject(template, input);
     }
 
-    private static string GetManifestTemplate(Assembly assembly, string name, object input)
+    private static string GetManifestTemplate(Assembly assembly, string name)
     {
         using var stream = assembly.GetManifestResourceStream(name) ?? throw new Exception($"Manifest resouce with name '{name}' in assembly '{assembly.FullName}' not found.");
         using var reader = new StreamReader(stream);
