@@ -25,13 +25,13 @@ public partial class RomanNumeral
         }
 
         //if ends in J -> replace it to I (used in medicine)
-        if (strToRead.EndsWith("J"))
+        if (strToRead.EndsWith('J'))
         {
-            strToRead = strToRead.Substring(0, strToRead.Length - 1) + "I";
+            strToRead = string.Concat(strToRead.AsSpan(0, strToRead.Length - 1), "I");
         }
 
         //if a U is present, assume a V
-        strToRead = strToRead.Replace("U", "V");
+        strToRead = strToRead.Replace('U', 'V');
 
         //check simple numbers directly in dictionary
         if (VALUES.ContainsKey(str))
