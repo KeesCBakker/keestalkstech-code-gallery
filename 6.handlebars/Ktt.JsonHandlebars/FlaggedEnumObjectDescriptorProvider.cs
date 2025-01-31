@@ -40,7 +40,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
         var itemsValue = (int)(object)items;
         if (itemsValue == 0)
         {
-            return Array.Empty<string>();
+            return [];
         }
 
         var result = new List<string>();
@@ -66,7 +66,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
             }
         }
 
-        return result.ToArray();
+        return [.. result];
 
     }
 
@@ -96,8 +96,15 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
                 var value = enumerator.Current;
                 var objectIndex = BoxedValues.Int(index);
 
-                if (index == 1) iterator.First = BoxedValues.False;
-                if (index == lastIndex) iterator.Last = BoxedValues.True;
+                if (index == 1)
+                {
+                    iterator.First = BoxedValues.False;
+                }
+
+                if (index == lastIndex)
+                {
+                    iterator.Last = BoxedValues.True;
+                }
 
                 iterator.Index = objectIndex;
 
