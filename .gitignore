@@ -351,3 +351,5 @@ MigrationBackup/
 .env
 .sonarqube
 /build.sh
+/coverage.xml
+/Dockerfile
