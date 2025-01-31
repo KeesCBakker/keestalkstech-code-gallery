@@ -28,8 +28,12 @@ public static class JsonTemplateGeneratorExtensions
 
     private static string GetManifestTemplate(Assembly assembly, string name)
     {
-        using var stream = assembly.GetManifestResourceStream(name) ?? throw new Exception($"Manifest resouce with name '{name}' in assembly '{assembly.FullName}' not found.");
+        using var stream = assembly.GetManifestResourceStream(name) ?? throw new ManifestResourceNotFoundException(name, assembly);
         using var reader = new StreamReader(stream);
         return reader.ReadToEnd();
     }
+}
+
+class ManifestResourceNotFoundException(string name, Assembly assembly) : Exception($"Manifest resouce with name '{name}' in assembly '{assembly.FullName}' not found.")
+{
 }
