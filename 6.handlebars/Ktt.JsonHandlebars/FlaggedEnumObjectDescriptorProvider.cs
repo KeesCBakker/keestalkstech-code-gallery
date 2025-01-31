@@ -38,13 +38,19 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
 
         // no value, no list
         var itemsValue = (int)(object)items;
-        if (itemsValue == 0) return Array.Empty<string>();
+        if (itemsValue == 0)
+        {
+            return Array.Empty<string>();
+        }
 
         var result = new List<string>();
 
         foreach (var item in Enum.GetValues(items.GetType()))
         {
-            if (item == null) continue;
+            if (item == null)
+            {
+                continue;
+            }
 
             var value = (int)item;
 
