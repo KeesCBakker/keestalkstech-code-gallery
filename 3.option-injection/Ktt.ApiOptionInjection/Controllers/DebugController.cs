@@ -8,7 +8,7 @@ public class DebugController(
 ) : ControllerBase
 {
     [HttpGet]
-    public DebugModel GetOrders()
+    public DebugModel Get()
     {
         return new DebugModel
         {
