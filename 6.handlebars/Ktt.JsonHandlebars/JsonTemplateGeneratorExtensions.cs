@@ -34,6 +34,6 @@ public static class JsonTemplateGeneratorExtensions
     }
 }
 
-class ManifestResourceNotFoundException(string name, Assembly assembly) : Exception($"Manifest resouce with name '{name}' in assembly '{assembly.FullName}' not found.")
+public class ManifestResourceNotFoundException(string name, Assembly assembly) : Exception($"Manifest resouce with name '{name}' in assembly '{assembly.FullName}' not found.")
 {
 }

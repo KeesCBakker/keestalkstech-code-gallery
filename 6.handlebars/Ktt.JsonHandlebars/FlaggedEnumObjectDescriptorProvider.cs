@@ -60,7 +60,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
                 continue;
             }
 
-            if (items.HasFlag((Enum)item))
+            if (item is Enum @enum && items.HasFlag(@enum))
             {
                 result.Add(item.ToString() ?? "");
             }
