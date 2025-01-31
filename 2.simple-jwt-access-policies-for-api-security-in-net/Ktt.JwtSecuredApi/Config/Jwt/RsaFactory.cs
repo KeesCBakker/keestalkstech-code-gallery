@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
-public class RsaFactory : IDisposable
+public sealed class RsaFactory : IDisposable
 {
     private readonly ConcurrentDictionary<string, RSA> _keys = new ConcurrentDictionary<string, RSA>();
 
