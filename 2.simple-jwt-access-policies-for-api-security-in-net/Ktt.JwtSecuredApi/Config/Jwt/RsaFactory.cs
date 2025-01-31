@@ -25,18 +25,13 @@ public class RsaFactory : IDisposable
             }
             catch (Exception ex)
             {
-                throw new Exception($"TrustedServices key with {service} cannot import the PEM.", ex);
+                throw new TrustedServiceImportPemException(service, ex);
             }
             _keys.TryAdd(service, rsa);
         }
     }
 
-    public bool TryGetRsa(string issuer, [MaybeNullWhen(false)] out RSA rsa)
-    {
-        return _keys.TryGetValue(issuer, out rsa);
-    }
-
-    void IDisposable.Dispose()
+    public void Dispose()
     {
         foreach (var key in _keys.Values)
         {
@@ -44,5 +39,14 @@ public class RsaFactory : IDisposable
         }
 
         _keys.Clear();
+    }
+
+    public bool TryGetRsa(string issuer, [MaybeNullWhen(false)] out RSA rsa)
+    {
+        return _keys.TryGetValue(issuer, out rsa);
+    }
+
+    public class TrustedServiceImportPemException(string service, Exception innerException) : Exception($"TrustedServices key with {service} cannot import the PEM.", innerException)
+    {
     }
 }
