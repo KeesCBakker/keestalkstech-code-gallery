@@ -1,16 +1,17 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ktt.JwtSecuredApi.Models;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/whoami")]
 public class DebugController(IUserNameAccessor userNameAccessor) : ControllerBase
 {
     [HttpGet]
-    public IActionResult WhoAmI()
+    public WhoAmIModel WhoAmI()
     {
-        return Ok(new
+        return new WhoAmIModel
         {
-            userNameAccessor.UserName,
-            userNameAccessor.Issuer
-        });
+            UserName = userNameAccessor.UserName,
+            Issuer = userNameAccessor.Issuer
+        };
     }
 }
