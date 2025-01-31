@@ -30,7 +30,7 @@ public static class SwaggerExtensions
                             Id = "Bearer"
                         }
                     },
-                    new string[] {}
+                    []
                 }
              });
 
