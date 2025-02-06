@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Greet Kees": {
+      "commandName": "Project",
+      "commandLineArgs": "Kees"
+    },
+    "Greet World": {
+      "commandName": "Project"
+    }
+  }
+}

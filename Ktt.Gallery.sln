@@ -3,10 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33213.308
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "1.dependency-injection-with-ioptions-in-console-apps", "1.dependency-injection-with-ioptions-in-console-apps", "{A4E34F9E-31B1-4749-9F1E-3F0E3EEA4790}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01.dependency-injection-with-ioptions-in-console-apps", "01.dependency-injection-with-ioptions-in-console-apps", "{A4E34F9E-31B1-4749-9F1E-3F0E3EEA4790}"
 	ProjectSection(SolutionItems) = preProject
-		1.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection.sln = 1.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection.sln
-		1.dependency-injection-with-ioptions-in-console-apps\README.md = 1.dependency-injection-with-ioptions-in-console-apps\README.md
+		01.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection.sln = 01.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection.sln
+		01.dependency-injection-with-ioptions-in-console-apps\README.md = 01.dependency-injection-with-ioptions-in-console-apps\README.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_meta", "_meta", "{0E816DC2-0BCE-4485-80D6-173EF9F7D1FF}"
@@ -17,59 +17,59 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_meta", "_meta", "{0E816DC2
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "2.simple-jwt-access-policies-for-api-security-in-net", "2.simple-jwt-access-policies-for-api-security-in-net", "{41BECB35-D39D-4C27-800E-E637A84FA5D8}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02.simple-jwt-access-policies-for-api-security-in-net", "02.simple-jwt-access-policies-for-api-security-in-net", "{41BECB35-D39D-4C27-800E-E637A84FA5D8}"
 	ProjectSection(SolutionItems) = preProject
-		2.simple-jwt-access-policies-for-api-security-in-net\generate_keys.sh = 2.simple-jwt-access-policies-for-api-security-in-net\generate_keys.sh
-		2.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi.sln = 2.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi.sln
-		2.simple-jwt-access-policies-for-api-security-in-net\README.md = 2.simple-jwt-access-policies-for-api-security-in-net\README.md
+		02.simple-jwt-access-policies-for-api-security-in-net\generate_keys.sh = 02.simple-jwt-access-policies-for-api-security-in-net\generate_keys.sh
+		02.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi.sln = 02.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi.sln
+		02.simple-jwt-access-policies-for-api-security-in-net\README.md = 02.simple-jwt-access-policies-for-api-security-in-net\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "3.option-injection", "3.option-injection", "{60A625F9-1565-471D-B0FD-A7956735DF85}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03.option-injection", "03.option-injection", "{60A625F9-1565-471D-B0FD-A7956735DF85}"
 	ProjectSection(SolutionItems) = preProject
-		3.option-injection\Ktt.ApiOptionInjection.sln = 3.option-injection\Ktt.ApiOptionInjection.sln
-		3.option-injection\README.md = 3.option-injection\README.md
+		03.option-injection\Ktt.ApiOptionInjection.sln = 03.option-injection\Ktt.ApiOptionInjection.sln
+		03.option-injection\README.md = 03.option-injection\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "4.command-line-di-poc", "4.command-line-di-poc", "{6ED4C763-D516-4509-89E5-5D2F0DC2D3CC}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04.command-line-di-poc", "04.command-line-di-poc", "{6ED4C763-D516-4509-89E5-5D2F0DC2D3CC}"
 	ProjectSection(SolutionItems) = preProject
-		4.command-line-di-poc\Ktt.System.CommandLine.sln = 4.command-line-di-poc\Ktt.System.CommandLine.sln
-		4.command-line-di-poc\README.md = 4.command-line-di-poc\README.md
+		04.command-line-di-poc\Ktt.System.CommandLine.sln = 04.command-line-di-poc\Ktt.System.CommandLine.sln
+		04.command-line-di-poc\README.md = 04.command-line-di-poc\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "5.roman-numerals", "5.roman-numerals", "{B81F0520-D208-486C-B538-9F18D5BBF540}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "05.roman-numerals", "05.roman-numerals", "{B81F0520-D208-486C-B538-9F18D5BBF540}"
 	ProjectSection(SolutionItems) = preProject
-		5.roman-numerals\Ktt.RomanNumerals.sln = 5.roman-numerals\Ktt.RomanNumerals.sln
-		5.roman-numerals\README.md = 5.roman-numerals\README.md
+		05.roman-numerals\Ktt.RomanNumerals.sln = 05.roman-numerals\Ktt.RomanNumerals.sln
+		05.roman-numerals\README.md = 05.roman-numerals\README.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "6.handlebars", "6.handlebars", "{955F43E9-BB27-4FE0-9E46-10AEF31FCD38}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06.handlebars", "06.handlebars", "{955F43E9-BB27-4FE0-9E46-10AEF31FCD38}"
 	ProjectSection(SolutionItems) = preProject
-		6.handlebars\Ktt.JsonHandlebars.sln = 6.handlebars\Ktt.JsonHandlebars.sln
-		6.handlebars\README.md = 6.handlebars\README.md
+		06.handlebars\Ktt.JsonHandlebars.sln = 06.handlebars\Ktt.JsonHandlebars.sln
+		06.handlebars\README.md = 06.handlebars\README.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JsonHandlebars", "6.handlebars\Ktt.JsonHandlebars\Ktt.JsonHandlebars.csproj", "{80CFEF3B-6901-44B8-8418-2E74BD104823}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JsonHandlebars", "06.handlebars\Ktt.JsonHandlebars\Ktt.JsonHandlebars.csproj", "{80CFEF3B-6901-44B8-8418-2E74BD104823}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JsonHandlebars.Test", "6.handlebars\Ktt.JsonHandlebars.Test\Ktt.JsonHandlebars.Test.csproj", "{8F88EB3C-FC9D-4123-9F78-67E77C8FE28E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JsonHandlebars.Test", "06.handlebars\Ktt.JsonHandlebars.Test\Ktt.JsonHandlebars.Test.csproj", "{8F88EB3C-FC9D-4123-9F78-67E77C8FE28E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.ConsoleAppDependencyInjection", "1.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection\Ktt.ConsoleAppDependencyInjection.csproj", "{842BD41E-0473-46A7-9A8E-64C79ACB75DA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.ConsoleAppDependencyInjection", "01.dependency-injection-with-ioptions-in-console-apps\Ktt.ConsoleAppDependencyInjection\Ktt.ConsoleAppDependencyInjection.csproj", "{842BD41E-0473-46A7-9A8E-64C79ACB75DA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JwtSecuredApi", "2.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi\Ktt.JwtSecuredApi.csproj", "{F4A2F704-336E-4D63-B7D0-ADC07207E95D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.JwtSecuredApi", "02.simple-jwt-access-policies-for-api-security-in-net\Ktt.JwtSecuredApi\Ktt.JwtSecuredApi.csproj", "{F4A2F704-336E-4D63-B7D0-ADC07207E95D}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.ApiOptionInjection", "3.option-injection\Ktt.ApiOptionInjection\Ktt.ApiOptionInjection.csproj", "{EEB1B175-57E0-44A9-BBB2-B4DC02E8ECA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.ApiOptionInjection", "03.option-injection\Ktt.ApiOptionInjection\Ktt.ApiOptionInjection.csproj", "{EEB1B175-57E0-44A9-BBB2-B4DC02E8ECA8}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.RomanNumerals", "5.roman-numerals\Ktt.RomanNumerals\Ktt.RomanNumerals.csproj", "{570715A8-44E5-4D59-9E28-3280D7EB87CC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.RomanNumerals", "05.roman-numerals\Ktt.RomanNumerals\Ktt.RomanNumerals.csproj", "{570715A8-44E5-4D59-9E28-3280D7EB87CC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.RomanNumerals.Test", "5.roman-numerals\Ktt.RomanNumerals.Test\Ktt.RomanNumerals.Test.csproj", "{7DC02754-F052-44FC-A737-86DC8D70566E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.RomanNumerals.Test", "05.roman-numerals\Ktt.RomanNumerals.Test\Ktt.RomanNumerals.Test.csproj", "{7DC02754-F052-44FC-A737-86DC8D70566E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.System.CommandLine", "4.command-line-di-poc\Ktt.System.CommandLine\Ktt.System.CommandLine.csproj", "{5C4D77BF-FE1B-49A2-9039-4754C42621CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ktt.System.CommandLine", "04.command-line-di-poc\Ktt.System.CommandLine\Ktt.System.CommandLine.csproj", "{5C4D77BF-FE1B-49A2-9039-4754C42621CF}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "8.bypass-company-wallpaper", "8.bypass-company-wallpaper", "{5B0089D0-71C0-498F-AFEE-19EFA38B16D4}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08.bypass-company-wallpaper", "08.bypass-company-wallpaper", "{5B0089D0-71C0-498F-AFEE-19EFA38B16D4}"
 	ProjectSection(SolutionItems) = preProject
-		8.bypass-company-wallpaper\ChangeWallpaper.ps1 = 8.bypass-company-wallpaper\ChangeWallpaper.ps1
-		8.bypass-company-wallpaper\Init.ps1 = 8.bypass-company-wallpaper\Init.ps1
-		8.bypass-company-wallpaper\README.md = 8.bypass-company-wallpaper\README.md
-		8.bypass-company-wallpaper\SetupTask.ps1 = 8.bypass-company-wallpaper\SetupTask.ps1
+		08.bypass-company-wallpaper\ChangeWallpaper.ps1 = 08.bypass-company-wallpaper\ChangeWallpaper.ps1
+		08.bypass-company-wallpaper\Init.ps1 = 08.bypass-company-wallpaper\Init.ps1
+		08.bypass-company-wallpaper\README.md = 08.bypass-company-wallpaper\README.md
+		08.bypass-company-wallpaper\SetupTask.ps1 = 08.bypass-company-wallpaper\SetupTask.ps1
 	EndProjectSection
 EndProject
 Global

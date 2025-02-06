@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35506.116
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{82E1129D-ABAF-41B8-A423-1D677A423808}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.JsonHandlebars", "Ktt.JsonHandlebars\Ktt.JsonHandlebars.csproj", "{0327C199-B445-439A-A83A-62D9E9A5AB9E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.JsonHandlebars.Test", "Ktt.JsonHandlebars.Test\Ktt.JsonHandlebars.Test.csproj", "{91B5E086-4021-4428-BC73-4E138346BC63}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0327C199-B445-439A-A83A-62D9E9A5AB9E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0327C199-B445-439A-A83A-62D9E9A5AB9E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0327C199-B445-439A-A83A-62D9E9A5AB9E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0327C199-B445-439A-A83A-62D9E9A5AB9E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B5E086-4021-4428-BC73-4E138346BC63}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B5E086-4021-4428-BC73-4E138346BC63}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B5E086-4021-4428-BC73-4E138346BC63}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B5E086-4021-4428-BC73-4E138346BC63}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
