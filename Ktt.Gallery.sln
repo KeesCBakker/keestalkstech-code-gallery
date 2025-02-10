@@ -72,6 +72,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08.bypass-company-wallpaper
 		08.bypass-company-wallpaper\SetupTask.ps1 = 08.bypass-company-wallpaper\SetupTask.ps1
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.kiota-and-resilience", "12.kiota-and-resilience", "{06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}"
+	ProjectSection(SolutionItems) = preProject
+		12.kiota-and-resilience\generate-clients.ps1 = 12.kiota-and-resilience\generate-clients.ps1
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.KiotaAndResilience", "12.kiota-and-resilience\Ktt.KiotaAndResilience\Ktt.KiotaAndResilience.csproj", "{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -110,6 +117,10 @@ Global
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,6 +134,7 @@ Global
 		{570715A8-44E5-4D59-9E28-3280D7EB87CC} = {B81F0520-D208-486C-B538-9F18D5BBF540}
 		{7DC02754-F052-44FC-A737-86DC8D70566E} = {B81F0520-D208-486C-B538-9F18D5BBF540}
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF} = {6ED4C763-D516-4509-89E5-5D2F0DC2D3CC}
+		{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}

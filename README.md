@@ -10,7 +10,7 @@ ease of Dependency Injection (DI) and the way settings can be specified in a
 JSON file and accessed through DI (``IOptions<T>``). It's only logical to 
 want the same features in your Console app.
 
-- <a href="1.dependency-injection-with-ioptions-in-console-apps">1.dependency-injection-with-ioptions-in-console-apps</a>
+- <a href="01.dependency-injection-with-ioptions-in-console-apps">1.dependency-injection-with-ioptions-in-console-apps</a>
 - <a href="https://keestalkstech.com/2018/04/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Dependency injection (with IOptions) in Console Apps in .NET</a>
 
 
@@ -19,7 +19,7 @@ want the same features in your Console app.
 Services can use their private key to communicate with our service.
 We can configure the access for each issuer using standard .NET claims.
 
-- <a href="2.simple-jwt-access-policies-for-api-security-in-net">2.simple-jwt-access-policies-for-api-security-in-net</a>
+- <a href="02.simple-jwt-access-policies-for-api-security-in-net">2.simple-jwt-access-policies-for-api-security-in-net</a>
 - <a href="https://keestalkstech.com/2024/11/simple-jwt-access-policies-for-api-security-in-net/">Simple JWT Access Policies for API security in .NET</a>
 
 ## 3. Options Injection
@@ -29,7 +29,7 @@ project shows how to use a `Dictionary<string, string>` and a
 `List<string>` as base classes for options. Both are supported
 by default.
 
-- <a href="3.option-injection">3.option-injection</a>
+- <a href="03.option-injection">3.option-injection</a>
 
 ## 4. .NET Console Application with injectable commands (System.CommandLine preview)
 
@@ -42,7 +42,7 @@ dependency injection.
 Parsing Roman Numerals in C# is a good way to explore
 (implicit) operator overloading.
 
-- <a href="5.roman-numerals">5.roman-numerals</a>
+- <a href="05.roman-numerals">5.roman-numerals</a>
 - <a href="https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/">Parsing Roman Numerals using C#</a>
 - <a href="https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/">Calculations with Roman Numerals using C#</a>
 
@@ -54,7 +54,7 @@ project where I need to parse objects via JSON templates to JSON strings. This b
 show how to instruct Handlebars to parse into JSON and add some nice error messages 
 if your template fails.
 
-- <a href="6.handlebars">6.handlebars</a>
+- <a href="06.handlebars">6.handlebars</a>
 - <a href="https://keestalkstech.com/2022/09/handlebars-net-json-templates/">Handlebars.Net & JSON templates</a>
 - <a href="https://keestalkstech.com/2022/09/handlebars-net-fun-with-flags/">Handlebars.Net: Fun with [Flags]</a>
 
@@ -68,5 +68,14 @@ to Setting > Personalization > Background, I see the message:
 you might be able to (temporarily) override the wallpaper, by editing your registry and 
 triggering a refresh of the wallpaper. If you can, you can automate it using PowerShell.
 
-- <a href="8.bypass-company-wallpaper">8.bypass-company-wallpaper</a>
+- <a href="08.bypass-company-wallpaper">8.bypass-company-wallpaper</a>
 - <a href="https://keestalkstech.com/2024/12/how-to-bypass-company-background-image-as-local-admin-on-windows-11/">How to bypass company wallpaper as local admin on Windows 11</a>
+
+## 12. Kiota and Resilience
+
+My new years resolution for 2025 is not to write a custom implementation if I have an
+Open API specification availabe. Let's use Kiota to generate a client and add resilience
+with the <a href="https://www.nuget.org/packages/Microsoft.Extensions.Resilience">Microsoft
+Microsoft.Extensions.Resilience</a> package (which is basically a wrapper around Polly).
+
+- <a href="12.kiota-and-resilience">12.kiota-and-resilience</a>
