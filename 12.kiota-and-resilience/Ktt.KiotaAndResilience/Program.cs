@@ -22,7 +22,7 @@ static void ConfigureServices(IServiceCollection services)
         {
             config.Retry.OnRetry = async args =>
             {
-                Console.WriteLine($"Retry {args.AttemptNumber}: Retrying after {args.Duration} due to {args.Outcome.Result?.StatusCode}");
+                Console.WriteLine($"Retry {args.AttemptNumber}: Retrying after {args.RetryDelay} due to {args.Outcome.Result?.StatusCode}");
                 await Task.CompletedTask;
             };
         });
