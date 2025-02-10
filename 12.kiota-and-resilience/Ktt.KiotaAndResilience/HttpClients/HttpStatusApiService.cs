@@ -2,7 +2,7 @@
 {
     public async Task<string> Get()
     {
-        var path = "/random/200,500-511";
+        var path = "/random/200,500-508";
         return await client.GetStringAsync(path);
     }
 }
