@@ -353,3 +353,4 @@ MigrationBackup/
 /build.sh
 /coverage.xml
 /Dockerfile
+/12.kiota-and-resilience/Ktt.KiotaAndResilience.backup
