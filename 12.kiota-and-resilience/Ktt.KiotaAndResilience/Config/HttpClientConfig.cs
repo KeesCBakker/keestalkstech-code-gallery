@@ -12,4 +12,15 @@ public class HttpClientOptions : HttpStandardResilienceOptions
     {
         Retry.Delay = TimeSpan.FromMilliseconds(500);
     }
+
+    public void CopyTo(HttpStandardResilienceOptions other)
+    {
+        // I hate that this is needed...
+
+        other.AttemptTimeout = AttemptTimeout;
+        other.CircuitBreaker = CircuitBreaker;
+        other.RateLimiter = RateLimiter;
+        other.Retry = Retry;
+        other.TotalRequestTimeout = TotalRequestTimeout;
+    }
 }

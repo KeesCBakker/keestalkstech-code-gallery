@@ -7,9 +7,9 @@ public static class HttpClientExtensions
     public static IHttpStandardResiliencePipelineBuilder AddHttpClientWithResilienceHandler<TClass, TConfig>(
         this IServiceCollection services, string sectionName)
         where TClass : class
-        where TConfig : HttpClientOptions
+        where TConfig : HttpClientOptions, new()
     {
-        return services
+        var httpClientBuilder = services
             // bind the configuration section and validate it on startup
             // we need to bind {name} and {name-standard} to hook up
             // resilience options
@@ -30,27 +30,30 @@ public static class HttpClientExtensions
                 }
 
                 client.BaseAddress = new Uri(config.BaseUrl);
-            })
-            // add resilience handler
-            .AddStandardResilienceHandler();
+            });
+
+        // add resilience handler
+        return httpClientBuilder.AddStandardResilienceHandler();
     }
 
     private static IServiceCollection AddNamedOptions<TOptions>(this IServiceCollection services, string sectionName)
-        where TOptions : class
+        where TOptions : HttpClientOptions, new()
     {
         // note: we need to bind {name} and {name-standard} to hook up resilience options
-        var sectionNames = new string[] { sectionName, sectionName + "-standard" };
+        services
+            .AddOptionsWithValidateOnStart<TOptions>(sectionName)
+            .BindConfiguration(sectionName);
 
-        foreach (var name in sectionNames)
-        {
-            services
-                .AddOptionsWithValidateOnStart<TOptions>(name)
-                .BindConfiguration(sectionName);
-
-            services
-                .AddOptionsWithValidateOnStart<HttpStandardResilienceOptions>(name)
-                .BindConfiguration(sectionName);
-        }
+        services
+            .AddOptionsWithValidateOnStart<HttpStandardResilienceOptions>(sectionName + "-standard")
+            .BindConfiguration(sectionName)
+            .Configure((HttpStandardResilienceOptions options, IOptionsMonitor<TOptions> monitor) =>
+            {
+                // get the other option and copy the values into
+                // the resilience options:
+                var config = monitor.Get(sectionName);
+                config.CopyTo(options);
+            });
 
         return services;
     }
