@@ -17,19 +17,12 @@ public static class HttpClientExtensions
             // add the HttpClient itself, configure the base URL
             .AddHttpClient<TClass>(sectionName, (serviceProvider, client) =>
             {
-                var optionsMonitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
-                var config = optionsMonitor.Get(sectionName);
-
-                if (config == null)
+                var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
+                var config = monitor.Get(sectionName);
+                if (config?.BaseUrl != null)
                 {
-                    var msg = string.IsNullOrEmpty(sectionName) ?
-                        $"Configuration section for '{typeof(TConfig).Name}' is missing." :
-                        $"Configuration section {sectionName} for '{typeof(TConfig).Name}' is missing.";
-
-                    throw new InvalidOperationException(msg);
+                    client.BaseAddress = new Uri(config.BaseUrl);
                 }
-
-                client.BaseAddress = new Uri(config.BaseUrl);
             });
 
         // add resilience handler
@@ -45,8 +38,7 @@ public static class HttpClientExtensions
             .BindConfiguration(sectionName);
 
         services
-            .AddOptionsWithValidateOnStart<HttpStandardResilienceOptions>(sectionName + "-standard")
-            .BindConfiguration(sectionName)
+            .AddOptions<HttpStandardResilienceOptions>(sectionName + "-standard")
             .Configure((HttpStandardResilienceOptions options, IOptionsMonitor<TOptions> monitor) =>
             {
                 // get the other option and copy the values into
