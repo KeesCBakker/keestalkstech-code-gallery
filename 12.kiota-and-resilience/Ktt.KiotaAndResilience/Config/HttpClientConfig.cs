@@ -10,7 +10,7 @@ public class HttpClientOptions : HttpStandardResilienceOptions
 
     public HttpClientOptions()
     {
-        Retry.Delay = TimeSpan.FromMilliseconds(500);
+        Retry.Delay = TimeSpan.FromMilliseconds(100);
     }
 
     public void CopyTo(HttpStandardResilienceOptions other)
