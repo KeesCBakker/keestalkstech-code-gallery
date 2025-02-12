@@ -1,6 +1,4 @@
-﻿using Ktt.KiotaAndResilience.HttpClients.PetStore;
-
-public class DemoRetry(HttpStatusApiService httpStatusApiService)
+﻿public class DemoRetry(HttpStatusApiService httpStatusApiService)
 {
     public async Task RunAsync()
     {
