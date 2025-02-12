@@ -1,13 +1,8 @@
-﻿public class App(HttpStatusApiService httpStatusApiService)
+﻿using Ktt.KiotaAndResilience.HttpClients.PetStore;
+
+public class DemoRetry(HttpStatusApiService httpStatusApiService)
 {
     public async Task RunAsync()
-    {
-        await CallHttpStatusApi();
-
-        Console.WriteLine("Finished");
-    }
-
-    private async Task CallHttpStatusApi()
     {
         Console.WriteLine("Calling HttpStatusApiService...");
 
@@ -26,5 +21,7 @@
                 Console.WriteLine("Error: " + ex.Message);
             }
         }
+
+        Console.WriteLine("");
     }
 }

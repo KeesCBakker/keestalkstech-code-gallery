@@ -9,7 +9,7 @@ $Namespace = "Ktt.KiotaAndResilience.HttpClients"
 # Function to generate a Kiota client
 function Generate-KiotaClient {
     param (
-        [string]$Url,
+        [string]$Location,
         [string]$Name,
         [string]$Filter
     )
@@ -18,7 +18,7 @@ function Generate-KiotaClient {
     $Client          = "${Name}Client"
 
     kiota generate `
-        --openapi "$Url" `
+        --openapi "$Location" `
         --language CSharp `
         --output "$Name" `
         --namespace-name "$ClientNameSpace" `
@@ -32,9 +32,15 @@ function Generate-KiotaClient {
 }
 
 # Generate clients
+
 Generate-KiotaClient `
-  -Url "https://petstore.swagger.io/v2/swagger.json" `
+  -Location "https://petstore.swagger.io/v2/swagger.json" `
   -Name "PetStore" `
   -Filter "/pet/**"
+
+Generate-KiotaClient `
+  -Location ../../httpstatus-open-api.yml `
+  -Name "HttpStatus" `
+  -Filter "/**"
 
 popd

@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ktt.KiotaAndResilience.HttpClients.HttpStatus;
+using Ktt.KiotaAndResilience.HttpClients.PetStore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 
@@ -27,8 +29,22 @@ static void ConfigureServices(IServiceCollection services)
             };
         });
 
+    services.AddKiotaClient<PetStoreClient>("HttpClients:PetStore");
+
+    services.AddKiotaClient<HttpStatusClient>("HttpClients:HttpStatus")
+        .Configure(config =>
+        {
+            config.Retry.OnRetry = async args =>
+            {
+                Console.WriteLine($"Retry {args.AttemptNumber}: Retrying after {args.RetryDelay} due to {args.Outcome.Result?.StatusCode}");
+                await Task.CompletedTask;
+            };
+        });
+
     // add app
-    services.AddTransient<App>();
+    services.AddTransient<DemoRetry>();
+    services.AddTransient<DemoPetStore>();
+    services.AddTransient<DemoKiotaRetry>();
 }
 
 // create service collection
@@ -38,5 +54,6 @@ ConfigureServices(services);
 // create service provider
 using var serviceProvider = services.BuildServiceProvider();
 
-// entry to run app
-await serviceProvider.GetRequiredService<App>().RunAsync();
+await serviceProvider.GetRequiredService<DemoKiotaRetry>().RunAsync();
+await serviceProvider.GetRequiredService<DemoPetStore>().RunAsync();
+await serviceProvider.GetRequiredService<DemoRetry>().RunAsync();

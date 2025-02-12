@@ -10,10 +10,8 @@ public static class HttpClientExtensions
         where TConfig : HttpClientOptions, new()
     {
         var httpClientBuilder = services
-            // bind the configuration section and validate it on startup
-            // we need to bind {name} and {name-standard} to hook up
-            // resilience options
-            .AddNamedOptions<TConfig>(sectionName)
+            // bind the configuration section
+            .AddNamedOptionsForHttpClient<TConfig>(sectionName)
             // add the HttpClient itself, configure the base URL
             .AddHttpClient<TClass>(sectionName, (serviceProvider, client) =>
             {
@@ -25,23 +23,24 @@ public static class HttpClientExtensions
                 }
             });
 
+
         // add resilience handler
         return httpClientBuilder.AddStandardResilienceHandler();
     }
 
-    private static IServiceCollection AddNamedOptions<TOptions>(this IServiceCollection services, string sectionName)
+    public static IServiceCollection AddNamedOptionsForHttpClient<TOptions>(this IServiceCollection services, string sectionName)
         where TOptions : HttpClientOptions, new()
     {
-        // note: we need to bind {name} and {name-standard} to hook up resilience options
         services
             .AddOptionsWithValidateOnStart<TOptions>(sectionName)
             .BindConfiguration(sectionName);
 
+        // note: we need to bind {name-standard} to hook up resilience options
         services
             .AddOptions<HttpStandardResilienceOptions>(sectionName + "-standard")
             .Configure((HttpStandardResilienceOptions options, IOptionsMonitor<TOptions> monitor) =>
             {
-                // get the other option and copy the values into
+                // get the other options and copy the values into
                 // the resilience options:
                 var config = monitor.Get(sectionName);
                 config.CopyTo(options);
