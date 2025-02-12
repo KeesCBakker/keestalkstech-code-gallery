@@ -75,6 +75,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.kiota-and-resilience", "12.kiota-and-resilience", "{06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}"
 	ProjectSection(SolutionItems) = preProject
 		12.kiota-and-resilience\generate-clients.ps1 = 12.kiota-and-resilience\generate-clients.ps1
+		12.kiota-and-resilience\httpstatus-open-api.yml = 12.kiota-and-resilience\httpstatus-open-api.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.KiotaAndResilience", "12.kiota-and-resilience\Ktt.KiotaAndResilience\Ktt.KiotaAndResilience.csproj", "{69D170B3-0ADD-4AAC-BDC3-2BF58DD64699}"

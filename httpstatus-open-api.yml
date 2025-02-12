@@ -1,0 +1,61 @@
+openapi: 3.0.3
+info:
+  title: httpstat.us
+  version: 1.0.0
+servers:
+  - url: https://httpstat.us
+paths:
+  /200:
+    get:
+      summary: Gets a success from the endpoint
+      operationId: trigger200
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+  /500:
+    get:
+      summary: Gets a server failure from the endpoint
+      operationId: trigger500
+      responses:
+        '500':
+          description: 500 Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+  /random/200,500,502,503:
+    get:
+      summary: Gets a random status response
+      operationId: random
+      responses:
+        '200':
+          description: OK
+          content:
+            text/plain:
+              schema:
+                type: string
+        '500':
+          description: 500 Internal Server Error
+          content:
+            text/plain:
+              schema:
+                type: string
+        '502':
+          description: 502 Bad Gateway
+          content:
+            text/plain:
+              schema:
+                type: string
+        '503':
+          description: 503 Service Unavailable
+          content:
+            text/plain:
+              schema:
+                type: string
+                
+                
+                
