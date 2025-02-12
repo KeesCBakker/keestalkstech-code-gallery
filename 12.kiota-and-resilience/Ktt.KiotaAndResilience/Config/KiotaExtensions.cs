@@ -6,6 +6,33 @@ using Microsoft.Kiota.Http.HttpClientLibrary;
 
 public static class KiotaExtensions
 {
+    public static IServiceCollection AddKiotaHandlers(this IServiceCollection services)
+    {
+        // Dynamically load the Kiota handlers from the Client Factory
+        var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
+
+        // And register them in the DI container
+        foreach (var handler in kiotaHandlers)
+        {
+            services.AddTransient(handler);
+        }
+
+        return services;
+    }
+
+    public static IHttpClientBuilder AttachKiotaHandlers(this IHttpClientBuilder builder)
+    {
+        // Dynamically load the Kiota handlers from the Client Factory
+        var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
+        // And attach them to the http client builder
+        foreach (var handler in kiotaHandlers)
+        {
+            builder.AddHttpMessageHandler((sp) => (DelegatingHandler)sp.GetRequiredService(handler));
+        }
+
+        return builder;
+    }
+
     public static IHttpStandardResiliencePipelineBuilder AddKiotaClient<TClass>(
         this IServiceCollection services,
         string sectionName
@@ -54,32 +81,5 @@ public static class KiotaExtensions
         httpClientBuilder.AttachKiotaHandlers();
 
         return resilienceBuilder;
-    }
-
-    public static IServiceCollection AddKiotaHandlers(this IServiceCollection services)
-    {
-        // Dynamically load the Kiota handlers from the Client Factory
-        var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
-
-        // And register them in the DI container
-        foreach (var handler in kiotaHandlers)
-        {
-            services.AddTransient(handler);
-        }
-
-        return services;
-    }
-
-    public static IHttpClientBuilder AttachKiotaHandlers(this IHttpClientBuilder builder)
-    {
-        // Dynamically load the Kiota handlers from the Client Factory
-        var kiotaHandlers = KiotaClientFactory.GetDefaultHandlerActivatableTypes();
-        // And attach them to the http client builder
-        foreach (var handler in kiotaHandlers)
-        {
-            builder.AddHttpMessageHandler((sp) => (DelegatingHandler)sp.GetRequiredService(handler));
-        }
-
-        return builder;
     }
 }

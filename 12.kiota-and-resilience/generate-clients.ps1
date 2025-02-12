@@ -11,7 +11,7 @@ function Generate-KiotaClient {
     param (
         [string]$Location,
         [string]$Name,
-        [string]$Filter
+        [string]$Filter="/**"
     )
 
     $ClientNameSpace = "$Namespace.$Name"
@@ -40,7 +40,6 @@ Generate-KiotaClient `
 
 Generate-KiotaClient `
   -Location ../../httpstatus-open-api.yml `
-  -Name "HttpStatus" `
-  -Filter "/**"
+  -Name "HttpStatus"
 
 popd
