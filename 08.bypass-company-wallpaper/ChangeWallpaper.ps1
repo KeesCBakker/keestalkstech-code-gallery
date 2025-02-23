@@ -6,12 +6,21 @@ $EnablePauseBeforeAdminPrompt = $true
 $CountDownBeforeContinueSeconds = 5
 
 # Vars
-$WallpaperPath = "$PicturesFolder\wallpaper.jpg"
+$WallpaperPath = "$PicturesFolder\wallpaper2.jpg"
 $WallpaperTxtPath = "$PicturesFolder\wallpaper.txt"
+$WallpaperStyle = 4
+$TileWallpaper = 0
 $Restart = $false
 $ImagePath = ""
-$RegistryRootKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System"
-$CurrentWallpaper = (Get-ItemProperty -Path $RegistryRootKey -Name Wallpaper).Wallpaper
+$RegistryRootKey       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System"
+$CurrentWallpaper      = (Get-ItemProperty -Path $RegistryRootKey -Name Wallpaper).Wallpaper
+$CurrentWallpaperStyle = (Get-ItemProperty -Path $RegistryRootKey -Name WallpaperStyle).WallpaperStyle
+$CurrentTileWallpaper  = (Get-ItemProperty -Path $RegistryRootKey -Name TileWallpaper).TileWallpaper
+
+$ShouldChange = $CurrentWallpaper -ne $WallpaperPath -or `
+                $CurrentWallpaperStyle -ne $WallpaperStyle -or `
+                $CurrentTileWallpaper -ne $TileWallpaper
+
 $IsAdmin = $null -ne ([Security.Principal.WindowsIdentity]::GetCurrent().Groups | Where-Object { $_.Value -eq 'S-1-5-32-544' })
 $ErrorActionPreference = "Stop" # Fail on the first error
 
@@ -38,14 +47,14 @@ if (-not (Test-Path $WallpaperTxtPath) -or (Get-Content $WallpaperTxtPath -Error
 }
 
 # Step 1.2: Check if the registry is set to wallpaper.jpg (requires elevation if needed)
-if (-not $IsAdmin -and $CurrentWallpaper -ne $WallpaperPath) {
+if (-not $IsAdmin -and $ShouldChange) {
     Write-Output "Script requires elevation to update the registry. Restarting with elevated privileges..."
     if ($EnablePauseBeforeAdminPrompt) { Pause }
     Start-Process powershell -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"$PSCommandPath" -Verb RunAs
     return
 }
 
-if ($CurrentWallpaper -ne $WallpaperPath) {
+if ($ShouldChange) {
     Set-ItemProperty -Path $RegistryRootKey -Name Wallpaper -Value $WallpaperPath -ErrorAction SilentlyContinue
     Set-ItemProperty -Path $RegistryRootKey -Name WallpaperStyle -Value 4
     Set-ItemProperty -Path $RegistryRootKey -Name TileWallpaper -Value 0
@@ -64,14 +73,14 @@ try {
     Add-Type -TypeDefinition @"
     using System;
     using System.Runtime.InteropServices;
-    
+
     public class Wallpaper {
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         public static extern int SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
     }
 "@
 }
-catch { 
+catch {
     # only on the first time the script runs
     # the type can be added
  }
