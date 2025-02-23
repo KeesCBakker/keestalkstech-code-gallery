@@ -14,5 +14,6 @@ Write-Host "Executing task setup..."
 
 # Execute ChangeWallpaper.ps1 from the Pictures directory
 Write-Host "Executing $ChangeWallpaperPictureScript..."
-& cd $PictureDir
+pushd $PictureDir
 & .\ChangeWallpaper.ps1
+popd

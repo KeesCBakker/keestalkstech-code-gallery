@@ -6,7 +6,7 @@ $EnablePauseBeforeAdminPrompt = $true
 $CountDownBeforeContinueSeconds = 5
 
 # Vars
-$WallpaperPath = "$PicturesFolder\wallpaper2.jpg"
+$WallpaperPath = "$PicturesFolder\wallpaper.jpg"
 $WallpaperTxtPath = "$PicturesFolder\wallpaper.txt"
 $WallpaperStyle = 4
 $TileWallpaper = 0
