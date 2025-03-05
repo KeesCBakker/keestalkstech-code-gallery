@@ -18,7 +18,7 @@ static void ConfigureServices(IServiceCollection services)
 
     // add app
     services.AddTransient<DemoRetry>();
-    services.AddTransient<DemoPetStore>();
+    services.AddTransient<DemoKiotaPetStore>();
     services.AddTransient<DemoKiotaRetry>();
 }
 
@@ -30,5 +30,5 @@ ConfigureServices(services);
 using var serviceProvider = services.BuildServiceProvider();
 
 await serviceProvider.GetRequiredService<DemoKiotaRetry>().RunAsync();
-await serviceProvider.GetRequiredService<DemoPetStore>().RunAsync();
+await serviceProvider.GetRequiredService<DemoKiotaPetStore>().RunAsync();
 await serviceProvider.GetRequiredService<DemoRetry>().RunAsync();

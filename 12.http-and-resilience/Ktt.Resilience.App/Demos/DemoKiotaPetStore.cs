@@ -2,7 +2,7 @@
 using Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.FindByStatus;
 using System.Text.RegularExpressions;
 
-public class DemoPetStore(PetStoreClient petStoreclient)
+public class DemoKiotaPetStore(PetStoreClient petStoreclient)
 {
     public async Task RunAsync()
     {
