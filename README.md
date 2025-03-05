@@ -1,6 +1,6 @@
 ﻿# KeesTalksTech Gallery Repository
 
-This repository containers a lot of code samples for articles on my blog.
+This repository contains code samples for articles on my blog.
 It is easier to keep the code up to date when all of the items are grouped.
 
 ## 1. Dependency injection (with IOptions) in Console Apps in .NET
