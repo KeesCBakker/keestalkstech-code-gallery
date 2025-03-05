@@ -19,7 +19,7 @@
       "suppressClientInterfacesOutput": false,
       "clientBaseInterface": null,
       "injectHttpClient": true,
-      "disposeHttpClient": true,
+      "disposeHttpClient": false,
       "protectedMethods": [],
       "generateExceptionClasses": true,
       "exceptionClass": "ApiException",
@@ -60,7 +60,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Ktt.NSwagClients.HttpClients.PetStore",
+      "namespace": "Ktt.Resilience.NSwagClients.HttpClients.PetStore",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -94,7 +94,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "Ktt.NSwagClients/HttpClients/PetStore/PetStoreApiClient.cs",
+      "output": "Ktt.Resilience.NSwagClients/HttpClients/PetStore/PetStoreApiClient.cs",
       "newLineBehavior": "Auto"
     }
   }

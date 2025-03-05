@@ -20,7 +20,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Ktt.KiotaClients\Ktt.KiotaClients.csproj" />
+    <ProjectReference Include="..\Ktt.KiotaClients\Ktt.Resilience.KiotaClients.csproj" />
+    <ProjectReference Include="..\Ktt.NSwagClients\Ktt.Resilience.NSwagClients.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience.KiotaClients\Ktt.Resilience.KiotaClients.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience.NSwagClients\Ktt.Resilience.NSwagClients.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience\Ktt.Resilience.csproj" />
   </ItemGroup>
 
   <ItemGroup>

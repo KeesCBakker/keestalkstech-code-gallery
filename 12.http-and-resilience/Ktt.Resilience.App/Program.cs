@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ktt.KiotaClients.Config;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 
@@ -13,8 +14,10 @@ static void ConfigureServices(IServiceCollection services)
             .Build());
 
     // add services:
+    services.AddKiotaClient();
+    services.AddNSwagClients();
 
-   
+
 
     // add app
     services.AddTransient<DemoRetry>();

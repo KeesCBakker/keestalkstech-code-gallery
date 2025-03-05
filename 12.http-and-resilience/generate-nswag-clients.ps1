@@ -5,3 +5,4 @@ if (-not (Get-Command "nswag" -ErrorAction SilentlyContinue)) {
 }
 
 nswag run nswag.petstore.json
+nswag run nswag.httpstatus.json

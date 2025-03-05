@@ -4,7 +4,7 @@
   "documentGenerator": {
     "fromDocument": {
       "json": "",
-      "url": "https://petstore.swagger.io/v2/swagger.json",
+      "url": "httpstatus-open-api.yml",
       "output": null,
       "newLineBehavior": "Auto"
     }
@@ -19,7 +19,7 @@
       "suppressClientInterfacesOutput": false,
       "clientBaseInterface": null,
       "injectHttpClient": true,
-      "disposeHttpClient": true,
+      "disposeHttpClient": false,
       "protectedMethods": [],
       "generateExceptionClasses": true,
       "exceptionClass": "ApiException",
@@ -45,7 +45,7 @@
       "useRequestAndResponseSerializationSettings": false,
       "serializeTypeInformation": false,
       "queryNullValue": "",
-      "className": "PetStoreApiClient",
+      "className": "HttpStatusApiClient",
       "operationGenerationMode": "MultipleClientsFromOperationId",
       "additionalNamespaceUsages": [],
       "additionalContractNamespaceUsages": [],
@@ -60,7 +60,7 @@
       "wrapResponseMethods": [],
       "generateResponseClasses": true,
       "responseClass": "SwaggerResponse",
-      "namespace": "Ktt.NSwagClients.HttpClients.PetStore",
+      "namespace": "Ktt.Resilience.NSwagClients.HttpClients.HttpStatus",
       "requiredPropertiesMustBeDefined": true,
       "dateType": "System.DateTimeOffset",
       "jsonConverters": null,
@@ -94,7 +94,7 @@
       "templateDirectory": null,
       "serviceHost": null,
       "serviceSchemes": null,
-      "output": "Ktt.NSwagClients/HttpClients/PetStore/PetStoreApiClient.cs",
+      "output": "Ktt.Resilience.NSwagClients/HttpClients/HttpStatus/HttpStatusApiClient.cs",
       "newLineBehavior": "Auto"
     }
   }

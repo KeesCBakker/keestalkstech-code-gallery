@@ -6,6 +6,13 @@ namespace Ktt.Resilience.Config;
 
 public static class HttpClientExtensions
 {
+    public static IHttpStandardResiliencePipelineBuilder AddHttpClientWithResilienceHandler<TClass>(
+        this IServiceCollection services, string sectionName)
+        where TClass : class
+    {
+        return services.AddHttpClientWithResilienceHandler<TClass, HttpClientOptions>(sectionName);
+    }
+
     public static IHttpStandardResiliencePipelineBuilder AddHttpClientWithResilienceHandler<TClass, TConfig>(
         this IServiceCollection services, string sectionName)
         where TClass : class
