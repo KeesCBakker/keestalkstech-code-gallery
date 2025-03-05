@@ -5,9 +5,9 @@ It is easier to keep the code up to date when all of the items are grouped.
 
 ## 1. Dependency injection (with IOptions) in Console Apps in .NET
 
-When you are used to building web applications, you kind of get hooked to the 
-ease of Dependency Injection (DI) and the way settings can be specified in a 
-JSON file and accessed through DI (``IOptions<T>``). It's only logical to 
+When you are used to building web applications, you kind of get hooked to the
+ease of Dependency Injection (DI) and the way settings can be specified in a
+JSON file and accessed through DI (``IOptions<T>``). It's only logical to
 want the same features in your Console app.
 
 - <a href="01.dependency-injection-with-ioptions-in-console-apps">1.dependency-injection-with-ioptions-in-console-apps</a>
@@ -33,7 +33,7 @@ by default.
 
 ## 4. .NET Console Application with injectable commands (System.CommandLine preview)
 
-How to use `System.CommandLine` to build a CLI with commands and 
+How to use `System.CommandLine` to build a CLI with commands and
 dependency injection.
 
 - <a href="4.command-line-di-poc">4.command-line-di-poc</a>
@@ -48,10 +48,10 @@ Parsing Roman Numerals in C# is a good way to explore
 
 ## 6. Handlebars.Net & JSON templates
 
-I ❤️ Handlebars! So I was very very very happy to see that Handlebars was ported to .NET! 
-It is a mega flexible templating engine as it can easily be extended. I'm working on a 
-project where I need to parse objects via JSON templates to JSON strings. This blog will 
-show how to instruct Handlebars to parse into JSON and add some nice error messages 
+I ❤️ Handlebars! So I was very very very happy to see that Handlebars was ported to .NET!
+It is a mega flexible templating engine as it can easily be extended. I'm working on a
+project where I need to parse objects via JSON templates to JSON strings. This blog will
+show how to instruct Handlebars to parse into JSON and add some nice error messages
 if your template fails.
 
 - <a href="06.handlebars">6.handlebars</a>
@@ -61,11 +61,11 @@ if your template fails.
 
 ## 8. Bypass Company Wallpaper as Local Admin
 
-Looks like my organization wants to manage my background picture. But I'm a local admin, 
-so let's see if we can still change that background picture. When I go 
-to Setting > Personalization > Background, I see the message: 
-"Some of these settings are managed by your organization." If you are an admin, 
-you might be able to (temporarily) override the wallpaper, by editing your registry and 
+Looks like my organization wants to manage my background picture. But I'm a local admin,
+so let's see if we can still change that background picture. When I go
+to Setting > Personalization > Background, I see the message:
+"Some of these settings are managed by your organization." If you are an admin,
+you might be able to (temporarily) override the wallpaper, by editing your registry and
 triggering a refresh of the wallpaper. If you can, you can automate it using PowerShell.
 
 - <a href="08.bypass-company-wallpaper">8.bypass-company-wallpaper</a>
@@ -79,3 +79,9 @@ with the <a href="https://www.nuget.org/packages/Microsoft.Extensions.Resilience
 Microsoft.Extensions.Resilience</a> package (which is basically a wrapper around Polly).
 
 - <a href="12.kiota-and-resilience">12.kiota-and-resilience</a>
+
+## 13. Chocolatey
+With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager</a> for Windows, it is super easy to install software from the command-line. This makes your installs scriptable and thus repeatable. In this article, I'll show you how to render installation instructions from a machine and how to use the Windows Task Scheduler to update your packages regularly.
+
+- <a href="13.chocolatey">12.kiota-and-resilience</a>
+- <a href="https://keestalkstech.com/notes-on-chocolatey/">Notes on Chocolatey</a>
