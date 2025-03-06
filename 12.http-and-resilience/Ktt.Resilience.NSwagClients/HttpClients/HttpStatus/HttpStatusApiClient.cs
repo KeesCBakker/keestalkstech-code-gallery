@@ -56,14 +56,21 @@ namespace Ktt.Resilience.NSwagClients.HttpClients.HttpStatus
     [System.CodeDom.Compiler.GeneratedCode("NSwag", "14.2.0.0 (NJsonSchema v11.1.0.0 (Newtonsoft.Json v13.0.0.0))")]
     public partial class HttpStatusApiClient : IHttpStatusApiClient
     {
+        #pragma warning disable 8618
+        private string _baseUrl;
+        #pragma warning restore 8618
+
         private System.Net.Http.HttpClient _httpClient;
         private static System.Lazy<Newtonsoft.Json.JsonSerializerSettings> _settings = new System.Lazy<Newtonsoft.Json.JsonSerializerSettings>(CreateSerializerSettings, true);
         private Newtonsoft.Json.JsonSerializerSettings _instanceSettings;
 
     #pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-        public HttpStatusApiClient(System.Net.Http.HttpClient httpClient)
+        public HttpStatusApiClient(string baseUrl, System.Net.Http.HttpClient httpClient)
     #pragma warning restore CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
         {
+            _baseUrl = (string.IsNullOrEmpty(baseUrl) || baseUrl.EndsWith("/"))
+                ? baseUrl
+                : baseUrl + "/";
             _httpClient = httpClient;
             Initialize();
         }
@@ -103,7 +110,7 @@ namespace Ktt.Resilience.NSwagClients.HttpClients.HttpStatus
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "200"
                     urlBuilder_.Append("200");
 
@@ -172,7 +179,7 @@ namespace Ktt.Resilience.NSwagClients.HttpClients.HttpStatus
                     request_.Method = new System.Net.Http.HttpMethod("GET");
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "500"
                     urlBuilder_.Append("500");
 
@@ -250,7 +257,7 @@ namespace Ktt.Resilience.NSwagClients.HttpClients.HttpStatus
                     request_.Headers.Accept.Add(System.Net.Http.Headers.MediaTypeWithQualityHeaderValue.Parse("text/plain"));
 
                     var urlBuilder_ = new System.Text.StringBuilder();
-                
+                    if (!string.IsNullOrEmpty(_baseUrl)) urlBuilder_.Append(_baseUrl);
                     // Operation Path: "random/200,500,502,503"
                     urlBuilder_.Append("random/200,500,502,503");
 

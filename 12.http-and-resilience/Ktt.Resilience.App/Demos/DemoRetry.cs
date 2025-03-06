@@ -4,7 +4,7 @@ public class DemoRetry(HttpStatusApiService httpStatusApiService)
 {
     public async Task RunAsync()
     {
-        Console.WriteLine("Calling HttpStatusApiService...");
+        Console.WriteLine("Calling DemoRetry...");
 
         for(var i = 0; i < 10; i++)
         {

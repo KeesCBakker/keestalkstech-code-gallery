@@ -1,4 +1,5 @@
 ﻿using Ktt.Resilience.Config;
+using Ktt.Resilience.NSwagClients.Config;
 using Ktt.Resilience.NSwagClients.HttpClients.HttpStatus;
 using Ktt.Resilience.NSwagClients.HttpClients.PetStore;
 using Microsoft.Extensions.DependencyInjection;
@@ -8,15 +9,12 @@ namespace Ktt.Resilience.NSwagClients;
 
 public static class Clients
 {
-    public static IServiceCollection AddKiotaClients(IServiceCollection services)
+    public static IServiceCollection AddNSwagClients(this IServiceCollection services)
     {
-        services
-            .AddTransient<IPetStoreApiClient, PetStoreApiClient>()
-            .AddHttpClientWithResilienceHandler<PetStoreApiClient>("HttpClients:PetStore");
+        services.AddNSwagClient<IPetStoreApiClient, PetStoreApiClient>("HttpClients:PetStore");
 
         services
-            .AddTransient<IHttpStatusApiClient, HttpStatusApiClient>()
-            .AddHttpClientWithResilienceHandler<HttpStatusApiClient>("HttpClients:HttpStatusApi")
+            .AddNSwagClient<IHttpStatusApiClient, HttpStatusApiClient>("HttpClients:HttpStatus")
             .Configure(config =>
             {
                 config.Retry.OnRetry = async args =>

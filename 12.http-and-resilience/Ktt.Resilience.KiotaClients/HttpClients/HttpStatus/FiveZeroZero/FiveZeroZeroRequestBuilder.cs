@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Threading;
 using System;
-namespace Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero
+namespace Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero
 {
     /// <summary>
     /// Builds and executes requests for operations under \500
@@ -17,7 +17,7 @@ namespace Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero
     public partial class FiveZeroZeroRequestBuilder : BaseRequestBuilder
     {
         /// <summary>
-        /// Instantiates a new <see cref="global::Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="pathParameters">Path parameters for the request</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -25,7 +25,7 @@ namespace Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero
         {
         }
         /// <summary>
-        /// Instantiates a new <see cref="global::Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/> and sets the default values.
         /// </summary>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
         /// <param name="requestAdapter">The request adapter to use to execute the requests.</param>
@@ -72,11 +72,11 @@ namespace Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero
         /// <summary>
         /// Returns a request builder with the provided arbitrary URL. Using this method means any other path or query parameters are ignored.
         /// </summary>
-        /// <returns>A <see cref="global::Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/></returns>
+        /// <returns>A <see cref="global::Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder"/></returns>
         /// <param name="rawUrl">The raw URL to use for the request builder.</param>
-        public global::Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder WithUrl(string rawUrl)
+        public global::Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder WithUrl(string rawUrl)
         {
-            return new global::Ktt.Ktt.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder(rawUrl, RequestAdapter);
+            return new global::Ktt.Resilience.KiotaClients.HttpClients.HttpStatus.FiveZeroZero.FiveZeroZeroRequestBuilder(rawUrl, RequestAdapter);
         }
     }
 }

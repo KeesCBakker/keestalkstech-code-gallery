@@ -7,7 +7,7 @@ namespace Ktt.Resilience;
 
 public static class Clients
 {
-    public static IServiceCollection AddNSwagClients(IServiceCollection services)
+    public static IServiceCollection AddClients(this IServiceCollection services)
     {
         // the order matters!
         services.AddTransient<HttpStatusApiService>();

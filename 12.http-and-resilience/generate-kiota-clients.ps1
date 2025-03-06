@@ -1,10 +1,10 @@
 dotnet tool install --global Microsoft.OpenApi.Kiota
 
 # Go to our folder with clients
-pushd "Ktt.KiotaClients/HttpClients"
+pushd "Ktt.Resilience.KiotaClients/HttpClients"
 
 # Define the namespace by convention
-$Namespace = "Ktt.Ktt.KiotaClients.HttpClients"
+$Namespace = "Ktt.Resilience.KiotaClients.HttpClients"
 
 # Function to generate a Kiota client
 function Generate-KiotaClient {

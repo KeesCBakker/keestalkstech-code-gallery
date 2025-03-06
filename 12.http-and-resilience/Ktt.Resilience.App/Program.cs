@@ -1,7 +1,8 @@
-﻿using Ktt.KiotaClients.Config;
+﻿using Ktt.Resilience;
+using Ktt.Resilience.KiotaClients;
+using Ktt.Resilience.NSwagClients;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience;
 
 static void ConfigureServices(IServiceCollection services)
 {
@@ -14,15 +15,18 @@ static void ConfigureServices(IServiceCollection services)
             .Build());
 
     // add services:
-    services.AddKiotaClient();
+    services.AddClients();
+    services.AddKiotaClients();
     services.AddNSwagClients();
 
-
-
     // add app
-    services.AddTransient<DemoRetry>();
     services.AddTransient<DemoKiotaPetStore>();
+    services.AddTransient<DemoNSwagPetStore>();
+
+    services.AddTransient<DemoRetry>();
     services.AddTransient<DemoKiotaRetry>();
+    services.AddTransient<DemoNSwagRetry>();
+
 }
 
 // create service collection
@@ -32,6 +36,9 @@ ConfigureServices(services);
 // create service provider
 using var serviceProvider = services.BuildServiceProvider();
 
-await serviceProvider.GetRequiredService<DemoKiotaRetry>().RunAsync();
 await serviceProvider.GetRequiredService<DemoKiotaPetStore>().RunAsync();
+await serviceProvider.GetRequiredService<DemoNSwagPetStore>().RunAsync();
+
 await serviceProvider.GetRequiredService<DemoRetry>().RunAsync();
+await serviceProvider.GetRequiredService<DemoKiotaRetry>().RunAsync();
+await serviceProvider.GetRequiredService<DemoNSwagRetry>().RunAsync();

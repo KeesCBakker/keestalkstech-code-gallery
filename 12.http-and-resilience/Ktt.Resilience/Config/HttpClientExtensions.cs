@@ -7,14 +7,17 @@ namespace Ktt.Resilience.Config;
 public static class HttpClientExtensions
 {
     public static IHttpStandardResiliencePipelineBuilder AddHttpClientWithResilienceHandler<TClass>(
-        this IServiceCollection services, string sectionName)
+        this IServiceCollection services,
+        string sectionName
+    )
         where TClass : class
     {
         return services.AddHttpClientWithResilienceHandler<TClass, HttpClientOptions>(sectionName);
     }
 
     public static IHttpStandardResiliencePipelineBuilder AddHttpClientWithResilienceHandler<TClass, TConfig>(
-        this IServiceCollection services, string sectionName)
+        this IServiceCollection services,
+        string sectionName)
         where TClass : class
         where TConfig : HttpClientOptions, new()
     {
@@ -23,6 +26,35 @@ public static class HttpClientExtensions
             .AddNamedOptionsForHttpClient<TConfig>(sectionName)
             // add the HttpClient itself, configure the base URL
             .AddHttpClient<TClass>(sectionName, (serviceProvider, client) =>
+            {
+                var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
+                var config = monitor.Get(sectionName);
+                if (config?.BaseUrl != null)
+                {
+                    client.BaseAddress = new Uri(config.BaseUrl);
+                }
+            });
+
+
+        // add resilience handler
+        return httpClientBuilder.AddStandardResilienceHandler();
+    }
+
+    public static IHttpStandardResiliencePipelineBuilder AddNamedHttpClientWithResilienceHandler(
+        this IServiceCollection services, string httpClientName, string sectionName)
+    {
+        return services.AddNamedHttpClientWithResilienceHandler<HttpClientOptions>(httpClientName, sectionName);
+    }
+
+    public static IHttpStandardResiliencePipelineBuilder AddNamedHttpClientWithResilienceHandler<TConfig>(
+        this IServiceCollection services, string httpClientName, string sectionName)
+        where TConfig : HttpClientOptions, new()
+    {
+        var httpClientBuilder = services
+            // bind the configuration section
+            .AddNamedOptionsForHttpClient<TConfig>(sectionName)
+            // add the HttpClient itself, configure the base URL
+            .AddHttpClient(httpClientName, (serviceProvider, client) =>
             {
                 var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
                 var config = monitor.Get(sectionName);

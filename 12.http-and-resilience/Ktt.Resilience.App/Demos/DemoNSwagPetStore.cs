@@ -5,9 +5,10 @@ public class DemoNSwagPetStore(IPetStoreApiClient petStoreclient)
 {
     public async Task RunAsync()
     {
-        Console.WriteLine("Calling the Petstore...");
+        Console.WriteLine("Calling DemoNSwagPetStore...");
 
-        var pets = await petStoreclient.FindPetsByStatusAsync([Anonymous.Available]);
+
+        var pets = await petStoreclient.PetFindByStatusAsync([Anonymous.Available]);
 
         var list = pets!
             .Select(x => x.Name)

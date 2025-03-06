@@ -5,7 +5,7 @@
   "kiotaVersion": "1.23.0",
   "clientClassName": "HttpStatusClient",
   "typeAccessModifier": "Public",
-  "clientNamespaceName": "Ktt.Ktt.KiotaClients.HttpClients.HttpStatus",
+  "clientNamespaceName": "Ktt.Resilience.KiotaClients.HttpClients.HttpStatus",
   "language": "CSharp",
   "usesBackingStore": false,
   "excludeBackwardCompatible": true,

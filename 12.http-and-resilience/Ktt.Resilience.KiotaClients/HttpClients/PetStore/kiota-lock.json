@@ -5,7 +5,7 @@
   "kiotaVersion": "1.23.0",
   "clientClassName": "PetStoreClient",
   "typeAccessModifier": "Public",
-  "clientNamespaceName": "Ktt.Ktt.KiotaClients.HttpClients.PetStore",
+  "clientNamespaceName": "Ktt.Resilience.KiotaClients.HttpClients.PetStore",
   "language": "CSharp",
   "usesBackingStore": false,
   "excludeBackwardCompatible": true,

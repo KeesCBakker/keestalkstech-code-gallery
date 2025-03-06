@@ -12,16 +12,6 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="9.0.1" />
-    <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.1.0" />
-    <PackageReference Include="Microsoft.Extensions.Resilience" Version="9.1.0" />
-    <PackageReference Include="Microsoft.Kiota.Bundle" Version="1.17.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Ktt.KiotaClients\Ktt.Resilience.KiotaClients.csproj" />
-    <ProjectReference Include="..\Ktt.NSwagClients\Ktt.Resilience.NSwagClients.csproj" />
     <ProjectReference Include="..\Ktt.Resilience.KiotaClients\Ktt.Resilience.KiotaClients.csproj" />
     <ProjectReference Include="..\Ktt.Resilience.NSwagClients\Ktt.Resilience.NSwagClients.csproj" />
     <ProjectReference Include="..\Ktt.Resilience\Ktt.Resilience.csproj" />

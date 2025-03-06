@@ -5,7 +5,7 @@ using Microsoft.Kiota.Abstractions.Serialization;
 using System.Collections.Generic;
 using System.IO;
 using System;
-namespace Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item
+namespace Ktt.Resilience.KiotaClients.HttpClients.PetStore.Pet.Item
 {
     [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
     #pragma warning disable CS1591
@@ -31,7 +31,7 @@ namespace Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item
         public string Status { get; set; }
 #endif
         /// <summary>
-        /// Instantiates a new <see cref="global::Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody"/> and sets the default values.
+        /// Instantiates a new <see cref="global::Ktt.Resilience.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody"/> and sets the default values.
         /// </summary>
         public WithPetPostRequestBody()
         {
@@ -40,12 +40,12 @@ namespace Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item
         /// <summary>
         /// Creates a new instance of the appropriate class based on discriminator value
         /// </summary>
-        /// <returns>A <see cref="global::Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody"/></returns>
+        /// <returns>A <see cref="global::Ktt.Resilience.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody"/></returns>
         /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-        public static global::Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody CreateFromDiscriminatorValue(IParseNode parseNode)
+        public static global::Ktt.Resilience.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody CreateFromDiscriminatorValue(IParseNode parseNode)
         {
             _ = parseNode ?? throw new ArgumentNullException(nameof(parseNode));
-            return new global::Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody();
+            return new global::Ktt.Resilience.KiotaClients.HttpClients.PetStore.Pet.Item.WithPetPostRequestBody();
         }
         /// <summary>
         /// The deserialization information for the current model
