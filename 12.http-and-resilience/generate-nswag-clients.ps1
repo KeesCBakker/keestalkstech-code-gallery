@@ -4,5 +4,5 @@ if (-not (Get-Command "nswag" -ErrorAction SilentlyContinue)) {
     dotnet tool install --global NSwag.ConsoleCore
 }
 
-nswag run nswag.petstore.json
-nswag run nswag.httpstatus.json
+nswag run petstore.nswag.json
+nswag run httpstatus.nswag.json

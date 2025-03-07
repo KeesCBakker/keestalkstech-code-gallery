@@ -12,9 +12,13 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.FileExtensions" Version="9.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="9.0.1" />
-    <ProjectReference Include="..\Ktt.Resilience.KiotaClients\Ktt.Resilience.KiotaClients.csproj" />
-    <ProjectReference Include="..\Ktt.Resilience.NSwagClients\Ktt.Resilience.NSwagClients.csproj" />
-    <ProjectReference Include="..\Ktt.Resilience\Ktt.Resilience.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Ktt.Resilience.Clients.Kiota\Ktt.Resilience.Clients.Kiota.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience.Clients.NSwag\Ktt.Resilience.Clients.NSwag.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience.Clients.OpenApiGenerator\Ktt.Resilience.Clients.OpenApiGenerator.csproj" />
+    <ProjectReference Include="..\Ktt.Resilience.Clients\Ktt.Resilience.Clients.csproj" />
   </ItemGroup>
 
   <ItemGroup>
