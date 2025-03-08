@@ -17,7 +17,6 @@
   <ItemGroup>
     <ProjectReference Include="..\Ktt.Resilience.Clients.Kiota\Ktt.Resilience.Clients.Kiota.csproj" />
     <ProjectReference Include="..\Ktt.Resilience.Clients.NSwag\Ktt.Resilience.Clients.NSwag.csproj" />
-    <ProjectReference Include="..\Ktt.Resilience.Clients.OpenApiGenerator\Ktt.Resilience.Clients.OpenApiGenerator.csproj" />
     <ProjectReference Include="..\Ktt.Resilience.Clients\Ktt.Resilience.Clients.csproj" />
   </ItemGroup>
 
