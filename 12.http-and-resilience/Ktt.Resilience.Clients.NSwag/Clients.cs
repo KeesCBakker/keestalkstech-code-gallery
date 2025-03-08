@@ -31,6 +31,15 @@ public static class Clients
 
     public static IServiceCollection AddNSwagClients(this IServiceCollection services)
     {
+        /*
+         * When we generate a client, we might get different constructors parameters:
+         * - In case of the PetStore we only have an HTTP client.
+         * - In case of the HttpStatusApi we have both a URL and an HTTP client.
+         * 
+         * Solution: use a factory-style approach and call the constructor yourself :-(
+         * Therefore we need to use a named HTTP client with the resilience connected.
+         */
+
         services.AddNSwagClient<IPetStoreApiClient>("HttpClients:PetStore", httpClient =>
         {
             var client = new PetStoreApiClient(httpClient);
