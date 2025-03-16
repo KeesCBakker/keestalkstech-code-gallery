@@ -1,6 +1,7 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Ktt.Resilience.Clients;
+using Ktt.Resilience.Clients.Kiota;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Http.Resilience;
 
 static void ConfigureServices(IServiceCollection services)
 {
@@ -13,13 +14,13 @@ static void ConfigureServices(IServiceCollection services)
             .Build());
 
     // add services:
-
-   
+    services.AddClients();
+    services.AddKiotaClients();
 
     // add app
-    services.AddTransient<DemoRetry>();
     services.AddTransient<DemoPetStore>();
-    services.AddTransient<DemoKiotaRetry>();
+    services.AddTransient<DemoRetry>();
+
 }
 
 // create service collection
@@ -29,6 +30,5 @@ ConfigureServices(services);
 // create service provider
 using var serviceProvider = services.BuildServiceProvider();
 
-await serviceProvider.GetRequiredService<DemoKiotaRetry>().RunAsync();
 await serviceProvider.GetRequiredService<DemoPetStore>().RunAsync();
 await serviceProvider.GetRequiredService<DemoRetry>().RunAsync();

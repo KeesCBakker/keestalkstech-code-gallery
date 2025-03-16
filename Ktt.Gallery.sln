@@ -74,15 +74,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08.bypass-company-wallpaper
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.http-and-resilience", "12.http-and-resilience", "{06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}"
 	ProjectSection(SolutionItems) = preProject
+		12.http-and-resilience\generate-all-clients.ps1 = 12.http-and-resilience\generate-all-clients.ps1
 		12.http-and-resilience\generate-kiota-clients.ps1 = 12.http-and-resilience\generate-kiota-clients.ps1
+		12.http-and-resilience\generate-nswag-clients.ps1 = 12.http-and-resilience\generate-nswag-clients.ps1
 		12.http-and-resilience\httpstatus-open-api.yml = 12.http-and-resilience\httpstatus-open-api.yml
+		12.http-and-resilience\httpstatus.nswag.json = 12.http-and-resilience\httpstatus.nswag.json
+		12.http-and-resilience\petstore.nswag.json = 12.http-and-resilience\petstore.nswag.json
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.KiotaClients", "12.http-and-resilience\Ktt.KiotaClients\Ktt.KiotaClients.csproj", "{990E24F2-05E3-475D-83DD-796FF8BFF8D3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience", "12.http-and-resilience\Ktt.Resilience\Ktt.Resilience.csproj", "{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.App", "12.http-and-resilience\Ktt.Resilience.App\Ktt.Resilience.App.csproj", "{AD148AF8-E5C0-461C-8D66-DA01260B60DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients", "12.http-and-resilience\Ktt.Resilience.Clients\Ktt.Resilience.Clients.csproj", "{F89868C3-6BA2-2FA0-4B97-C834543C1A4D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients.Kiota", "12.http-and-resilience\Ktt.Resilience.Clients.Kiota\Ktt.Resilience.Clients.Kiota.csproj", "{26724237-DF9D-C55A-741B-6D839D7C6B24}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Tests", "12.http-and-resilience\Ktt.Resilience.Tests\Ktt.Resilience.Tests.csproj", "{E39EF968-DABB-49DD-8568-141A7812FEEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -122,18 +128,22 @@ Global
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF}.Release|Any CPU.Build.0 = Release|Any CPU
-		{990E24F2-05E3-475D-83DD-796FF8BFF8D3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{990E24F2-05E3-475D-83DD-796FF8BFF8D3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{990E24F2-05E3-475D-83DD-796FF8BFF8D3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{990E24F2-05E3-475D-83DD-796FF8BFF8D3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -147,9 +157,10 @@ Global
 		{570715A8-44E5-4D59-9E28-3280D7EB87CC} = {B81F0520-D208-486C-B538-9F18D5BBF540}
 		{7DC02754-F052-44FC-A737-86DC8D70566E} = {B81F0520-D208-486C-B538-9F18D5BBF540}
 		{5C4D77BF-FE1B-49A2-9039-4754C42621CF} = {6ED4C763-D516-4509-89E5-5D2F0DC2D3CC}
-		{990E24F2-05E3-475D-83DD-796FF8BFF8D3} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
-		{BE22A7A2-9ED7-4E66-85FB-A60682B2F5AC} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
+		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
+		{26724237-DF9D-C55A-741B-6D839D7C6B24} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
+		{E39EF968-DABB-49DD-8568-141A7812FEEC} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}

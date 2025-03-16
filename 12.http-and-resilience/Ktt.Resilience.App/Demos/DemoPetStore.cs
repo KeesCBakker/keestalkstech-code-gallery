@@ -1,30 +1,36 @@
-﻿using Ktt.Ktt.KiotaClients.HttpClients.PetStore;
-using Ktt.Ktt.KiotaClients.HttpClients.PetStore.Pet.FindByStatus;
+﻿using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
 using System.Text.RegularExpressions;
 
-public class DemoPetStore(PetStoreClient petStoreclient)
+using KiotaPetStoreClient = Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.PetStoreClient;
+
+public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient)
 {
     public async Task RunAsync()
     {
-        Console.WriteLine("Calling the Petstore...");
+        // execute the Kiota Demo
+        Console.WriteLine("Calling KiotaPetStoreClient...");
 
-        var pets = await petStoreclient.Pet.FindByStatus.GetAsync(x =>
+        var kiotaClientPets = await kiotaPetStoreClient.Pet.FindByStatus.GetAsync(x =>
         {
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
-        var list = pets!
-            .Select(x => x.Name)
+        WriteResults(kiotaClientPets!.Select(x => x.Name));
+    }
+
+    private void WriteResults(IEnumerable<string?> names)
+    {
+        var array = names.ToArray();
+
+        var list = array
             .Where(x => x != null && Regex.IsMatch(x, "^[a-zA-Z]{1,5}$"))
             .OrderBy(x => x)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        foreach(var p in list)
-        {
-            Console.WriteLine("- " + p);
-        }
-
-        Console.WriteLine("Query returned " + pets!.Count + " results, of which " + list.Count + " have a valid name.");
+        Console.Write("We have the following pets: ");
+        Console.WriteLine(string.Join(", ", list));
+        Console.WriteLine();
+        Console.WriteLine("Query returned " + array.Length + " results, of which " + list.Count + " have a valid name.");
         Console.WriteLine();
     }
 }

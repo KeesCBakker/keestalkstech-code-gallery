@@ -71,14 +71,15 @@ triggering a refresh of the wallpaper. If you can, you can automate it using Pow
 - <a href="08.bypass-company-wallpaper">8.bypass-company-wallpaper</a>
 - <a href="https://keestalkstech.com/2024/12/how-to-bypass-company-background-image-as-local-admin-on-windows-11/">How to bypass company wallpaper as local admin on Windows 11</a>
 
-## 12. Kiota and Resilience
+## 12. HTTP Resilience, Kiota
 
 My new years resolution for 2025 is not to write a custom implementation if I have an
-Open API specification availabe. Let's use Kiota to generate a client and add resilience
-with the <a href="https://www.nuget.org/packages/Microsoft.Extensions.Resilience">Microsoft
-Microsoft.Extensions.Resilience</a> package (which is basically a wrapper around Polly).
+Open API specification availabe. Now, let's test how to create a resilent setup without
+any client generation, with a Kiota client and with a NSwag client.
 
-- <a href="12.kiota-and-resilience">12.kiota-and-resilience</a>
+- <a href="12.http-and-resilience">12.http-and-resilience</a>
+- <a href="https://keestalkstech.com/implementing-http-resilience-by-microsoft/">Implementing HTTP Resilience by Microsoft</a>
+- <a href="https://keestalkstech.com/kiota-dependency-injection-and-resilience/">Kiota, dependency injection and resilience</a>
 
 ## 13. Chocolatey
 With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager</a> for Windows, it is super easy to install software from the command-line. This makes your installs scriptable and thus repeatable. In this article, I'll show you how to render installation instructions from a machine and how to use the Windows Task Scheduler to update your packages regularly.
