@@ -75,7 +75,7 @@ triggering a refresh of the wallpaper. If you can, you can automate it using Pow
 
 My new years resolution for 2025 is not to write a custom implementation if I have an
 Open API specification availabe. Now, let's test how to create a resilent setup without
-any client generation, with a Kiota client and with a NSwag client.
+any client generation, with a Kiota client.
 
 - <a href="12.http-and-resilience">12.http-and-resilience</a>
 - <a href="https://keestalkstech.com/implementing-http-resilience-by-microsoft/">Implementing HTTP Resilience by Microsoft</a>
