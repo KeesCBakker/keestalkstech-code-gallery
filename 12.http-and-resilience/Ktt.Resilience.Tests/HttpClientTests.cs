@@ -76,24 +76,24 @@ public class HttpClientTests
     public async Task KiotaPetStoreClientWithString()
     {
         var str = @"
-[
-  {
-    ""id"": 42,
-    ""category"": { ""id"": 1, ""name"": ""dog"" },
-    ""name"": ""Bandit Heeler"",
-    ""photoUrls"": [""https://upload.wikimedia.org/wikipedia/en/9/90/Bandit_Heeler.png""],
-    ""tags"": [ { ""id"": 1, ""name"": ""cartoon"" } ],
-    ""status"": ""available""
-  },
-  {
-    ""id"": 1337,
-    ""category"": { ""id"": 1, ""name"": ""dog"" },
-    ""name"": ""Scooby-Doo"",
-    ""photoUrls"": [""https://upload.wikimedia.org/wikipedia/en/5/53/Scooby-Doo.png""],
-    ""tags"": [ { ""id"": 1, ""name"": ""cartoon"" } ],
-    ""status"": ""available""
-  }
-]";
+        [
+          {
+            ""id"": 42,
+            ""category"": { ""id"": 1, ""name"": ""dog"" },
+            ""name"": ""Bandit Heeler"",
+            ""photoUrls"": [""https://upload.wikimedia.org/wikipedia/en/9/90/Bandit_Heeler.png""],
+            ""tags"": [ { ""id"": 1, ""name"": ""cartoon"" } ],
+            ""status"": ""available""
+          },
+          {
+            ""id"": 1337,
+            ""category"": { ""id"": 1, ""name"": ""dog"" },
+            ""name"": ""Scooby-Doo"",
+            ""photoUrls"": [""https://upload.wikimedia.org/wikipedia/en/5/53/Scooby-Doo.png""],
+            ""tags"": [ { ""id"": 1, ""name"": ""cartoon"" } ],
+            ""status"": ""available""
+          }
+        ]";
 
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
