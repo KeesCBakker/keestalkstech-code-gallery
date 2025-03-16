@@ -18,8 +18,7 @@ public class HttpClientTests
     {
         var tag = new Tag { Id = 1, Name = "cartoon" };
         var category = new Category { Id = 1, Name = "Dogs" };
-
-        var mocekdPets = new Pet[] {
+        var pets = new Pet[] {
             new Pet
             {
                 Id = 42,
@@ -40,15 +39,15 @@ public class HttpClientTests
             }
         };
 
-        var jsonSerializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-        jsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
-        var data = JsonSerializer.Serialize(mocekdPets, jsonSerializerOptions);
+        var jsonData = JsonSerializer.Serialize(pets, serializerOptions);
 
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
             .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
-            .Respond(HttpStatusCode.OK, "application/json", data);
+            .Respond(HttpStatusCode.OK, "application/json", jsonData);
 
         var client = new PetStoreClient(
             new DefaultRequestAdapter(
@@ -75,7 +74,7 @@ public class HttpClientTests
     [Fact]
     public async Task KiotaPetStoreClientWithString()
     {
-        var str = @"
+        var json = @"
         [
           {
             ""id"": 42,
@@ -98,7 +97,7 @@ public class HttpClientTests
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
             .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
-            .Respond(HttpStatusCode.OK, "application/json", str);
+            .Respond(HttpStatusCode.OK, "application/json", json);
 
         var client = new PetStoreClient(
             new DefaultRequestAdapter(
