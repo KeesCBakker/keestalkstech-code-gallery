@@ -74,11 +74,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "08.bypass-company-wallpaper
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.http-and-resilience", "12.http-and-resilience", "{06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}"
 	ProjectSection(SolutionItems) = preProject
-		12.http-and-resilience\generate-all-clients.ps1 = 12.http-and-resilience\generate-all-clients.ps1
 		12.http-and-resilience\generate-kiota-clients.ps1 = 12.http-and-resilience\generate-kiota-clients.ps1
-		12.http-and-resilience\generate-nswag-clients.ps1 = 12.http-and-resilience\generate-nswag-clients.ps1
 		12.http-and-resilience\httpstatus-open-api.yml = 12.http-and-resilience\httpstatus-open-api.yml
-		12.http-and-resilience\httpstatus.nswag.json = 12.http-and-resilience\httpstatus.nswag.json
 		12.http-and-resilience\petstore.nswag.json = 12.http-and-resilience\petstore.nswag.json
 	EndProjectSection
 EndProject
