@@ -1,4 +1,4 @@
-## 12. HTTP Resilience, Kiota
+## HTTP Resilience, Kiota
 
 My new years resolution for 2025 is not to write a custom implementation if I have an
 Open API specification availabe. Now, let's test how to create a resilent setup without
