@@ -12,7 +12,7 @@ public static class Clients
         // the order matters!
         services.AddTransient<HttpStatusApiService>();
         services
-            .AddHttpClientWithResilienceHandler<HttpStatusApiService, HttpClientOptions>("HttpClients:HttpStatusApi")
+            .AddHttpClientWithResilienceHandler<HttpStatusApiService>("HttpClients:HttpStatusApi")
             .Configure(config =>
             {
                 config.Retry.OnRetry = async args =>
