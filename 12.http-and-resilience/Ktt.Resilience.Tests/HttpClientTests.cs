@@ -16,31 +16,26 @@ public class HttpClientTests
     [Fact]
     public async Task KiotaPetStoreClientWithMockedObjects()
     {
+        var tag = new Tag { Id = 1, Name = "cartoon" };
+        var category = new Category { Id = 1, Name = "Dogs" };
+
         var mocekdPets = new Pet[] {
             new Pet
             {
                 Id = 42,
                 Name = "Bandit Heeler",
-                Category= new Category
-                {
-                    Id = 1,
-                    Name = "Dogs"
-                },
+                Category = category,
                 PhotoUrls = [ "https://upload.wikimedia.org/wikipedia/en/9/90/Bandit_Heeler.png" ],
-                Tags = [ new Tag { Id = 1, Name = "cartoon" }],
+                Tags = [ tag ],
                 Status = Pet_status.Available
             },
             new Pet
             {
                 Id = 1337,
                 Name = "Scooby-Doo",
-                Category= new Category
-                {
-                    Id = 1,
-                    Name = "Dogs"
-                },
+                Category = category,
                 PhotoUrls = [ "https://upload.wikimedia.org/wikipedia/en/5/53/Scooby-Doo.png" ],
-                Tags = [ new Tag { Id = 1, Name = "cartoon" }],
+                Tags = [ tag ],
                 Status = Pet_status.Available
             }
         };
@@ -67,7 +62,14 @@ public class HttpClientTests
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
-        ValidateResult(result);
+        result.Should().NotBeNull();
+        result.Count.Should().Be(2);
+
+        result[0].Id.Should().Be(42);
+        result[0].Name.Should().Be("Bandit Heeler");
+
+        result[1].Id.Should().Be(1337);
+        result[1].Name.Should().Be("Scooby-Doo");
     }
 
     [Fact]
@@ -110,11 +112,6 @@ public class HttpClientTests
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
-        ValidateResult(result);
-    }
-
-    private static void ValidateResult(List<Pet>? result)
-    {
         result.Should().NotBeNull();
         result.Count.Should().Be(2);
 
