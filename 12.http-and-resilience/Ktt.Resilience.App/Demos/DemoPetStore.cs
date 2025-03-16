@@ -1,11 +1,9 @@
 ﻿using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
-using Ktt.Resilience.Clients.NSwag.HttpClients.PetStore;
 using System.Text.RegularExpressions;
 
-using INSwagPetStoreClient = Ktt.Resilience.Clients.NSwag.HttpClients.PetStore.IPetStoreApiClient;
 using KiotaPetStoreClient = Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.PetStoreClient;
 
-public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient, INSwagPetStoreClient nSwagPetStoreClient)
+public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient)
 {
     public async Task RunAsync()
     {
@@ -17,12 +15,6 @@ public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient, INSwa
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
-        WriteResults(kiotaClientPets!.Select(x => x.Name));
-
-        // execute the NSwag Demo
-        Console.WriteLine("Calling NSwagPetStoreClient...");
-
-        var nswagPets = await nSwagPetStoreClient.PetFindByStatusAsync([Anonymous.Available]);
         WriteResults(kiotaClientPets!.Select(x => x.Name));
     }
 

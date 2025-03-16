@@ -67,6 +67,11 @@ public static class HttpClientExtensions
         return httpClientBuilder.AddStandardResilienceHandler();
     }
 
+    public static IServiceCollection AddNamedOptionsForHttpClient(this IServiceCollection services, string sectionName)
+    {
+        return AddNamedOptionsForHttpClient<HttpClientOptions>(services, sectionName);
+    }
+
     public static IServiceCollection AddNamedOptionsForHttpClient<TOptions>(this IServiceCollection services, string sectionName)
         where TOptions : HttpClientOptions, new()
     {

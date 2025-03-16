@@ -1,6 +1,5 @@
 ﻿using Ktt.Resilience.Clients;
 using Ktt.Resilience.Clients.Kiota;
-using Ktt.Resilience.Clients.NSwag;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -17,7 +16,6 @@ static void ConfigureServices(IServiceCollection services)
     // add services:
     services.AddClients();
     services.AddKiotaClients();
-    services.AddNSwagClients();
 
     // add app
     services.AddTransient<DemoPetStore>();

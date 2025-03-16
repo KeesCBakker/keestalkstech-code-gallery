@@ -1,20 +1,15 @@
-﻿using Ktt.Resilience.Clients.NSwag;
-
-using ICustomHttpStatusApiClient = Ktt.Resilience.Clients.NSwag.HttpClients.HttpStatus.IHttpStatusApiClient;
+﻿using ICustomHttpStatusApiClient = Ktt.Resilience.Clients.HttpClients.HttpStatusApiService;
 using KiotaHttpStatusClient = Ktt.Resilience.Clients.Kiota.HttpClients.HttpStatus.HttpStatusClient;
-using INSwagHttpStatusClient = Ktt.Resilience.Clients.NSwag.HttpClients.HttpStatus.IHttpStatusApiClient;
 
 public class DemoRetry(
     ICustomHttpStatusApiClient customHttpStatusApiClient,
-    KiotaHttpStatusClient kiotaHttpStatusClient,
-    INSwagHttpStatusClient nSwagHttpStatusClient
+    KiotaHttpStatusClient kiotaHttpStatusClient
 )
 {
     public async Task RunAsync()
     {
-        await Execute("CustomHttpStatusApiClient", async () => await customHttpStatusApiClient.GetRandomStatusAsync());
+        await Execute("CustomHttpStatusApiClient", async() => await customHttpStatusApiClient.Get() );
         await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync());
-        await Execute("NSwagHttpStatusClient", async () => await nSwagHttpStatusClient.GetRandomStatusAsync());
 
         Console.WriteLine("");
     }

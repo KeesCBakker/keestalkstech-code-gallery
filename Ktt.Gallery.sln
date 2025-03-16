@@ -88,7 +88,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients", "1
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients.Kiota", "12.http-and-resilience\Ktt.Resilience.Clients.Kiota\Ktt.Resilience.Clients.Kiota.csproj", "{26724237-DF9D-C55A-741B-6D839D7C6B24}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients.NSwag", "12.http-and-resilience\Ktt.Resilience.Clients.NSwag\Ktt.Resilience.Clients.NSwag.csproj", "{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Tests", "12.http-and-resilience\Ktt.Resilience.Tests\Ktt.Resilience.Tests.csproj", "{E39EF968-DABB-49DD-8568-141A7812FEEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -140,10 +140,10 @@ Global
 		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{26724237-DF9D-C55A-741B-6D839D7C6B24}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -160,7 +160,7 @@ Global
 		{AD148AF8-E5C0-461C-8D66-DA01260B60DD} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{26724237-DF9D-C55A-741B-6D839D7C6B24} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
-		{F965EFE9-35E6-3BFB-A4B4-5524B9436AE0} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
+		{E39EF968-DABB-49DD-8568-141A7812FEEC} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}
