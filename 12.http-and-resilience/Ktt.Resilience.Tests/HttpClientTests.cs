@@ -157,9 +157,9 @@ public class HttpClientTests
             }
         };
 
-        var mock = new MockedPetStoreClient
+        var mock = new MockedPetStoreClientFactory
         {
-            Pets = pets.ToList()
+            Pets = [.. pets]
         };
 
         var client = mock.CreateClient();

@@ -9,13 +9,13 @@ using System.Text.Json.Serialization;
 
 namespace Ktt.Resilience.Tests.Mocks;
 
-public class MockedPetStoreClient
+public class MockedPetStoreClientFactory
 {
     private readonly JsonSerializerOptions _serializerOptions;
 
     public List<Pet> Pets { get; set; } = [];
 
-    public MockedPetStoreClient()
+    public MockedPetStoreClientFactory()
     {
         _serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
         _serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
