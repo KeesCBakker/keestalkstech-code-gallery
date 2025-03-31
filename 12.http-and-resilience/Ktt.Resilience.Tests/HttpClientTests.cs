@@ -3,7 +3,7 @@ using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Models;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
 using Ktt.Resilience.Tests.Mocks;
-Tesusing Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Bundle;
 using RichardSzalay.MockHttp;
