@@ -29,7 +29,7 @@ public static class HttpClientExtensions
             {
                 var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
                 var config = monitor.Get(sectionName);
-                if (config?.BaseUrl != null)
+                if (!string.IsNullOrWhiteSpace(config?.BaseUrl))
                 {
                     client.BaseAddress = new Uri(config.BaseUrl);
                 }
@@ -57,7 +57,7 @@ public static class HttpClientExtensions
             {
                 var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<TConfig>>();
                 var config = monitor.Get(sectionName);
-                if (config?.BaseUrl != null)
+                if (!string.IsNullOrWhiteSpace(config?.BaseUrl))
                 {
                     client.BaseAddress = new Uri(config.BaseUrl);
                 }
@@ -77,7 +77,8 @@ public static class HttpClientExtensions
     {
         services
             .AddOptionsWithValidateOnStart<TOptions>(sectionName)
-            .BindConfiguration(sectionName);
+            .BindConfiguration(sectionName)
+            .ValidateDataAnnotations();
 
         // note: we need to bind {name-standard} to hook up resilience options
         services
