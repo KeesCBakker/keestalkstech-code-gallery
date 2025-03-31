@@ -4,8 +4,19 @@ if (-not (Get-Command "kiota" -ErrorAction SilentlyContinue)) {
     dotnet tool install --global Microsoft.OpenApi.Kiota
 }
 
-# Go to our folder with clients
-pushd "Ktt.Resilience.Clients.Kiota/HttpClients"
+# Go to our folder with the project
+pushd "Ktt.Resilience.Clients.Kiota"
+
+# Install bundle
+dotnet add package Microsoft.Extensions.DependencyInjection
+dotnet add package Microsoft.Extensions.DependencyInjection.Abstractions
+dotnet add package Microsoft.Extensions.Options
+dotnet add package Microsoft.Extensions.Http.Resilience
+dotnet add package Microsoft.Extensions.Resilience
+dotnet add package Microsoft.Kiota.Bundle
+
+# let's goto the
+pushd "HttpClients"
 
 # Define the namespace by convention
 $Namespace = "Ktt.Resilience.Clients.Kiota.HttpClients"

@@ -1,8 +1,8 @@
 {
-  "descriptionHash": "2C34A531066265E376350099003BAD0DFF11BB0272AB883C6679A135EEAEF0CC5B7A6D41897C6794DF3A92C69B833D8082DBCD3613684076EBA8E0463463DF3F",
+  "descriptionHash": "D1C2D9B0C0D2B2A57FD6A31271001104E198280070B9284C3EA0C4D2EDEE3CAD4403D432DB30C161A95DE7E53DD2D6566E95C2FAC6B72A56AF1A968A4D993289",
   "descriptionLocation": "https://petstore.swagger.io/v2/swagger.json",
   "lockFileVersion": "1.0.0",
-  "kiotaVersion": "1.23.0",
+  "kiotaVersion": "1.24.1",
   "clientClassName": "PetStoreClient",
   "typeAccessModifier": "Public",
   "clientNamespaceName": "Ktt.Resilience.Clients.Kiota.HttpClients.PetStore",
