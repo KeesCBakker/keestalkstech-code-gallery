@@ -25,7 +25,8 @@ static void ConfigureServices(IServiceCollection services)
         services
             .AddSingleton(p => p.GetRequiredService<IOptions<TConfig>>().Value)
             .AddOptionsWithValidateOnStart<TConfig>()
-            .BindConfiguration(sectionName);
+            .BindConfiguration(sectionName)
+            .ValidateDataAnnotations();
     }
 
     Configure<AppOptions>(AppOptions.SectionName);

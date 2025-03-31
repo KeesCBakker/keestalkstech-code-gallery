@@ -76,7 +76,7 @@ public static class KiotaExtensions
             {
                 var monitor = serviceProvider.GetRequiredService<IOptionsMonitor<HttpClientOptions>>();
                 var config = monitor.Get(sectionName);
-                if (config?.BaseUrl != null)
+                if (!string.IsNullOrWhiteSpace(config?.BaseUrl))
                 {
                     client.BaseAddress = new Uri(config.BaseUrl);
                 }

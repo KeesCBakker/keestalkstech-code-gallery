@@ -76,7 +76,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.http-and-resilience", "1
 	ProjectSection(SolutionItems) = preProject
 		12.http-and-resilience\generate-kiota-clients.ps1 = 12.http-and-resilience\generate-kiota-clients.ps1
 		12.http-and-resilience\httpstatus-open-api.yml = 12.http-and-resilience\httpstatus-open-api.yml
-		12.http-and-resilience\petstore.nswag.json = 12.http-and-resilience\petstore.nswag.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.App", "12.http-and-resilience\Ktt.Resilience.App\Ktt.Resilience.App.csproj", "{AD148AF8-E5C0-461C-8D66-DA01260B60DD}"

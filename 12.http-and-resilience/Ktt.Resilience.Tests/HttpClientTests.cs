@@ -2,6 +2,7 @@ using FluentAssertions;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Models;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
+using Ktt.Resilience.Tests.Mocks;
 using Microsoft.Kiota.Abstractions.Authentication;
 using Microsoft.Kiota.Bundle;
 using RichardSzalay.MockHttp;
@@ -119,5 +120,69 @@ public class HttpClientTests
 
         result[1].Id.Should().Be(1337);
         result[1].Name.Should().Be("Scooby-Doo");
+    }
+
+    [Fact]
+    public async Task KiotaPetStoreMockedClient()
+    {
+        var tag = new Tag { Id = 1, Name = "cartoon" };
+        var category = new Category { Id = 1, Name = "Dogs" };
+        var pets = new Pet[] {
+            new Pet
+            {
+                Id = 42,
+                Name = "Bandit Heeler",
+                Category = category,
+                PhotoUrls = [ "https://upload.wikimedia.org/wikipedia/en/9/90/Bandit_Heeler.png" ],
+                Tags = [ tag ],
+                Status = Pet_status.Available
+            },
+            new Pet
+            {
+                Id = 1337,
+                Name = "Scooby-Doo",
+                Category = category,
+                PhotoUrls = [ "https://upload.wikimedia.org/wikipedia/en/5/53/Scooby-Doo.png" ],
+                Tags = [ tag ],
+                Status = Pet_status.Pending
+            },
+            new Pet
+            {
+                Id = 1950,
+                Name = "Snoopy",
+                Category = category,
+                PhotoUrls = [ "https://upload.wikimedia.org/wikipedia/en/5/53/Snoopy_Peanuts.png" ],
+                Tags = [ tag ],
+                Status = Pet_status.Sold
+            }
+        };
+
+        var mock = new MockedPetStoreClient
+        {
+            Pets = pets.ToList()
+        };
+
+        var client = mock.CreateClient();
+
+        var availablePets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
+        });
+        availablePets.Should().HaveCount(1);
+        availablePets[0].Id.Should().Be(42);
+
+        var pendingPets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Pending];
+        });
+        pendingPets.Should().HaveCount(1);
+        pendingPets[0].Id.Should().Be(1337);
+
+        var soldPets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Sold];
+        });
+        soldPets.Should().HaveCount(1);
+        soldPets[0].Id.Should().Be(1950);
     }
 }
