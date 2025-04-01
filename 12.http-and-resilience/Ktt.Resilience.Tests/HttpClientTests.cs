@@ -18,6 +18,7 @@ public class HttpClientTests
     [Fact]
     public async Task KiotaPetStoreClientWithMockedObjects()
     {
+        // arrange
         var tag = new Tag { Id = 1, Name = "cartoon" };
         var category = new Category { Id = 1, Name = "Dogs" };
         var pets = new Pet[] {
@@ -58,11 +59,13 @@ public class HttpClientTests
             )
         );
 
+        // act
         var result = await client.Pet.FindByStatus.GetAsync(x =>
         {
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
+        // assert
         result.Should().NotBeNull();
         result.Count.Should().Be(2);
 
@@ -76,6 +79,7 @@ public class HttpClientTests
     [Fact]
     public async Task KiotaPetStoreClientWithString()
     {
+        // arrange
         var json = @"
         [
           {
@@ -108,11 +112,13 @@ public class HttpClientTests
             )
         );
 
+        // act
         var result = await client.Pet.FindByStatus.GetAsync(x =>
         {
             x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
         });
 
+        // assert
         result.Should().NotBeNull();
         result.Count.Should().Be(2);
 
@@ -180,7 +186,7 @@ public class HttpClientTests
             x.QueryParameters.Status = [GetStatusQueryParameterType.Sold];
         });
 
-        // asset
+        // assert
         availablePets.Should().HaveCount(1);
         availablePets[0].Id.Should().Be(42);
 
