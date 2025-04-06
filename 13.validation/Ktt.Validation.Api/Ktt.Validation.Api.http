@@ -1,0 +1,6 @@
+@Ktt.Validation.Api_HostAddress = http://localhost:5234
+
+GET {{Ktt.Validation.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
