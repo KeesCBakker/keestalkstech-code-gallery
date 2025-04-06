@@ -4,6 +4,19 @@ namespace Ktt.Validation.Api.Services.Validation;
 
 public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotationsValidator
 {
+    protected virtual bool Validate(object obj, out IList<ValidationResult> validationErrors)
+    {
+        validationErrors = [];
+        var context = new ValidationContext(obj, provider, null);
+        var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
+        if (valid)
+        {
+            return true;
+        }
+
+        return false;
+    }
+
     public bool TryValidate(object obj)
     {
         return Validate(obj, out _);
@@ -31,20 +44,6 @@ public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotati
         }
 
         throw ex;
-    }
-
-    protected virtual bool Validate(object obj, out IList<ValidationResult> validationErrors)
-    {
-        validationErrors = [];
-        var context = new ValidationContext(obj, provider, null);
-
-        var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
-        if (valid)
-        {
-            return true;
-        }
-
-        return false;
     }
 
     public static string GetErrorMessage(IList<ValidationResult> validationErrors, Type? objectType)

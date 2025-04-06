@@ -1,7 +1,6 @@
 using FluentAssertions;
 using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
-using Ktt.Validation.Api.Tests;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
@@ -12,7 +11,7 @@ namespace Ktt.Validata.Api.Tests;
 public class ApplicationProvisioningRequestUnitTests
 {
     [Fact]
-    public async Task ValidateHttpValidation()
+    public async Task ValidateByHttpValidation()
     {
         // arrange
         var fixture = new TestServerFixture();
@@ -38,7 +37,7 @@ public class ApplicationProvisioningRequestUnitTests
     }
 
     [Fact]
-    public void ValidateService()
+    public void ValidateByService()
     {
         // arrange
         var fixture = new TestServerFixture();
@@ -52,7 +51,7 @@ public class ApplicationProvisioningRequestUnitTests
         };
 
         // act
-        var act = ()=> service.ProvisionApplication(request);
+        var act = () => service.ProvisionApplication(request);
 
         // assert
         act
@@ -65,5 +64,60 @@ public class ApplicationProvisioningRequestUnitTests
                 "EntryPoint: 'Entry Point' must be empty.\n" +
                 "MagicNumber: Magic number is invalid."
             );
+    }
+
+    [Fact]
+    public void ValidateByValidator()
+    {
+        // arrange
+        var obj = new ApplicationProvisioningRequest
+        {
+            Name = "My Application",
+            Type = ApplicationType.Application,
+            EntryPoint = "dotnet run kaas.is.lekker.dll",
+            MagicNumber = 1337
+        };
+
+        // act
+        IList<ValidationResult> validationErrors = [];
+        var context = new ValidationContext(obj);
+        var act = () => Validator.TryValidateObject(obj, context, validationErrors, true);
+
+        // assert
+        act
+            .Should()
+            .Throw<InvalidOperationException>()
+            .WithMessage("No service for type 'Ktt.Validation.Api.Services.IMagicNumberProvider' has been registered.");
+    }
+
+    [Fact]
+    public void ValidateByValidatorWithServiceProvider()
+    {
+        // arrange
+        var collection = new ServiceCollection();
+        collection.AddSingleton<IMagicNumberProvider, MagicNumberProvider>();
+        var provider = collection.BuildServiceProvider();
+
+        var obj = new ApplicationProvisioningRequest
+        {
+            Name = "My Application",
+            Type = ApplicationType.Application,
+            EntryPoint = "dotnet run kaas.is.lekker.dll",
+            MagicNumber = 1337
+        };
+
+        // act
+        IList<ValidationResult> validationErrors = [];
+        var context = new ValidationContext(obj, provider, null);
+        var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
+
+        // assert
+        valid.Should().BeFalse();
+        validationErrors.Should().NotBeNullOrEmpty();
+        validationErrors.Should().HaveCount(2);
+
+        var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
+        messages.Should().Contain("'Entry Point' must be empty.");
+        messages.Should().Contain("Magic number is invalid.");
     }
 }
