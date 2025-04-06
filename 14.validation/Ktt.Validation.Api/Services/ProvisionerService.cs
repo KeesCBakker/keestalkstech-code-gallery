@@ -12,4 +12,13 @@ public class ProvisionerService(IDataAnnotationsValidator validator)
 
         // continue
     }
+
+    public Task<string[]> GetApplicationNames()
+    {
+        return Task.FromResult(new string[]
+        {
+            "app-name-taken",
+            "no-such-app-name",
+        });
+    }
 }

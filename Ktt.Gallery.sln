@@ -86,11 +86,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Clients.Kiot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.Tests", "12.http-and-resilience\Ktt.Resilience.Tests\Ktt.Resilience.Tests.csproj", "{E39EF968-DABB-49DD-8568-141A7812FEEC}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "13.validation", "13.validation", "{551DD71B-A186-468B-900F-704E6156BD1F}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "14.validation", "14.validation", "{7A95FAE0-08D3-4317-B7AA-F225BB2C8714}"
+	ProjectSection(SolutionItems) = preProject
+		14.validation\README.md = 14.validation\README.md
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api", "13.validation\Ktt.Validation.Api\Ktt.Validation.Api.csproj", "{91A447BB-0238-49FC-956C-91500BA88241}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "13.chocolatey", "13.chocolatey", "{D74ECA01-B23F-4FBA-B905-6C9D1D2B19A0}"
+	ProjectSection(SolutionItems) = preProject
+		13.chocolatey\install.ps1 = 13.chocolatey\install.ps1
+		13.chocolatey\list.ps1 = 13.chocolatey\list.ps1
+		13.chocolatey\packages.ps1 = 13.chocolatey\packages.ps1
+		13.chocolatey\pin-remove.ps1 = 13.chocolatey\pin-remove.ps1
+		13.chocolatey\pin.ps1 = 13.chocolatey\pin.ps1
+		13.chocolatey\post-install.ps1 = 13.chocolatey\post-install.ps1
+		13.chocolatey\README.md = 13.chocolatey\README.md
+		13.chocolatey\upgrade-task-with-make-me-admin.ps1 = 13.chocolatey\upgrade-task-with-make-me-admin.ps1
+		13.chocolatey\upgrade-task.ps1 = 13.chocolatey\upgrade-task.ps1
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api.Tests", "13.validation\Ktt.Validation.Api.Tests\Ktt.Validation.Api.Tests.csproj", "{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api", "14.validation\Ktt.Validation.Api\Ktt.Validation.Api.csproj", "{37B68770-6B5C-47FE-BC32-8A76A206D759}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api.Tests", "14.validation\Ktt.Validation.Api.Tests\Ktt.Validation.Api.Tests.csproj", "{83BD8B59-762C-491B-8037-DE90DA067252}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -146,14 +162,14 @@ Global
 		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E39EF968-DABB-49DD-8568-141A7812FEEC}.Release|Any CPU.Build.0 = Release|Any CPU
-		{91A447BB-0238-49FC-956C-91500BA88241}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{91A447BB-0238-49FC-956C-91500BA88241}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{91A447BB-0238-49FC-956C-91500BA88241}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{91A447BB-0238-49FC-956C-91500BA88241}.Release|Any CPU.Build.0 = Release|Any CPU
-		{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37B68770-6B5C-47FE-BC32-8A76A206D759}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37B68770-6B5C-47FE-BC32-8A76A206D759}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37B68770-6B5C-47FE-BC32-8A76A206D759}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37B68770-6B5C-47FE-BC32-8A76A206D759}.Release|Any CPU.Build.0 = Release|Any CPU
+		{83BD8B59-762C-491B-8037-DE90DA067252}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{83BD8B59-762C-491B-8037-DE90DA067252}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{83BD8B59-762C-491B-8037-DE90DA067252}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{83BD8B59-762C-491B-8037-DE90DA067252}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -171,8 +187,8 @@ Global
 		{F89868C3-6BA2-2FA0-4B97-C834543C1A4D} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{26724237-DF9D-C55A-741B-6D839D7C6B24} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{E39EF968-DABB-49DD-8568-141A7812FEEC} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
-		{91A447BB-0238-49FC-956C-91500BA88241} = {551DD71B-A186-468B-900F-704E6156BD1F}
-		{81B4D7B2-C2A0-4CA7-99C8-CAA2EED4CB96} = {551DD71B-A186-468B-900F-704E6156BD1F}
+		{37B68770-6B5C-47FE-BC32-8A76A206D759} = {7A95FAE0-08D3-4317-B7AA-F225BB2C8714}
+		{83BD8B59-762C-491B-8037-DE90DA067252} = {7A95FAE0-08D3-4317-B7AA-F225BB2C8714}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}

@@ -1,8 +1,10 @@
 using FluentAssertions;
 using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
+using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 
@@ -22,7 +24,8 @@ public class ApplicationProvisioningRequestUnitTests
             name = "My Application",
             type = "Application",
             entryPoint = "dotnet run kaas.is.lekker.dll",
-            magicNumber = 1337
+            magicNumber = 1337,
+            label = "development"
         });
 
         request.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
@@ -47,7 +50,8 @@ public class ApplicationProvisioningRequestUnitTests
             Name = "My Application",
             Type = ApplicationType.Application,
             EntryPoint = "dotnet run kaas.is.lekker.dll",
-            MagicNumber = 1337
+            MagicNumber = 1337,
+            Label = "development"
         };
 
         // act
@@ -75,19 +79,24 @@ public class ApplicationProvisioningRequestUnitTests
             Name = "My Application",
             Type = ApplicationType.Application,
             EntryPoint = "dotnet run kaas.is.lekker.dll",
-            MagicNumber = 1337
+            MagicNumber = 1337,
+            Label = "development"
         };
 
         // act
         IList<ValidationResult> validationErrors = [];
         var context = new ValidationContext(obj);
-        var act = () => Validator.TryValidateObject(obj, context, validationErrors, true);
+        var act = () => Validator.TryValidateObject(
+            obj,
+            context,
+            validationErrors,
+            true);
 
         // assert
         act
             .Should()
             .Throw<InvalidOperationException>()
-            .WithMessage("No service for type 'Ktt.Validation.Api.Services.IMagicNumberProvider' has been registered.");
+            .WithMessage("No service for type 'Ktt.Validation.Api.Services.ProvisionerService' has been registered.");
     }
 
     [Fact]
@@ -96,6 +105,11 @@ public class ApplicationProvisioningRequestUnitTests
         // arrange
         var collection = new ServiceCollection();
         collection.AddSingleton<IMagicNumberProvider, MagicNumberProvider>();
+        collection.AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>();
+        collection.AddSingleton<ProvisionerService>();
+        collection.AddSingleton(sp => sp);
+        collection.AddSingleton(sp => Options.Create(new ProvisioningOptions()));
+
         var provider = collection.BuildServiceProvider();
 
         var obj = new ApplicationProvisioningRequest
@@ -103,7 +117,8 @@ public class ApplicationProvisioningRequestUnitTests
             Name = "My Application",
             Type = ApplicationType.Application,
             EntryPoint = "dotnet run kaas.is.lekker.dll",
-            MagicNumber = 1337
+            MagicNumber = 1337,
+            Label = "development"
         };
 
         // act

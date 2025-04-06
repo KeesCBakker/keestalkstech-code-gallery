@@ -1,12 +1,13 @@
 ﻿using FluentValidation;
 using Ktt.Validation.Api.Services;
+using Ktt.Validation.Api.Services.Validation.Attributes;
 using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Models;
 
 public class ApplicationProvisioningRequest : IValidatableObject
 {
-    [Required, MinLength(5)]
+    [Required, MinLength(5), ApplicationNameAvailable]
     public string Name { get; set; } = string.Empty;
 
     public ApplicationType Type { get; set; }
@@ -14,6 +15,9 @@ public class ApplicationProvisioningRequest : IValidatableObject
     public string? EntryPoint { get; set; }
 
     public int MagicNumber { get; set; }
+
+    [ValidLabel]
+    public string Label { get; set; } = string.Empty;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

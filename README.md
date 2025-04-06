@@ -86,3 +86,9 @@ With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager<
 
 - <a href="13.chocolatey">12.kiota-and-resilience</a>
 - <a href="https://keestalkstech.com/notes-on-chocolatey/">Notes on Chocolatey</a>
+
+## 14. Validation
+Let's explore validation using .NET Data Annotations and FluentValidation.
+
+- <a href="14.validation">14.validation</a>
+- <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>

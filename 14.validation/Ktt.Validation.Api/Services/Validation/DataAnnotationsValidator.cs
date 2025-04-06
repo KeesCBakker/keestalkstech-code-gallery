@@ -9,23 +9,14 @@ public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotati
         validationErrors = [];
         var context = new ValidationContext(obj, provider, null);
         var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
-        if (valid)
-        {
-            return true;
-        }
-
-        return false;
+        return valid;
     }
 
-    public bool TryValidate(object obj)
-    {
-        return Validate(obj, out _);
-    }
+    public bool TryValidate(object obj) =>
+        Validate(obj, out _);
 
-    public bool TryValidate(object obj, out IList<ValidationResult> validationErrors)
-    {
-        return Validate(obj, out validationErrors);
-    }
+    public bool TryValidate(object obj, out IList<ValidationResult> validationErrors) =>
+        Validate(obj, out validationErrors);
 
     public void ThrowIfInvalid(object obj, string? parameterName = null)
     {
