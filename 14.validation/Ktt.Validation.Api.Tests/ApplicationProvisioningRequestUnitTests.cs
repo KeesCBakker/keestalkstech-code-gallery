@@ -103,12 +103,12 @@ public class ApplicationProvisioningRequestUnitTests
     public void ValidateByValidatorWithServiceProvider()
     {
         // arrange
-        var collection = new ServiceCollection();
-        collection.AddSingleton<IMagicNumberProvider, MagicNumberProvider>();
-        collection.AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>();
-        collection.AddSingleton<ProvisionerService>();
-        collection.AddSingleton(sp => sp);
-        collection.AddSingleton(sp => Options.Create(new ProvisioningOptions()));
+        var collection = new ServiceCollection()
+            .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
+            .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
+            .AddSingleton<ProvisionerService>()
+            .AddSingleton(sp => Options.Create(new ProvisioningOptions()))
+            .AddSingleton(sp => sp);
 
         var provider = collection.BuildServiceProvider();
 
