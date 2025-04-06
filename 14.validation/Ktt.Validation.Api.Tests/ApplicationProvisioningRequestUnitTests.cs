@@ -103,14 +103,13 @@ public class ApplicationProvisioningRequestUnitTests
     public void ValidateByValidatorWithServiceProvider()
     {
         // arrange
-        var collection = new ServiceCollection()
+        var provider = new ServiceCollection()
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
             .AddSingleton<ProvisionerService>()
             .AddSingleton(sp => Options.Create(new ProvisioningOptions()))
-            .AddSingleton(sp => sp);
-
-        var provider = collection.BuildServiceProvider();
+            .AddSingleton(sp => sp)
+            .BuildServiceProvider();
 
         var obj = new ApplicationProvisioningRequest
         {
@@ -125,6 +124,41 @@ public class ApplicationProvisioningRequestUnitTests
         IList<ValidationResult> validationErrors = [];
         var context = new ValidationContext(obj, provider, null);
         var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
+
+        // assert
+        valid.Should().BeFalse();
+        validationErrors.Should().NotBeNullOrEmpty();
+        validationErrors.Should().HaveCount(2);
+
+        var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
+        messages.Should().Contain("'Entry Point' must be empty.");
+        messages.Should().Contain("Magic number is invalid.");
+    }
+
+    [Fact]
+    public void ValidateByDataAnnotationsValidator()
+    {
+        // arrange
+        var provider = new ServiceCollection()
+            .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
+            .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
+            .AddSingleton<ProvisionerService>()
+            .AddSingleton(sp => Options.Create(new ProvisioningOptions()))
+            .AddSingleton(sp => sp)
+            .BuildServiceProvider();
+
+        var obj = new ApplicationProvisioningRequest
+        {
+            Name = "My Application",
+            Type = ApplicationType.Application,
+            EntryPoint = "dotnet run kaas.is.lekker.dll",
+            MagicNumber = 1337,
+            Label = "development"
+        };
+
+        // act
+        var validator = provider.GetRequiredService<IDataAnnotationsValidator>();
+        var valid = validator.TryValidate(obj, out IList<ValidationResult> validationErrors);
 
         // assert
         valid.Should().BeFalse();
