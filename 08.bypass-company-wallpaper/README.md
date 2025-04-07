@@ -19,9 +19,11 @@ setup a refresh task.
 Do the following:
 
 ```sh
-git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-dotnet-gallery.git
-cd keestalkstech-dotnet-gallery
+git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
+cd keestalkstech-code-gallery
 git sparse-checkout init
-git sparse-checkout set --no-cone 8.bypass-company-wallpaper
+git sparse-checkout set --no-cone 08.bypass-company-wallpaper
 git checkout main
+cd 08.bypass-company-wallpaper
+ls
 ```
