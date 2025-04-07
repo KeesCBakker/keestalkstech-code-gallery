@@ -71,6 +71,17 @@ triggering a refresh of the wallpaper. If you can, you can automate it using Pow
 - <a href="08.bypass-company-wallpaper">8.bypass-company-wallpaper</a>
 - <a href="https://keestalkstech.com/2024/12/how-to-bypass-company-background-image-as-local-admin-on-windows-11/">How to bypass company wallpaper as local admin on Windows 11</a>
 
+## 11. Jupyter Notebook and PIL images
+
+When working with images in a Python notebook I like to visualize them on a grid. Just calling
+`display` is not enough as it renders the images underneath each other. Let's use Matplotlib to
+generate a grid of PIL images.
+
+
+- <a href="11.jupyter-pil-images">11.jupyter-pil-images</a>
+- <a href="https://keestalkstech.com/plotting-a-grid-of-pil-images-in-jupyter/">Plotting a grid of PIL images in Jupyter</a>
+
+
 ## 12. HTTP Resilience, Kiota
 
 My new years resolution for 2025 is not to write a custom implementation if I have an

@@ -76,6 +76,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "12.http-and-resilience", "1
 	ProjectSection(SolutionItems) = preProject
 		12.http-and-resilience\generate-kiota-clients.ps1 = 12.http-and-resilience\generate-kiota-clients.ps1
 		12.http-and-resilience\httpstatus-open-api.yml = 12.http-and-resilience\httpstatus-open-api.yml
+		12.http-and-resilience\README.md = 12.http-and-resilience\README.md
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Resilience.App", "12.http-and-resilience\Ktt.Resilience.App\Ktt.Resilience.App.csproj", "{AD148AF8-E5C0-461C-8D66-DA01260B60DD}"
@@ -107,6 +108,21 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api", "14.validation\Ktt.Validation.Api\Ktt.Validation.Api.csproj", "{37B68770-6B5C-47FE-BC32-8A76A206D759}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Validation.Api.Tests", "14.validation\Ktt.Validation.Api.Tests\Ktt.Validation.Api.Tests.csproj", "{83BD8B59-762C-491B-8037-DE90DA067252}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "09.simple-slack-messages", "09.simple-slack-messages", "{7C10B886-BF84-4F11-BDF8-B0C6440EF271}"
+	ProjectSection(SolutionItems) = preProject
+		09.simple-slack-messages\expample.env = 09.simple-slack-messages\expample.env
+		09.simple-slack-messages\README.md = 09.simple-slack-messages\README.md
+		09.simple-slack-messages\slack-app-manifest.yml = 09.simple-slack-messages\slack-app-manifest.yml
+		09.simple-slack-messages\slack.ipynb = 09.simple-slack-messages\slack.ipynb
+		09.simple-slack-messages\wall-e-and-eve.jpg = 09.simple-slack-messages\wall-e-and-eve.jpg
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11.jupyter-pil-images", "11.jupyter-pil-images", "{FE08EF90-D720-4197-AA14-87649D356EF0}"
+	ProjectSection(SolutionItems) = preProject
+		11.jupyter-pil-images\plotting-a-grid-of-pil-images-in-jupyter.ipynb = 11.jupyter-pil-images\plotting-a-grid-of-pil-images-in-jupyter.ipynb
+		11.jupyter-pil-images\README.md = 11.jupyter-pil-images\README.md
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

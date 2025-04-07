@@ -12,3 +12,17 @@ To get started:
 1. Now you can change the `slack_channel` variable. Make sure your bot is added to that Slack channel.
 
 More on app manifests here: https://keestalkstech.com/2022/09/dont-use-slack-incoming-webhooks-app-creation-is-dead-simple/
+
+## Checkout only this project
+
+Do the following:
+
+```sh
+git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
+cd keestalkstech-code-gallery
+git sparse-checkout init
+git sparse-checkout set --no-cone 09.simple-slack-messages
+git checkout main
+cd 09.simple-slack-messages
+ls
+```
