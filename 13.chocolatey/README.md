@@ -3,3 +3,17 @@ With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager<
 
 - <a href="13.chocolatey">13.chocolatey</a>
 - <a href="https://keestalkstech.com/notes-on-chocolatey/">Notes on Chocolatey</a>
+
+## Checkout only this project
+
+Do the following:
+
+```sh
+git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
+cd keestalkstech-code-gallery
+git sparse-checkout init
+git sparse-checkout set --no-cone 13.chocolatey
+git checkout main
+cd 13.chocolatey
+ls
+```

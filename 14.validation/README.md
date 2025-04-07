@@ -1,5 +1,22 @@
-# Validation
-With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager</a> for Windows, it is super easy to install software from the command-line. This makes your installs scriptable and thus repeatable. In this article, I'll show you how to render installation instructions from a machine and how to use the Windows Task Scheduler to update your packages regularly.
+## Validation
+Let's explore validation using .NET Data Annotations and FluentValidation.
 
-- <a href="13.chocolatey">12.kiota-and-resilience</a>
-- <a href="https://keestalkstech.com/notes-on-chocolatey/">Notes on Chocolatey</a>
+- <a href="14.validation">14.validation</a>
+- <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Let’s combine Data Annotation Validation with FluentValidation</a>
+- <a href="https://keestalkstech.com/data-annotation-validation-in-a-business-service/">Data Annotation validation with dependency injection in a business service</a>
+- <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>
+
+
+## Checkout only this project
+
+Do the following:
+
+```sh
+git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
+cd keestalkstech-code-gallery
+git sparse-checkout init
+git sparse-checkout set --no-cone 14.validation
+git checkout main
+cd 14.validation
+ls
+```
