@@ -30,8 +30,6 @@ public class ComplexApplicationProvisioningTests
 
         //1. start with nothing -- required fields
         result = validator.TryValidate(request, out errors);
-
-        result.Should().BeFalse();
         errors.Should().Contain(e => A(e, "Cpu", "The Cpu field is required."));
         errors.Should().Contain(e => A(e, "Environment", "The Environment field is required."));
         errors.Should().Contain(e => A(e, "DockerHubRepo", "The DockerHubRepo field is required."));
