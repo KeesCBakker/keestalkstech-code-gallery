@@ -8,7 +8,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Tests.Models;
 
-public class ComplexApplicationProvisioningUnitTests
+public class ComplexApplicationProvisioningTests
 {
     [Theory]
     [InlineData(ComplexApplicationType.Application)]

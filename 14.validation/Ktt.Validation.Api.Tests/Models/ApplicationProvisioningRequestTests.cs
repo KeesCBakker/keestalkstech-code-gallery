@@ -8,9 +8,9 @@ using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 
-namespace Ktt.Validata.Api.Tests;
+namespace Ktt.Validation.Api.Tests.Models;
 
-public class ApplicationProvisioningRequestUnitTests
+public class ApplicationProvisioningRequestTests
 {
     [Fact]
     public async Task ValidateByHttpValidation()
