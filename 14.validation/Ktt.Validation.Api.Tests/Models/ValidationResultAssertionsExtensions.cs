@@ -27,7 +27,10 @@ public static class ValidationResultAssertionsExtensions
             errors));
     }
 
-    private static bool Matches(IEnumerable<ValidationResult> errors, string memberName, string? expectedMessage) =>
+    private static bool Matches(
+        IEnumerable<ValidationResult> errors,
+        string memberName,
+        string? expectedMessage) =>
         errors.Any(e =>
             (expectedMessage == null || e.ErrorMessage == expectedMessage) &&
             e.MemberNames.Contains(memberName)
