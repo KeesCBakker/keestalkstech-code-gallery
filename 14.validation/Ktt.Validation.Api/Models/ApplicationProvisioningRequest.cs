@@ -26,9 +26,9 @@ public class ApplicationProvisioningRequest : IValidatableObject
         // conditional validation
         v.RuleFor(x => x.EntryPoint)
             .NotEmpty()
-            .When(x => x.Type == ApplicationType.ApplicationWithEntryPoint)
+            .When(x => x.Type == ApplicationType.ApplicationWithEntryPoint, ApplyConditionTo.CurrentValidator)
             .Empty()
-            .When(x => x.Type == ApplicationType.Application);
+            .When(x => x.Type == ApplicationType.Application, ApplyConditionTo.CurrentValidator);
 
         // dependency injection
         var provider = validationContext.GetRequiredService<IMagicNumberProvider>();
