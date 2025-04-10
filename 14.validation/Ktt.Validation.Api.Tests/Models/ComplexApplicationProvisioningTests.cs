@@ -108,7 +108,7 @@ public class ComplexApplicationProvisioningTests
 
         IList<ValidationResult> errors = [];
 
-        // 1. schedule may not be provided
+        // 1. schedule must be empty
         request.Schedule = "blah";
         validator.TryValidate(request, out errors);
         errors.ShouldContain("Schedule", "'Schedule' must be empty.");
@@ -139,7 +139,7 @@ public class ComplexApplicationProvisioningTests
 
         IList<ValidationResult> errors = [];
 
-        // 1. schedule must be provider
+        // 1. schedule cannot be empty
         request.Schedule = string.Empty;
         validator.TryValidate(request, out errors);
         errors.ShouldContain("Schedule", "'Schedule' must not be empty.");
@@ -149,7 +149,7 @@ public class ComplexApplicationProvisioningTests
         validator.TryValidate(request, out errors);
         errors.ShouldContain("Schedule", "Schedule must be a valid cron expression.");
 
-        // 2. value schedule
+        // 2. valid schedule
         request.Schedule = "5 4 * * *";
         validator.TryValidate(request, out errors);
         errors.ShouldNotContain("Schedule");
@@ -175,19 +175,19 @@ public class ComplexApplicationProvisioningTests
 
         IList<ValidationResult> errors = [];
 
-        // 1. Some fields must be provided
+        // 1. Command and Postfix must not be empty
         request.Command = string.Empty;
         request.Postfix = string.Empty;
         validator.TryValidate(request, out errors);
         errors.ShouldContain("Command", "'Command' must not be empty.");
         errors.ShouldContain("Postfix", "'Postfix' must not be empty.");
 
-        // 2. Scripts without tini should not be allowed
+        // 2. Scripts without tini is not allowed
         request.Command = "/app/start.sh service-a";
         validator.TryValidate(request, out errors);
         errors.ShouldContain("Command", "Script files (.sh) may only be executed when tini is used.");
 
-        // 3. Script with tini should be allowed
+        // 3. Script with tini is allowed
         request.Command = "tini /app/start.sh service-a";
         validator.TryValidate(request, out errors);
         errors.ShouldNotContain("Command");
