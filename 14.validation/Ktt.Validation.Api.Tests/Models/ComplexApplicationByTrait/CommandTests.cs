@@ -69,4 +69,18 @@ public class CommandTests
 
         errors.ShouldNotContain("Command");
     }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    public void Should_Not_Allow_Command_For_Types_Without_Command(ComplexApplicationType type)
+    {
+        var request = CreateDefaultRequestForType(type);
+        request.Command = "dotnet run /app/service.dll";
+
+        IList<ValidationResult> errors = [];
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldContain("Command", "Command must be empty.");
+    }
 }
