@@ -1,4 +1,5 @@
-﻿using Ktt.Validation.Api.Models;
+﻿using FluentValidation;
+using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation;
 using Microsoft.Extensions.DependencyInjection;
@@ -9,6 +10,11 @@ namespace Ktt.Validation.Api.Tests.Models;
 
 public class ComplexApplicationProvisioningTests
 {
+    public ComplexApplicationProvisioningTests()
+    {
+        CustomLanguageManager.SetGlobalOptions();
+    }
+
     [Theory]
     [InlineData(ComplexApplicationType.Application)]
     [InlineData(ComplexApplicationType.ApplicationWithCommand)]
@@ -74,7 +80,7 @@ public class ComplexApplicationProvisioningTests
         errors.ShouldNotContain("DockerHubRepo", "The DockerHubRepo field is required.");
 
         // 7. we should still have errors
-        errors.ShouldContain("DockerHubRepo", "DockerHub repo must exist.");
+        errors.ShouldContain("DockerHubRepo", "The DockerHub repository does not exist.");
         errors.ShouldContain("Environment", "Environment must exist.");
 
         // 8. valid environment
@@ -111,7 +117,7 @@ public class ComplexApplicationProvisioningTests
         // 1. schedule must be empty
         request.Schedule = "blah";
         validator.TryValidate(request, out errors);
-        errors.ShouldContain("Schedule", "'Schedule' must be empty.");
+        errors.ShouldContain("Schedule", "Schedule field must be empty.");
 
         // 2. validate schedule empty
         request.Schedule = string.Empty;
@@ -142,7 +148,7 @@ public class ComplexApplicationProvisioningTests
         // 1. schedule cannot be empty
         request.Schedule = string.Empty;
         validator.TryValidate(request, out errors);
-        errors.ShouldContain("Schedule", "'Schedule' must not be empty.");
+        errors.ShouldContain("Schedule", "Schedule must not be empty.");
 
         // 2. invalid schedule
         request.Schedule = "maandag de 14e";
@@ -179,8 +185,8 @@ public class ComplexApplicationProvisioningTests
         request.Command = string.Empty;
         request.Postfix = string.Empty;
         validator.TryValidate(request, out errors);
-        errors.ShouldContain("Command", "'Command' must not be empty.");
-        errors.ShouldContain("Postfix", "'Postfix' must not be empty.");
+        errors.ShouldContain("Command", "Command must not be empty.");
+        errors.ShouldContain("Postfix", "Postfix must not be empty.");
 
         // 2. Scripts without tini is not allowed
         request.Command = "/app/start.sh service-a";
@@ -234,8 +240,8 @@ public class ComplexApplicationProvisioningTests
         request.Command = "dotnet run /app/kaas.dll";
         request.Postfix = "kaas";
         validator.TryValidate(request, out errors);
-        errors.ShouldContain("Command", "'Command' must be empty.");
-        errors.ShouldContain("Postfix", "'Postfix' must be empty.");
+        errors.ShouldContain("Command", "Command must be empty.");
+        errors.ShouldContain("Postfix", "Postfix must be empty.");
         
         // 2. Command is not allowed
         request.Command = string.Empty;

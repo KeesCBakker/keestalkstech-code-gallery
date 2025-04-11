@@ -1,7 +1,8 @@
-﻿using Ktt.Validation.Api.Services.Validation;
-using Ktt.Validation.Api.Services;
-using System.Text.Json.Serialization;
+﻿using FluentValidation;
 using Ktt.Validation.Api.Config;
+using Ktt.Validation.Api.Services;
+using Ktt.Validation.Api.Services.Validation;
+using System.Text.Json.Serialization;
 
 namespace Ktt.Validation.Api;
 
@@ -9,10 +10,14 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
+        CustomLanguageManager.SetGlobalOptions();
+
         services.AddTransient<IMagicNumberProvider, MagicNumberProvider>();
         services.AddTransient<IDataAnnotationsValidator, DataAnnotationsValidator>();
         services.AddTransient<ProvisionerService>();
         services.AddTransient((serviceProvider) => serviceProvider);
+        services.AddTransient<IDockerHubService, DockerHubService>();
+        services.AddTransient<IEnvironmentService, EnvironmentService>();
 
         services.AddSwagger();
 

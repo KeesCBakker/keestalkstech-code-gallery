@@ -22,4 +22,16 @@ public class ProvisioningController(ProvisionerService service) : ControllerBase
     {
         service.ProvisionApplication(request);
     }
+
+    /// <summary>
+    /// Validates an application provisioning request.
+    /// </summary>
+    /// <param name="request">The request.</param>
+    [HttpPost("validate-complex-application")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    public void ValidateComplexApplication(ComplexApplicationProvisioningRequest request)
+    {
+        var i = request.ImageTag;
+    }
 }

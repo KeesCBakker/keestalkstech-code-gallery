@@ -12,6 +12,11 @@ namespace Ktt.Validation.Api.Tests.Models;
 
 public class ApplicationProvisioningRequestTests
 {
+    public ApplicationProvisioningRequestTests()
+    {
+        CustomLanguageManager.SetGlobalOptions();
+    }
+
     [Fact]
     public async Task ValidateByHttpValidation()
     {
@@ -62,10 +67,10 @@ public class ApplicationProvisioningRequestTests
             .Should()
             .Throw<ArgumentException>()
             .WithParameterName("request")
-            .WithInnerException<ValidationException>()
+            .WithInnerException<System.ComponentModel.DataAnnotations.ValidationException>()
             .WithMessage(
                 "Input invalid for 'ApplicationProvisioningRequest':\n" +
-                "EntryPoint: 'Entry Point' must be empty.\n" +
+                "EntryPoint: EntryPoint must be empty.\n" +
                 "MagicNumber: Magic number is invalid."
             );
     }
@@ -131,7 +136,7 @@ public class ApplicationProvisioningRequestTests
         validationErrors.Should().HaveCount(2);
 
         var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
-        messages.Should().Contain("'Entry Point' must be empty.");
+        messages.Should().Contain("EntryPoint must be empty.");
         messages.Should().Contain("Magic number is invalid.");
     }
 
@@ -166,7 +171,7 @@ public class ApplicationProvisioningRequestTests
         validationErrors.Should().HaveCount(2);
 
         var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
-        messages.Should().Contain("'Entry Point' must be empty.");
+        messages.Should().Contain("EntryPoint must be empty.");
         messages.Should().Contain("Magic number is invalid.");
     }
 }
