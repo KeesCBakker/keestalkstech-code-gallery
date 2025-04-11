@@ -82,4 +82,34 @@ public class PostfixTests
 
         errors.ShouldNotContain("Postfix");
     }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    public void Should_Require_Empty_Postfix(ComplexApplicationType type)
+    {
+        var request = CreateDefaultRequestForType(type);
+        request.Postfix = string.Empty;
+
+        IList<ValidationResult> errors = new List<ValidationResult>();
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldNotContain("Postfix");
+    }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    public void Should_Reject_NonEmpty_Postfix(ComplexApplicationType type)
+    {
+        var request = CreateDefaultRequestForType(type);
+        request.Postfix = "pinger";
+
+        IList<ValidationResult> errors = new List<ValidationResult>();
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldContain("Postfix", "Postfix must be empty.");
+    }
+
+
 }
