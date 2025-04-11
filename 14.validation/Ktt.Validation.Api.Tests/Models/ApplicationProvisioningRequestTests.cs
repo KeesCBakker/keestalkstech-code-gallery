@@ -14,7 +14,7 @@ public class ApplicationProvisioningRequestTests
 {
     public ApplicationProvisioningRequestTests()
     {
-        CustomLanguageManager.SetGlobalOptions();
+        FluentValidationLanguageManager.SetGlobalOptions();
     }
 
     [Fact]

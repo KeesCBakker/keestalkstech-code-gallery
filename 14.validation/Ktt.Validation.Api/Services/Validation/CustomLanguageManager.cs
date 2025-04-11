@@ -4,9 +4,9 @@ using System.Globalization;
 
 namespace Ktt.Validation.Api.Services.Validation;
 
-public class CustomLanguageManager : LanguageManager
+public class FluentValidationLanguageManager : LanguageManager
 {
-    private CustomLanguageManager()
+    private FluentValidationLanguageManager()
     {
     }
 
@@ -20,7 +20,7 @@ public class CustomLanguageManager : LanguageManager
 
     public static void SetGlobalOptions()
     {
-        ValidatorOptions.Global.LanguageManager = new CustomLanguageManager();
+        ValidatorOptions.Global.LanguageManager = new FluentValidationLanguageManager();
         ValidatorOptions.Global.DisplayNameResolver = (type, member, expression) =>
         {
             return member?.Name;

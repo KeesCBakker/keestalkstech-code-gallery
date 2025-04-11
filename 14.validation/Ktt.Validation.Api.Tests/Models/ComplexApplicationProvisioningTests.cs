@@ -12,7 +12,7 @@ public class ComplexApplicationProvisioningTests
 {
     public ComplexApplicationProvisioningTests()
     {
-        CustomLanguageManager.SetGlobalOptions();
+        FluentValidationLanguageManager.SetGlobalOptions();
     }
 
     [Theory]

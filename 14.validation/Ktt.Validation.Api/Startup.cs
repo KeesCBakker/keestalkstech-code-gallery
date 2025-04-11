@@ -10,7 +10,7 @@ public class Startup
 {
     public void ConfigureServices(IServiceCollection services)
     {
-        CustomLanguageManager.SetGlobalOptions();
+        FluentValidationLanguageManager.SetGlobalOptions();
 
         services.AddTransient<IMagicNumberProvider, MagicNumberProvider>();
         services.AddTransient<IDataAnnotationsValidator, DataAnnotationsValidator>();
