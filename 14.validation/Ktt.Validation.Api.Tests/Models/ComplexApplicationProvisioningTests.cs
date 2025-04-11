@@ -10,11 +10,6 @@ namespace Ktt.Validation.Api.Tests.Models;
 
 public class ComplexApplicationProvisioningTests
 {
-    public ComplexApplicationProvisioningTests()
-    {
-        FluentValidationLanguageManager.SetGlobalOptions();
-    }
-
     [Theory]
     [InlineData(ComplexApplicationType.Application)]
     [InlineData(ComplexApplicationType.ApplicationWithCommand)]
@@ -117,7 +112,7 @@ public class ComplexApplicationProvisioningTests
         // 1. schedule must be empty
         request.Schedule = "blah";
         validator.TryValidate(request, out errors);
-        errors.ShouldContain("Schedule", "Schedule field must be empty.");
+        errors.ShouldContain("Schedule", "Schedule must be empty.");
 
         // 2. validate schedule empty
         request.Schedule = string.Empty;
