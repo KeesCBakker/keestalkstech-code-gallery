@@ -13,9 +13,9 @@ public class CommandTests
             .GetServiceProvider()
             .GetRequiredService<IDataAnnotationsValidator>();
 
-    private ComplexApplicationProvisioningRequest CreateDefaultRequestForType(ComplexApplicationType type)
+    private ComplexApplication CreateDefaultRequestForType(ComplexApplicationType type)
     {
-        return new ComplexApplicationProvisioningRequest
+        return new ComplexApplication
         {
             Type = type,
             Cpu = "100m",

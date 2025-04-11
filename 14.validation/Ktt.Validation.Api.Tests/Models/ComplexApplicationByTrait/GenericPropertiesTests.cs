@@ -13,7 +13,7 @@ public class GenericTests
             .GetServiceProvider()
             .GetRequiredService<IDataAnnotationsValidator>();
 
-    private ComplexApplicationProvisioningRequest CreateBaseRequest(ComplexApplicationType type) => new()
+    private ComplexApplication CreateBaseRequest(ComplexApplicationType type) => new()
     {
         Type = type
     };
@@ -45,8 +45,8 @@ public class GenericTests
     public void Should_Reject_Invalid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
-        request.Environment = "server-one";
         request.DockerHubRepo = "repo-one";
+        request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Cpu = "blah";
@@ -65,8 +65,8 @@ public class GenericTests
     public void Should_Accept_Valid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
-        request.Environment = "server-one";
         request.DockerHubRepo = "repo-one";
+        request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Cpu = "100m";
@@ -82,91 +82,13 @@ public class GenericTests
     [InlineData(ComplexApplicationType.ApplicationWithCommand)]
     [InlineData(ComplexApplicationType.CronJob)]
     [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_Ram_Format(ComplexApplicationType type)
-    {
-        var request = CreateBaseRequest(type);
-        request.Cpu = "100m";
-        request.Environment = "server-one";
-        request.DockerHubRepo = "repo-one";
-        request.ImageTag = "12-abcefe";
-        request.Ram = "blah";
-
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
-
-        errors.ShouldContain("Ram", "The field Ram must match the regular expression '^\\d+Mi$'.");
-    }
-
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_Ram_Format(ComplexApplicationType type)
-    {
-        var request = CreateBaseRequest(type);
-        request.Cpu = "100m";
-        request.Environment = "server-one";
-        request.DockerHubRepo = "repo-one";
-        request.ImageTag = "12-abcefe";
-        request.Ram = "100Mi";
-
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
-
-        errors.ShouldNotContain("Ram");
-    }
-
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_Environment(ComplexApplicationType type)
-    {
-        var request = CreateBaseRequest(type);
-        request.Cpu = "100m";
-        request.DockerHubRepo = "repo-one";
-        request.Ram = "100Mi";
-        request.ImageTag = "12-abcefe";
-        request.Environment = "blah";
-
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
-        errors.ShouldContain("Environment", "Environment must exist.");
-    }
-
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_Environment(ComplexApplicationType type)
-    {
-        var request = CreateBaseRequest(type);
-        request.Cpu = "100m";
-        request.Ram = "100Mi";
-        request.ImageTag = "12-abcefe";
-        request.Environment = "server-one";
-
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
-
-        errors.ShouldNotContain("Environment");
-    }
-
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
     public void Should_Reject_Invalid_DockerHubRepo(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Cpu = "100m";
         request.Environment = "server-one";
-        request.Ram = "100Mi";
         request.ImageTag = "12-abcefe";
+        request.Ram = "100Mi";
         request.DockerHubRepo = "blah";
 
         IList<ValidationResult> errors = [];
@@ -185,13 +107,92 @@ public class GenericTests
         var request = CreateBaseRequest(type);
         request.Cpu = "100m";
         request.Environment = "server-one";
-        request.Ram = "100Mi";
         request.ImageTag = "12-abcefe";
+        request.Ram = "100Mi";
         request.DockerHubRepo = "repo-one";
 
         IList<ValidationResult> errors = [];
         _validator.TryValidate(request, out errors);
 
         errors.ShouldNotContain("DockerHubRepo");
+    }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    [InlineData(ComplexApplicationType.CronJobWithCommand)]
+    public void Should_Reject_Invalid_Environment(ComplexApplicationType type)
+    {
+        var request = CreateBaseRequest(type);
+        request.Cpu = "100m";
+        request.DockerHubRepo = "repo-one";
+        request.ImageTag = "12-abcefe";
+        request.Ram = "100Mi";
+        request.Environment = "blah";
+
+        IList<ValidationResult> errors = [];
+        _validator.TryValidate(request, out errors);
+        errors.ShouldContain("Environment", "Environment must exist.");
+    }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    [InlineData(ComplexApplicationType.CronJobWithCommand)]
+    public void Should_Accept_Valid_Environment(ComplexApplicationType type)
+    {
+        var request = CreateBaseRequest(type);
+        request.Cpu = "100m";
+        request.DockerHubRepo = "repo-one";
+        request.ImageTag = "12-abcefe";
+        request.Ram = "100Mi";
+        request.Environment = "server-one";
+
+        IList<ValidationResult> errors = [];
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldNotContain("Environment");
+    }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    [InlineData(ComplexApplicationType.CronJobWithCommand)]
+    public void Should_Reject_Invalid_Ram_Format(ComplexApplicationType type)
+    {
+        var request = CreateBaseRequest(type);
+        request.Cpu = "100m";
+        request.DockerHubRepo = "repo-one";
+        request.Environment = "server-one";
+        request.ImageTag = "12-abcefe";
+        request.Ram = "blah";
+
+        IList<ValidationResult> errors = [];
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldContain("Ram", "The field Ram must match the regular expression '^\\d+Mi$'.");
+    }
+
+    [Theory]
+    [InlineData(ComplexApplicationType.Application)]
+    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
+    [InlineData(ComplexApplicationType.CronJob)]
+    [InlineData(ComplexApplicationType.CronJobWithCommand)]
+    public void Should_Accept_Valid_Ram_Format(ComplexApplicationType type)
+    {
+        var request = CreateBaseRequest(type);
+        request.Cpu = "100m";
+        request.DockerHubRepo = "repo-one";
+        request.Environment = "server-one";
+        request.ImageTag = "12-abcefe";
+        request.Ram = "100Mi";
+
+        IList<ValidationResult> errors = [];
+        _validator.TryValidate(request, out errors);
+
+        errors.ShouldNotContain("Ram");
     }
 }

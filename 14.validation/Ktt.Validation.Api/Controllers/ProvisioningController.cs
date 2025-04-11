@@ -30,7 +30,7 @@ public class ProvisioningController(ProvisionerService service) : ControllerBase
     [HttpPost("validate-complex-application")]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
-    public void ValidateComplexApplication(ComplexApplicationProvisioningRequest request)
+    public void ValidateComplexApplication(ComplexApplication request)
     {
         var i = request.ImageTag;
     }

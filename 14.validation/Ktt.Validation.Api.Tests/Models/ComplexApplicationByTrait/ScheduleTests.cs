@@ -13,9 +13,9 @@ public class ScheduleTests
             .GetServiceProvider()
             .GetRequiredService<IDataAnnotationsValidator>();
 
-    private ComplexApplicationProvisioningRequest CreateRequest(ComplexApplicationType type)
+    private ComplexApplication CreateRequest(ComplexApplicationType type)
     {
-        return new ComplexApplicationProvisioningRequest
+        return new ComplexApplication
         {
             Type = type,
             Cpu = "100m",

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Models;
 
-public class ComplexApplicationProvisioningRequest : IValidatableObject
+public class ComplexApplication : IValidatableObject
 {
     [Required]
     public string Environment { get; set; } = string.Empty;
@@ -35,7 +35,7 @@ public class ComplexApplicationProvisioningRequest : IValidatableObject
         var dockerHubService = validationContext.GetRequiredService<IDockerHubService>();
         var environmentService = validationContext.GetRequiredService<IEnvironmentService>();
 
-        var v = new InlineValidator<ComplexApplicationProvisioningRequest>();
+        var v = new InlineValidator<ComplexApplication>();
 
         v.RuleFor(x => x.DockerHubRepo)
             .NotEmpty()
