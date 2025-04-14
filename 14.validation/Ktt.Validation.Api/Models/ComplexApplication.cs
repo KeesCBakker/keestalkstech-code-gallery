@@ -40,7 +40,7 @@ public class ComplexApplication : IValidatableObject
 
         v.RuleFor(x => x.DockerHubRepo)
             .NotEmpty()
-            .MustAsync((request, repo, cancellationToken) => dockerHubService.Exists(request.Environment, repo, cancellationToken))
+            .MustAsync(dockerHubService.Exists)
             .WithMessage("The DockerHub repository does not exist.");
 
         v.RuleFor(x => x.Environment)

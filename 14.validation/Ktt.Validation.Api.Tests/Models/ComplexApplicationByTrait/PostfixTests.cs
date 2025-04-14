@@ -110,6 +110,4 @@ public class PostfixTests
 
         errors.ShouldContain("Postfix", "Postfix must be empty.");
     }
-
-
 }

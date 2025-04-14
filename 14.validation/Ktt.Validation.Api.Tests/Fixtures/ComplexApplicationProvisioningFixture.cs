@@ -16,7 +16,6 @@ public static class ComplexApplicationProvisioningFixture
 
         var dockerHubService = new Mock<IDockerHubService>();
         dockerHubService.Setup(x => x.Exists(
-            It.IsIn(environments),
             It.IsIn(repos),
             It.IsAny<CancellationToken>())
         ).ReturnsAsync(true);
