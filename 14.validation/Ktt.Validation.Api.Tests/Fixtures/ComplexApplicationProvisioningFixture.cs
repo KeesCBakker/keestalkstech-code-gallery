@@ -14,13 +14,13 @@ public static class ComplexApplicationProvisioningFixture
         string[] environments = ["server-one"];
         string[] repos = ["repo-one"];
 
-        var dockerHubService = new Mock<IDockerHubService>();
+        var dockerHubService = new Mock<IDockerHubService>(MockBehavior.Loose);
         dockerHubService.Setup(x => x.Exists(
             It.IsIn(repos),
             It.IsAny<CancellationToken>())
         ).ReturnsAsync(true);
 
-        var environmentService = new Mock<IEnvironmentService>();
+        var environmentService = new Mock<IEnvironmentService>(MockBehavior.Loose);
         environmentService.Setup(x => x.Exists(
             It.IsIn(environments),
             It.IsAny<CancellationToken>())
