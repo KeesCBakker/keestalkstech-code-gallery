@@ -52,7 +52,7 @@ public class PostfixTests
         IList<ValidationResult> errors = [];
         _validator.TryValidate(request, out errors);
 
-        errors.ShouldContain("Postfix", "The value must be lower-kebab-case.");
+        errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
     }
 
     [Theory]
@@ -66,7 +66,7 @@ public class PostfixTests
         IList<ValidationResult> errors = [];
         _validator.TryValidate(request, out errors);
 
-        errors.ShouldContain("Postfix", "The value may not contain the words cron, site or service.");
+        errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
     }
 
     [Theory]

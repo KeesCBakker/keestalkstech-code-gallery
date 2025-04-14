@@ -28,6 +28,7 @@ public class ComplexApplication : IValidatableObject
 
     public string Schedule { get; set; } = string.Empty;
 
+    [RegularExpression(@"^$|^(?!.*(cron|site|service))([a-z0-9-]*)$", ErrorMessage = "The value must be lower-kebab-case and may not contain the words cron, site or service.")]
     public string Postfix { get; set; } = string.Empty;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
@@ -57,14 +58,6 @@ public class ComplexApplication : IValidatableObject
 
             v.RuleFor(x => Postfix)
                 .NotEmpty();
-
-            v.RuleFor(x => x.Postfix)
-                .Matches(@"^(?!.*(cron|site|service)).*$")
-                .WithMessage("The value may not contain the words cron, site or service.");
-
-            v.RuleFor(x => x.Postfix)
-                .Matches(@"^([a-z0-9]|-)*$")
-                .WithMessage("The value must be lower-kebab-case.");
         }
         else
         {

@@ -187,14 +187,14 @@ public class ComplexApplicationProvisioningTests
         // 4. Validate invalid postfix
 
         // 4.1 Postfix invalid due to casing
-        request.Postfix = "I'm a Service";
+        request.Postfix = "I'm a program";
         _validator.TryValidate(request, out errors);
-        errors.ShouldContain("Postfix", "The value must be lower-kebab-case.");
+        errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
 
         // 4.2 Postfix invalid due to forbidden words
         request.Postfix = "cron-site-service";
         _validator.TryValidate(request, out errors);
-        errors.ShouldContain("Postfix", "The value may not contain the words cron, site or service.");
+        errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
 
         // 4.3 Postfix valid
         request.Postfix = "pinger";
