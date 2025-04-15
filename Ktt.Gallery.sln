@@ -126,7 +126,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11.jupyter-pil-images", "11
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07.docker", "07.docker", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
 	ProjectSection(SolutionItems) = preProject
+		07.docker\.dockerignore = 07.docker\.dockerignore
+		07.docker\build.ps1 = 07.docker\build.ps1
+		07.docker\build.sh = 07.docker\build.sh
 		07.docker\Dockerfile = 07.docker\Dockerfile
+		07.docker\Ktt.Docker.sln = 07.docker\Ktt.Docker.sln
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{715DB5EC-F20B-4B50-B1BC-B800B250CB95}"
