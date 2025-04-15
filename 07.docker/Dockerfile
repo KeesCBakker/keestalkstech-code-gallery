@@ -1,5 +1,5 @@
 ﻿#################################
-# Configuration settings (v2.2.1)
+# Configuration settings (v2.2.2)
 #################################
 
 ARG MAIN_API_NAME="Ktt.Docker.Todo.Api"
@@ -14,7 +14,7 @@ ARG \
    APP_DIR="/app" \
    TAG="" \
    EXECUTE_TESTS="true"
-   
+
 
 #########################################################################
 # Build image, uses VERBOSITY, EXECUTE_TESTS, PROJECTS_TO_PUBLISH, APP_DIR
