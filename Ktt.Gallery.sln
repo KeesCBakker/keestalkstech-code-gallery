@@ -124,6 +124,19 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "11.jupyter-pil-images", "11
 		11.jupyter-pil-images\README.md = 11.jupyter-pil-images\README.md
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07.docker", "07.docker", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+	ProjectSection(SolutionItems) = preProject
+		07.docker\Dockerfile = 07.docker\Dockerfile
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{715DB5EC-F20B-4B50-B1BC-B800B250CB95}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{59D89AD2-04BD-4629-B836-89E6122CB15D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Docker.Todo.Api", "07.docker\src\Ktt.Docker.Todo.Api\Ktt.Docker.Todo.Api.csproj", "{7155D29D-8CB5-CA8C-936B-19BDD701C714}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Docker.Todo.Api.Tests", "07.docker\test\Ktt.Docker.Todo.Api.Tests\Ktt.Docker.Todo.Api.Tests.csproj", "{37401F11-62D2-A6BA-7732-0A225A20BE3B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -186,6 +199,14 @@ Global
 		{83BD8B59-762C-491B-8037-DE90DA067252}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{83BD8B59-762C-491B-8037-DE90DA067252}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{83BD8B59-762C-491B-8037-DE90DA067252}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7155D29D-8CB5-CA8C-936B-19BDD701C714}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7155D29D-8CB5-CA8C-936B-19BDD701C714}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7155D29D-8CB5-CA8C-936B-19BDD701C714}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7155D29D-8CB5-CA8C-936B-19BDD701C714}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37401F11-62D2-A6BA-7732-0A225A20BE3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37401F11-62D2-A6BA-7732-0A225A20BE3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37401F11-62D2-A6BA-7732-0A225A20BE3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37401F11-62D2-A6BA-7732-0A225A20BE3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -205,6 +226,10 @@ Global
 		{E39EF968-DABB-49DD-8568-141A7812FEEC} = {06C8CA45-4552-4D57-A28D-75BB7A7C3C6F}
 		{37B68770-6B5C-47FE-BC32-8A76A206D759} = {7A95FAE0-08D3-4317-B7AA-F225BB2C8714}
 		{83BD8B59-762C-491B-8037-DE90DA067252} = {7A95FAE0-08D3-4317-B7AA-F225BB2C8714}
+		{715DB5EC-F20B-4B50-B1BC-B800B250CB95} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{59D89AD2-04BD-4629-B836-89E6122CB15D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{7155D29D-8CB5-CA8C-936B-19BDD701C714} = {715DB5EC-F20B-4B50-B1BC-B800B250CB95}
+		{37401F11-62D2-A6BA-7732-0A225A20BE3B} = {59D89AD2-04BD-4629-B836-89E6122CB15D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}
