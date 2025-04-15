@@ -1,0 +1,491 @@
+<div id="source">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+  <script async>
+    function Model() {
+      let self = this;
+
+      this.version = "v2.3.1";
+      this.serviceName = ko.observable("Ktt.Prime.Service.Api");
+      this.port = ko.observable("5000");
+      this.aspNetVersion = ko.observable("8.0");
+      this.addTesting = ko.observable(true);
+      this.addIntegrationTesting = ko.observable(false);
+      this.addMultiProjectSupport = ko.observable(true);
+      this.otherProjects = ko.observable("");
+      this.projectsToPublish = ko.computed(function () {
+        let projects = (this.otherProjects() || "").split(" ");
+        return ["$MAIN_API_NAME"]
+          .concat(projects)
+          .filter(x => x)
+          .join(" ");
+      }, this);
+
+      this.folderStructureTypes = ["root", "src/test"];
+      this.folderStructure = ko.observable("src/test");
+      this.timeZone = ko.observable("Europe/Amsterdam");
+      this.openSourceLicense = ko.observable("");
+
+      this.srcFolder = ko.computed(function () {
+        return self.folderStructure() == "root" ? "" : "src/";
+      });
+
+      this.code = ko.observable("");
+
+      this.__skip = ["code"];
+
+      this.applyHighlight = function (elements) {
+        elements
+          .filter(x => x.tagName === "PRE")
+          .forEach(x => {
+            if (window.hljs) window.hljs.highlightElement(x);
+          });
+      };
+    }
+
+    document.addEventListener("DOMContentLoaded", function (event) {
+      if (window.hljs) {
+        window.hljs.addPlugin(new CopyButtonPlugin());
+      }
+      const model = new Model();
+      ko.persistChanges(model, "", { storage: new QueryStringStorage() }, 0);
+      ko.applyBindings(model, document.getElementById("source"));
+    });
+  </script>
+  <div class="form">
+    <div><label for="serviceName">Service Name:</label><input type="text" id="serviceName" name="serviceName" data-bind="value: serviceName, valueUpdate: 'afterkeydown'" /></div>
+    <div><label for="otherProjects">Other projects:</label><input type="text" id="otherProjects" name="otherProjects" data-bind="value: otherProjects, valueUpdate: 'afterkeydown'" /></div>
+    <div>
+      <label for="folderStructure">Folder structure:</label>
+      <select id="folderStructure" name="folderStructure" data-bind="value: folderStructure, options: folderStructureTypes"></select>
+    </div>
+
+    <div>
+      <label for="aspNetVersion">ASP.NET Version:</label
+      ><input type="number" min="7.0" step="0.1" id="aspNetVersion" name="aspNetVersion" data-bind="value: aspNetVersion, valueUpdate: 'afterkeydown'" />
+    </div>
+    <div><label for="port">Port:</label><input type="number" min="0" id="port" name="port" data-bind="value: port, valueUpdate: 'afterkeydown'" /></div>
+    <div><label for="timeZone">Time zone:</label><input type="text" id="timeZone" name="timeZone" data-bind="value: timeZone, valueUpdate: 'afterkeydown'" /></div>
+    <div><label for="addTesting">Add testing:</label><input type="checkbox" id="addTesting" name="addTesting" data-bind="checked: addTesting" /></div>
+    <div data-bind="css: { 'grayed-out': !addTesting() }, attr: { 'aria-disabled': !addTesting() }"><label for="addIntegrationTesting">Integration testing:</label><input type="checkbox" id="addIntegrationTesting" name="addIntegrationTesting" data-bind="checked: addIntegrationTesting" />
+      <a target="_blank" href="https://keestalkstech.com/rethinking-our-asp-net-docker-ci/#step-3-integration-testing-stage">(for test containers)</a>
+    </div>
+    <div><label>Generator</label><span data-bind="text: version"></span></div>
+    <br />
+  </div>
+  <pre class="nohighlight" data-bind="saveHtmlContent: code" style="display: none">#################################
+# Configuration settings (<span data-bind="text: version"></span>)
+#################################
+
+ARG MAIN_API_NAME="<span data-bind="text: serviceName"></span>"
+ARG \
+   MAIN_API_DLL="$MAIN_API_NAME.dll" \
+   PROJECTS_TO_PUBLISH="<span data-bind="text: projectsToPublish"></span>" \
+   PORT=<span data-bind="text: port"></span> \
+   ASPNET_VERSION="<span data-bind="text: aspNetVersion"></span>" \
+   # options: q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]
+   # minimal keeps your pipeline readable while informing you what's going on
+   VERBOSITY="minimal" \
+   APP_DIR="/app" \
+   TAG=""<!-- ko if: addTesting --> \
+   EXECUTE_TESTS="true"
+<!-- /ko -->
+
+#########################################################################
+# Build image, uses VERBOSITY, EXECUTE_TESTS, PROJECTS_TO_PUBLISH, APP_DIR
+#########################################################################
+
+FROM mcr.microsoft.com/dotnet/sdk:$ASPNET_VERSION AS build
+
+ARG VERBOSITY EXECUTE_TESTS PROJECTS_TO_PUBLISH APP_DIR
+
+ENV \<!-- ko if: timeZone -->
+   TZ=<span data-bind="text: timeZone"></span> \<!-- /ko -->
+   DOTNET_CLI_TELEMETRY_OPTOUT=true \
+   DOTNET_NOLOGO=true
+
+WORKDIR /build
+
+# Let's restore the solution, nuget and project files and do a restore
+# in cacheable layers. This will speed up the build process greatly.
+
+# copy global files to restore
+COPY *.sln *.*config ./
+<!-- ko if: folderStructure() == 'root' -->
+# copy files to restore
+COPY */*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done; \
+   echo "" \
+   && echo "---------" \
+   && echo "RESTORING" \
+   && echo "---------" \
+   && echo "" \
+   && dotnet restore --verbosity "$VERBOSITY" || exit 1
+
+# copy dirs that are only needed for building and testing
+COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' -->
+# copy src files to restore
+COPY src/*/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done<!-- ko if: addTesting -->
+
+# copy test files to restore
+COPY test/*/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${file%.*}/; done<!-- /ko -->; \
+   echo "" \
+   && echo "---------" \
+   && echo "RESTORING" \
+   && echo "---------" \
+   && echo "" \
+   && dotnet restore --verbosity "$VERBOSITY" || exit 1
+
+# copy dirs that are only needed for building and testing
+COPY src ./src<!-- ko if: addTesting -->
+COPY test ./test<!-- /ko --><!-- /ko -->
+
+# Note on build: don't use --no-restore, sometimes certain packages cannot be
+# restored by the dotnet restore. The build will add them, as it has more context (!?)
+# example: Package System.Text.Json, version 6.0.0 was not found
+
+RUN echo "" \
+   && echo "--------" \
+   && echo "BUILDING" \
+   && echo "--------" \
+   && echo "" \
+   && dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
+
+<!-- ko if: addTesting --># defining the argument here caches the previous layers when the value switches
+ARG EXECUTE_TESTS
+RUN echo "" \
+   && echo "-------" \
+   && echo "TESTING" \
+   && echo "-------" \
+   && echo ""; \
+   if [ "$EXECUTE_TESTS" = "true" ]; then \
+      dotnet test <!-- ko if: addTesting -->--filter "Category!=Integration" <!-- /ko -->--configuration Release --logger "console;verbosity=$VERBOSITY" --no-build || exit 1; \
+   else \
+      echo "Skipping unit tests"; \
+   fi;
+
+<!-- /ko --># publish project(s)
+RUN echo "" \
+   && echo "----------" \
+   && echo "PUBLISHING" \
+   && echo "----------" \
+   && echo ""; \
+   for project in $PROJECTS_TO_PUBLISH; do \
+      echo "Publishing $project..."; \
+      dotnet publish "<span data-bind="text: srcFolder"></span>$project/$project.csproj" \
+        --configuration Release \
+        --output "$APP_DIR/$project" \
+        --no-restore -nowarn:NETSDK1004 || exit 1; \
+   done
+
+<!-- ko if: addTesting() && addIntegrationTesting() -->
+########################
+# Integration test image
+########################
+
+FROM mcr.microsoft.com/dotnet/sdk:$ASPNET_VERSION AS integration-test
+
+ENV \
+   TZ=Europe/Amsterdam \
+   DOTNET_CLI_TELEMETRY_OPTOUT=true \
+   DOTNET_NOLOGO=true
+
+WORKDIR /build
+
+# install Docker
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends docker.io procps && \
+    rm -rf /var/lib/apt/lists/*
+
+# copy entire build context
+COPY --from=build /build /build
+
+# run Docker daemon and tests
+CMD bash -euo pipefail -c '\
+  trap "echo Shutting down dockerd; pkill dockerd || true" EXIT; \
+  echo "Starting Docker daemon..."; \
+  dockerd > /var/log/dockerd.log 2>&1 & \
+  for i in {1..30}; do \
+    docker info > /dev/null 2>&1 && break || echo "Waiting for Docker... ($i/30)"; sleep 1; \
+  done; \
+  if ! docker info > /dev/null 2>&1; then \
+    echo "❌ Docker failed to start. Log output:"; cat /var/log/dockerd.log || echo "(No log found)"; exit 1; \
+  fi; \
+  echo "✅ Docker is ready. Running integration tests..."; \
+  dotnet test --filter "Category=Integration" --nologo --logger "console;verbosity=${VERBOSITY:-minimal}"'
+
+<!-- /ko -->
+#####################################################################
+# Runtime image, uses PORT, TAG, MAIN_API_DLL, MAIN_API_NAME, APP_DIR
+#####################################################################
+
+FROM mcr.microsoft.com/dotnet/aspnet:$ASPNET_VERSION-alpine as runtime
+
+RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib<!-- ko if: timeZone --> tzdata<!-- /ko -->
+
+ARG PORT MAIN_API_NAME APP_DIR MAIN_API_DLL TAG
+
+WORKDIR $APP_DIR
+COPY --from=build $APP_DIR .
+
+# create a new user and change directory ownership
+RUN adduser --disabled-password \
+   --home "$APP_DIR" \
+   --gecos '' dotnetuser && chown -R dotnetuser:dotnetuser "$APP_DIR"
+
+# impersonate into the new user
+USER dotnetuser
+
+ENV \
+   ASPNETCORE_URLS=http://*:$PORT \
+   ASPNETCORE_ENVIRONMENT=Production \<!-- ko if: timeZone -->
+   TZ=<span data-bind="text: timeZone"></span> \<!-- /ko -->
+   DOTNET_CLI_TELEMETRY_OPTOUT=true \
+   DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+EXPOSE $PORT
+
+WORKDIR "$APP_DIR/$MAIN_API_NAME"
+
+ENV PROGRAM="$MAIN_API_DLL"
+ENTRYPOINT dotnet "$PROGRAM"</pre>
+  <!-- ko if:  code -->
+  <div data-bind="template: { name: 'codeTemplate', data: code, afterRender: applyHighlight }"></div>
+  <!-- /ko -->
+</div>
+<script type="text/html" id="codeTemplate">
+  <pre class="wp-block-code lang-dockerfile" data-bind="text: $data"></pre>
+</script>
+<script>
+  ko.bindingHandlers.saveHtmlContent = {
+    init: function (element, valueAccessor) {
+      var htmlObservable = valueAccessor();
+
+      // Function to get the inner text only (ignores HTML and comments)
+      function extractInnerText(htmlElement) {
+        return htmlElement.textContent || htmlElement.innerText;
+      }
+
+      // Save the inner text content
+      htmlObservable(extractInnerText(element));
+
+      // Set up a MutationObserver to monitor changes in the element's content
+      var observer = new MutationObserver(function () {
+        htmlObservable(extractInnerText(element));
+      });
+
+      // Start observing changes in the child elements
+      observer.observe(element, {
+        childList: true,
+        subtree: true,
+        characterData: true
+      });
+
+      // Cleanup when the element is removed
+      ko.utils.domNodeDisposal.addDisposeCallback(element, function () {
+        observer.disconnect();
+      });
+    }
+  };
+</script>
+<style>
+  #feature-image {
+    display: none;
+  }
+
+  .entry-content {
+    width: 100% !important;
+  }
+
+  .grayed-out {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  #source {
+    max-width: 100%;
+
+    .form {
+      margin-top: 2em;
+      margin-bottom: 1em;
+      font-family: arial;
+      font-size: 14px;
+      background-color: var(--light-background);
+      padding: 2em;
+      column-count: 2;
+      column-gap: 2em;
+
+      & > div + div {
+        margin-top: 0.5em;
+      }
+
+      input {
+        background-color: #fff;
+        color: #000;
+        padding: 2px 2px 2px 10px;
+        border-radius: 4px;
+      }
+
+      input[type="text"] {
+        width: calc(100% - 120px);
+      }
+
+      input[type="number"] {
+        width: 75px;
+      }
+
+      label {
+        width: 120px;
+        display: inline-block;
+      }
+    }
+
+    pre {
+      padding: 2em !important;
+    }
+  }
+
+  .entry-content > p {
+    margin-left: 0;
+    max-width: 100%;
+  }
+
+  @media screen and (max-width: 700px) {
+    .form {
+      column-count: 1 !important;
+    }
+
+    .form br {
+      display: none;
+    }
+  }
+</style>
+<script>
+  ko.trackChange = (store, observable, key, echo = null) => {
+    //initialize from stored value, or if no value is stored yet,
+    //use the current value
+
+    const value = store.get(key);
+    if (value !== null) {
+      if (echo) echo("Restoring value for", key, value);
+
+      //restore current value
+      observable(value);
+    }
+
+    //track the changes
+    observable.subscribe(newValue => {
+      if (echo) echo("Storing new value for", key, newValue);
+      store.set(key, newValue);
+    });
+  };
+
+  ko.isComputed = instance => {
+    if (!instance || !instance.__ko_proto__) {
+      return false;
+    }
+
+    if (instance.__ko_proto__ === ko.dependentObservable) {
+      return true;
+    }
+
+    // Walk the prototype chain
+    return ko.isComputed(instance.__ko_proto__);
+  };
+
+  const defaultOptions = Object.freeze({
+    storage: localStorage,
+    traverseNonObservableProperties: true,
+    debug: false
+  });
+
+  ko.persistChanges = (model, prefix = "model-", options = defaultOptions, deep = 0) => {
+    options = Object.assign({}, defaultOptions, options);
+    options.echo = function () {
+      if (!options.debug) return;
+
+      if (deep > 0) {
+        return console.log("-".repeat(deep), ...arguments);
+      }
+      console.log(...arguments);
+    };
+
+    const storageWrapper = {
+      set: (key, value) => options.storage.setItem(key, JSON.stringify(value)),
+      get: key => JSON.parse(options.storage.getItem(key))
+    };
+
+    const skip = new Set(model.__skip || []);
+    skip.add("__skip");
+
+    for (let n in model) {
+      const observable = model[n];
+      const key = prefix + n;
+
+      if (skip.has(n)) {
+        options.echo("Skipping", n, "because it is on the __skip list.");
+        continue;
+      }
+
+      if (ko.isComputed(observable)) {
+        options.echo("Skipping", n, "because it is computed.");
+        continue;
+      }
+
+      if (typeof observable === "function") {
+        if (!ko.isObservable(observable)) {
+          options.echo("Skipping", n, "because it is a function.");
+          continue;
+        }
+
+        ko.trackChange(storageWrapper, observable, key, options.echo);
+        options.echo("Tracking change for", n, "in", key);
+        continue;
+      }
+
+      if (!options.traverseNonObservableProperties) {
+        options.echo("Skipping", n, "because options.traverseNonObservableProperties is false.");
+        continue;
+      }
+
+      if (typeof observable === "object" && observable !== null && !Array.isArray(observable)) {
+        options.echo("Tracking change for object", key);
+        ko.persistChanges(observable, key + "-", options, deep + 1);
+        continue;
+      }
+
+      options.echo("Skipping", n, observable);
+    }
+  };
+</script>
+<script>
+  class QueryStringStorage {
+    getItem(key) {
+      let value = new URLSearchParams(window.location.search).get(key);
+
+      if (!value) return value;
+
+      if (value != "false" && value != "true" && value.length > 0 && !["{", "[", '"'].includes(value[0])) {
+        return '"' + value + '"';
+      }
+
+      return value;
+    }
+
+    setItem(key, value) {
+      const params = new URLSearchParams(window.location.search);
+
+      if (value && value.length > 0) {
+        let f = value[0];
+        if (f == '"') {
+          //string
+          value = value.substring(1, value.length - 1);
+        }
+      }
+
+      params.set(key, value);
+      window.history.replaceState({}, "", "?" + params.toString());
+    }
+  }
+</script>

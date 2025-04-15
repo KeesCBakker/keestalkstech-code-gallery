@@ -4,7 +4,7 @@ $imageName = "ktt-docker-todo"
 $integrationImage = "$imageName-integration-test"
 
 Write-Host "`n🔨 Building integration test image: $integrationImage`n"
-docker build --target integration-test -t $integrationImage .
+docker buildx build --target integration-test -t $integrationImage .
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ Failed to build integration test image."
     exit $LASTEXITCODE
@@ -18,7 +18,7 @@ if ($LASTEXITCODE -ne 0) {
 }
 
 Write-Host "`n📦 Building final image: $imageName`n"
-docker build -t $imageName .
+docker buildx build -t $imageName .
 if ($LASTEXITCODE -ne 0) {
     Write-Error "❌ Failed to build final image."
     exit $LASTEXITCODE

@@ -1,5 +1,5 @@
 ﻿#################################
-# Configuration settings (v2.2.2)
+# Configuration settings (v2.3.1)
 #################################
 
 ARG MAIN_API_NAME="Ktt.Docker.Todo.Api"
@@ -32,7 +32,7 @@ ENV \
 WORKDIR /build
 
 # Let's restore the solution, nuget and project files and do a restore
-# in cacheable layers. This will speed up the build process greatly
+# in cacheable layers. This will speed up the build process greatly.
 
 # copy global files to restore
 COPY *.sln *.*config ./
@@ -78,7 +78,7 @@ RUN echo "" \
    else \
       echo "Skipping unit tests"; \
    fi;
-   
+
 # publish project(s)
 RUN echo "" \
    && echo "----------" \
@@ -128,7 +128,7 @@ CMD bash -euo pipefail -c '\
   fi; \
   echo "✅ Docker is ready. Running integration tests..."; \
   dotnet test --filter "Category=Integration" --nologo --logger "console;verbosity=${VERBOSITY:-minimal}"'
-   
+
 
 #####################################################################
 # Runtime image, uses PORT, TAG, MAIN_API_DLL, MAIN_API_NAME, APP_DIR

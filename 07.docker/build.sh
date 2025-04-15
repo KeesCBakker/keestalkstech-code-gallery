@@ -5,7 +5,7 @@ imageName="ktt-docker-todo"
 integrationImage="$imageName-integration-test"
 
 echo -e "\n🔨 Building integration test image: $integrationImage\n"
-if ! docker build --target integration-test -t "$integrationImage" .; then
+if ! docker buildx build --target integration-test -t "$integrationImage" .; then
     echo "❌ Failed to build integration test image."
     exit 1
 fi
@@ -17,7 +17,7 @@ if ! docker run --rm --privileged "$integrationImage"; then
 fi
 
 echo -e "\n📦 Building final image: $imageName\n"
-if ! docker build -t "$imageName" .; then
+if ! docker buildx build -t "$imageName" .; then
     echo "❌ Failed to build final image."
     exit 1
 fi
