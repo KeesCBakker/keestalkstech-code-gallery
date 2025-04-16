@@ -4,8 +4,8 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.3.1";
-      this.serviceName = ko.observable("Ktt.Prime.Service.Api");
+      this.version = "v2.4.0";
+      this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
       this.aspNetVersion = ko.observable("8.0");
       this.addTesting = ko.observable(true);
@@ -23,11 +23,12 @@
       this.folderStructureTypes = ["root", "src/test"];
       this.folderStructure = ko.observable("src/test");
       this.timeZone = ko.observable("Europe/Amsterdam");
-      this.openSourceLicense = ko.observable("");
 
       this.srcFolder = ko.computed(function () {
         return self.folderStructure() == "root" ? "" : "src/";
       });
+
+      this.echo = ko.observable(true);
 
       this.code = ko.observable("");
 
@@ -69,6 +70,7 @@
     <div data-bind="css: { 'grayed-out': !addTesting() }, attr: { 'aria-disabled': !addTesting() }"><label for="addIntegrationTesting">Integration testing:</label><input type="checkbox" id="addIntegrationTesting" name="addIntegrationTesting" data-bind="checked: addIntegrationTesting" />
       <a target="_blank" href="https://keestalkstech.com/rethinking-our-asp-net-docker-ci/#step-3-integration-testing-stage">(for test containers)</a>
     </div>
+    <div><label for="echo">Echo titles:</label><input type="checkbox" id="echo" name="echo" data-bind="checked: echo" /></div>
     <div><label>Generator</label><span data-bind="text: version"></span></div>
     <br />
   </div>
@@ -114,12 +116,12 @@ COPY *.sln *.*config ./
 # copy files to restore
 COPY */*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/; done; \
-   echo "" \
+   <!-- ko if: echo -->echo "" \
    && echo "---------" \
    && echo "RESTORING" \
    && echo "---------" \
    && echo "" \
-   && dotnet restore --verbosity "$VERBOSITY" || exit 1
+   && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
 
 # copy dirs that are only needed for building and testing
 COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' -->
@@ -130,12 +132,12 @@ RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${fi
 # copy test files to restore
 COPY test/*/*.csproj ./
 RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${file%.*}/; done<!-- /ko -->; \
-   echo "" \
+   <!-- ko if: echo -->echo "" \
    && echo "---------" \
    && echo "RESTORING" \
    && echo "---------" \
    && echo "" \
-   && dotnet restore --verbosity "$VERBOSITY" || exit 1
+   && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
 
 # copy dirs that are only needed for building and testing
 COPY src ./src<!-- ko if: addTesting -->
@@ -145,33 +147,33 @@ COPY test ./test<!-- /ko --><!-- /ko -->
 # restored by the dotnet restore. The build will add them, as it has more context (!?)
 # example: Package System.Text.Json, version 6.0.0 was not found
 
-RUN echo "" \
+RUN <!-- ko if: echo -->echo "" \
    && echo "--------" \
    && echo "BUILDING" \
    && echo "--------" \
    && echo "" \
-   && dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
+   && <!-- /ko -->dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
 
 <!-- ko if: addTesting --># defining the argument here caches the previous layers when the value switches
 ARG EXECUTE_TESTS
-RUN echo "" \
+RUN <!-- ko if: echo -->echo "" \
    && echo "-------" \
    && echo "TESTING" \
    && echo "-------" \
    && echo ""; \
-   if [ "$EXECUTE_TESTS" = "true" ]; then \
+   <!-- /ko -->if [ "$EXECUTE_TESTS" = "true" ]; then \
       dotnet test <!-- ko if: addTesting -->--filter "Category!=Integration" <!-- /ko -->--configuration Release --logger "console;verbosity=$VERBOSITY" --no-build || exit 1; \
    else \
       echo "Skipping unit tests"; \
    fi;
 
 <!-- /ko --># publish project(s)
-RUN echo "" \
+RUN <!-- ko if: echo -->echo "" \
    && echo "----------" \
    && echo "PUBLISHING" \
    && echo "----------" \
    && echo ""; \
-   for project in $PROJECTS_TO_PUBLISH; do \
+   <!-- /ko -->for project in $PROJECTS_TO_PUBLISH; do \
       echo "Publishing $project..."; \
       dotnet publish "<span data-bind="text: srcFolder"></span>$project/$project.csproj" \
         --configuration Release \
