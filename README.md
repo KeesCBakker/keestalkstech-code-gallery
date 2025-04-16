@@ -58,6 +58,15 @@ if your template fails.
 - <a href="https://keestalkstech.com/2022/09/handlebars-net-json-templates/">Handlebars.Net & JSON templates</a>
 - <a href="https://keestalkstech.com/2022/09/handlebars-net-fun-with-flags/">Handlebars.Net: Fun with [Flags]</a>
 
+## 7. Docker
+
+All my applications run in Docker. Having a fast CI is paramount. As Docker is not
+unline a layered cake, it is important to understand how to build your images in such
+a way that you can cache the layers.
+
+- <a href="07.docker">07.docker</a>
+- <a href="https://keestalkstech.com/rethinking-our-asp-net-docker-ci/">Rethinking our ASP.NET Docker CI</a>
+- <a href="https://keestalkstech.com/dockerfile-generator-for-net/">Dockerfile Generator for .NET</a>
 
 ## 8. Bypass Company Wallpaper as Local Admin
 
