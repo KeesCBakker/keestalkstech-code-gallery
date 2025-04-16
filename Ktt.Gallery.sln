@@ -130,6 +130,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "07.docker", "07.docker", "{
 		07.docker\build.ps1 = 07.docker\build.ps1
 		07.docker\build.sh = 07.docker\build.sh
 		07.docker\Dockerfile = 07.docker\Dockerfile
+		07.docker\generator.ps1 = 07.docker\generator.ps1
 		07.docker\Ktt.Docker.sln = 07.docker\Ktt.Docker.sln
 		07.docker\README.md = 07.docker\README.md
 	EndProjectSection
@@ -141,6 +142,11 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Docker.Todo.Api", "07.docker\src\Ktt.Docker.Todo.Api\Ktt.Docker.Todo.Api.csproj", "{7155D29D-8CB5-CA8C-936B-19BDD701C714}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ktt.Docker.Todo.Api.Tests", "07.docker\test\Ktt.Docker.Todo.Api.Tests\Ktt.Docker.Todo.Api.Tests.csproj", "{37401F11-62D2-A6BA-7732-0A225A20BE3B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "generator", "generator", "{06908E7A-AB91-4FA7-9732-4CF1F1AFECDF}"
+	ProjectSection(SolutionItems) = preProject
+		07.docker\generator\index.html = 07.docker\generator\index.html
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -235,6 +241,7 @@ Global
 		{59D89AD2-04BD-4629-B836-89E6122CB15D} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{7155D29D-8CB5-CA8C-936B-19BDD701C714} = {715DB5EC-F20B-4B50-B1BC-B800B250CB95}
 		{37401F11-62D2-A6BA-7732-0A225A20BE3B} = {59D89AD2-04BD-4629-B836-89E6122CB15D}
+		{06908E7A-AB91-4FA7-9732-4CF1F1AFECDF} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FE17B5E-340D-4FBA-8516-94794B1338C0}
