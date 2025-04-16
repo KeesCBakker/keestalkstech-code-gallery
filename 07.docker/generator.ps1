@@ -1,5 +1,3 @@
-
-
 Push-Location -Path $PSScriptRoot
 Push-Location generator
 
