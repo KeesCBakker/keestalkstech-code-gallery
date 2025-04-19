@@ -1,10 +1,9 @@
 ## Validation
 Let's explore validation using .NET Data Annotations and FluentValidation.
 
-- <a href="14.validation">14.validation</a>
-- <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Let’s combine Data Annotation Validation with FluentValidation</a>
+- <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Letâ€™s combine Data Annotation Validation with FluentValidation</a>
 - <a href="https://keestalkstech.com/data-annotation-validation-in-a-business-service/">Data Annotation validation with dependency injection in a business service</a>
-- <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>
+- <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">â€œIs One Ofâ€ and â€œIs Not One Ofâ€ validation attributes</a>
 
 
 ## Checkout only this project
