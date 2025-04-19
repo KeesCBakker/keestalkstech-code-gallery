@@ -20,6 +20,7 @@ Services can use their private key to communicate with our service.
 We can configure the access for each issuer using standard .NET claims.
 
 - <a href="02.simple-jwt-access-policies-for-api-security-in-net">02.simple-jwt-access-policies-for-api-security-in-net</a>
+- <a href="https://keestalkstech.com/debug-a-jwt-token-expiration-locally-with-bash-or-powershell/">Debug a JWT token expiration locally with bash or PowerShell</a>
 - <a href="https://keestalkstech.com/2024/11/simple-jwt-access-policies-for-api-security-in-net/">Simple JWT Access Policies for API security in .NET</a>
 
 ## 3. Options Injection
