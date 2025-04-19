@@ -42,5 +42,3 @@ git checkout main
 cd 14.validation
 ls
 ```
-
-## Blogs
