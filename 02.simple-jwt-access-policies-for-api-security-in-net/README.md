@@ -25,6 +25,20 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJpc3MiOiAic2VydmljZS0yIiwKICAiYXVkIjo
 
 ## Features
 
-- Support for .NET 8
 - Support for IOption data validation validation on startup
 - Script <a href="generate_keys.sh">generate_keys.sh</a> will generate a new public/private key pair. In Windows you can use WSL to execute the file.
+- <a href="debug">Debug script for JWT tokens</a>
+
+- ## Checkout only this project
+
+Do the following:
+
+```sh
+git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
+cd keestalkstech-code-gallery
+git sparse-checkout init
+git sparse-checkout set --no-cone 14.validation
+git checkout main
+cd 14.validation
+ls
+```
