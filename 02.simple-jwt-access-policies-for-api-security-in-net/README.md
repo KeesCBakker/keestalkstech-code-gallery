@@ -3,7 +3,8 @@
 Services can use their private key to communicate with our service.
 We can configure the access for each issuer using standard .NET claims.
 
-<a href="https://keestalkstech.com/2024/11/simple-jwt-access-policies-for-api-security-in-net/">Read the blog on KeesTalksTech: Simple JWT Access Policies for API security in .NET</a>
+- <a href="01.dependency-injection-with-ioptions-in-console-apps">01.dependency-injection-with-ioptions-in-console-apps</a>
+- <a href="https://keestalkstech.com/2018/04/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Dependency injection (with IOptions) in Console Apps in .NET</a>
 
 ## Tokens
 
@@ -22,14 +23,13 @@ eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJpc3MiOiAic2VydmljZS0xIiwKICAiYXVkIjo
 eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.ewogICJpc3MiOiAic2VydmljZS0yIiwKICAiYXVkIjogIm91ci1zZXJ2aWNlIiwKICAidXNlcm5hbWUiOiAidHN0dXNyIiwKICAiaWF0IjogMTczMjk3MjM2NywKICAiZXhwIjogMjUyMTM3MjM2Nwp9.VGl-UElY0x7rLxIXlsYY6Cbd-0CbZIpzGQ1mgF2Ux-uBkyr4DYopFmJ37TUgcJ0xi-r5Q8UuKsCRWnm6DChpC8-189U49YXVu2cLdI5CTVdui2HvsUHvo9mSB7Rb1aPpMbQOFG-RZr6JfQXwBG5VJlk7CW1cF44JWvilVksZltm6zH_6Megt1Rbx7YXKDHV-gKXWawaevhGKBVRgGsPh1qF3GgqL6I_Tf-ZMt3_kTzkMGom6r7VZlO3Ze4Y8u1odVm1ZAHFjVwZy2UvNyPdQHW92COR7YKMJStVqKlCkQ6JDwgtnCMvPIu9tgr9WYtQaAwh6P3EbUuyp56C0lvNOPQ
 ```
 
-
 ## Features
 
 - Support for IOption data validation validation on startup
 - Script <a href="generate_keys.sh">generate_keys.sh</a> will generate a new public/private key pair. In Windows you can use WSL to execute the file.
 - <a href="debug">Debug script for JWT tokens</a>
 
-- ## Checkout only this project
+## Checkout only this project
 
 Do the following:
 
@@ -42,3 +42,5 @@ git checkout main
 cd 14.validation
 ls
 ```
+
+## Blogs
