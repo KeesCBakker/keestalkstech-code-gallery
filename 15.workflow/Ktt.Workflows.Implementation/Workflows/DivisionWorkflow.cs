@@ -1,5 +1,4 @@
-﻿using Ktt.Workflows.Core.Models;
-using Ktt.Workflows.Implementation.Models;
+﻿using Ktt.Workflows.Implementation.Models;
 using Ktt.Workflows.Implementation.Steps.Math;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;

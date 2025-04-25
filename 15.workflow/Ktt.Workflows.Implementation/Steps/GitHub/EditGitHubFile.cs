@@ -24,8 +24,10 @@ public abstract class EditGitHubFile : SafeStep
 
     public class GitHubFileDefinition
     {
-        public string Repository { get; set; } = default!;
-        public string Branch { get; set; } = default!;
-        public string FilePath { get; set; } = default!;
+        public required string Repository { get; set; }
+
+        public required string Branch { get; set; }
+
+        public required string FilePath { get; set; }
     }
 }

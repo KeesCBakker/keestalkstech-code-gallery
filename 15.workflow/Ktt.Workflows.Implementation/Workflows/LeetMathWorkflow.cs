@@ -1,10 +1,8 @@
 ﻿using Ktt.Workflows.Implementation.Models;
 using Ktt.Workflows.Implementation.Steps;
-using Ktt.Workflows.Core.Workflows;
-using WorkflowCore.Interface;
-
-using static Ktt.Workflows.Implementation.Steps.Math.MathStep;
 using Ktt.Workflows.Implementation.Steps.Math;
+using WorkflowCore.Interface;
+using static Ktt.Workflows.Implementation.Steps.Math.MathStep;
 
 namespace Ktt.Workflows.Core.Workflows;
 

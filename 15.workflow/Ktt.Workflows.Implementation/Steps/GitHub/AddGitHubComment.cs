@@ -18,9 +18,12 @@ public class AddGitHubComment : SafeStep
         return ExecutionResult.Next();
     }
 
-    public record GitHubCommentDefinition(
-        string Repository,
-        string PullRequestId,
-        string Comment
-    );
+    public class GitHubCommentDefinition
+    {
+        public required string Repository { get; set; }
+
+        public required string PullRequestId { get; set; }
+
+        public required string Comment { get; set; }
+    }
 }

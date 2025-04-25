@@ -18,7 +18,8 @@ public class WorkflowHostedService : IHostedService
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        foreach (var action in _configurators)
+        var items = _configurators.ToList();
+        foreach (var action in items)
         {
             action(_host);
         }

@@ -6,7 +6,11 @@ namespace Ktt.Workflows.Core.Steps;
 
 public class StatusStep : SafeStep
 {
-    public string Status { get; set; } = string.Empty;
+    public string StatusTitle { get; set; } = string.Empty;
+
+    public string StatusDescription { get; set; } = string.Empty;
+
+    public WorkflowExecutionState? State { get; set; }
 
     protected override ExecutionResult Execute(IStepExecutionContext context)
     {
@@ -15,7 +19,13 @@ public class StatusStep : SafeStep
             throw new InvalidOperationException("Expected LeetMathWorkflowData");
         }
 
-        data.Status = Status;
+        data.StatusTitle = StatusTitle;
+        data.StatusDescription = StatusDescription;
+
+        if (State != null)
+        {
+            data.State = State.Value;
+        }
 
         return ExecutionResult.Next();
     }

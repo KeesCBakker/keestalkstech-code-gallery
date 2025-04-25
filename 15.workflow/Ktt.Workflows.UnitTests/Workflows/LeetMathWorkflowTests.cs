@@ -25,16 +25,16 @@ public class LeetMathWorkflowTests
 
             var helper = sp.GetRequiredService<WorkflowEngineHelper>();
 
-            var id = await helper.StartWorkflow("LeetMath", new MathWorkflowData { CurrentNumber = 42 });
+            var id = await helper.StartWorkflowAsync("LeetMath", new MathWorkflowData { CurrentNumber = 42 });
             await Task.Delay(120);
 
             while (true)
             {
                 var status = await helper.GetWorkflowStatusAsync(id);
 
-                Assert.True(!string.IsNullOrEmpty(status.StatusText));
+                Assert.True(!string.IsNullOrEmpty(status!.StatusTitle));
 
-                if (status.StatusText == "6/6 Finished")
+                if (status!.StatusTitle == "6/6 Finished")
                 {
                     break;
                 }

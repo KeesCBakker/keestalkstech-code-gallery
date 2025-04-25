@@ -3,7 +3,7 @@ using Ktt.Workflows.Implementation.Models;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Ktt.Workflows.Implementation.Steps;
+namespace Ktt.Workflows.Implementation.Steps.Math;
 
 public class DivideStep : SafeStep
 {

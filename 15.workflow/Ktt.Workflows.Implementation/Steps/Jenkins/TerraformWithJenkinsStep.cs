@@ -5,30 +5,33 @@ namespace Ktt.Workflows.Implementation.Steps.Jenkins;
 
 public class TerraformWithJenkinsStep : RunJenkinsJobStep
 {
-    public TerraformJobDefinition DefinitionInput { get; set; } = default!;
+    public TerraformJobDefinition TerraformData { get; set; } = default!;
 
     protected override ExecutionResult Execute(IStepExecutionContext context)
     {
-        var d = DefinitionInput;
-
-        Definition = new JenkinsJobDefinition(
-            JobName: "platform-provisioning-terraform",
-            Parameters: new Dictionary<string, string>
+        Definition = new()
+        {
+            JobName = "platform-provisioning-terraform",
+            Parameters = new Dictionary<string, string>
             {
-                ["environment"] = d.Environment,
-                ["branch"] = d.Branch,
-                ["action"] = d.Action.ToString().ToLowerInvariant()
+                ["environment"] = TerraformData.Environment,
+                ["branch"] = TerraformData.Branch,
+                ["action"] = TerraformData.Action.ToString().ToLowerInvariant()
             }
-        );
+        };
 
         return base.Execute(context);
     }
 
     public class TerraformJobDefinition
     {
-        public string Environment { get; set; } = default!;
-        public string Branch { get; set; } = default!;
-        public TerraformAction Action { get; set; } = default!;
+        public required string Environment { get; set; }
+
+        public required string Branch { get; set; }
+
+        public required TerraformAction Action { get; set; }
+
+        public required string GitHubPullRequestUrl { get; set; }
     }
 
     public enum TerraformAction
@@ -37,3 +40,4 @@ public class TerraformWithJenkinsStep : RunJenkinsJobStep
         Apply
     }
 }
+

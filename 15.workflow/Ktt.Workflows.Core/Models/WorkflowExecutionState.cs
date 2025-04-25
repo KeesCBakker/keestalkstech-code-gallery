@@ -3,7 +3,6 @@
 public enum WorkflowExecutionState
 {
     Running,
-    Failed,
-    Finished
+    Finished,
+    Failed
 }
-

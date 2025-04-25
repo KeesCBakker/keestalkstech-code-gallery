@@ -25,7 +25,7 @@ public class DivisionWorkflowTests
 
             var helper = sp.GetRequiredService<WorkflowEngineHelper>();
 
-            var id = await helper.StartWorkflow("DivisionWorkflow", new MathWorkflowData { CurrentNumber = 42 });
+            var id = await helper.StartWorkflowAsync("DivisionWorkflow", new MathWorkflowData { CurrentNumber = 42 });
             await Task.Delay(100);
 
             var status = await helper.GetWorkflowStatusAsync(id);

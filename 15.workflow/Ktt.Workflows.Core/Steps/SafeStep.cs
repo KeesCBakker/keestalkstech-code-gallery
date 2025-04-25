@@ -2,22 +2,26 @@
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-namespace Ktt.Workflows.Core.Steps;
-
 public abstract class SafeStep : StepBody
 {
     private string StepName => GetType().Name;
 
+    protected WorkflowDataWithState Data { get; private set; } = default!;
+
     protected void Journal(IStepExecutionContext context, string message)
     {
-        if (context.Workflow.Data is IWorkflowDataWithState data)
-        {
-            data.AddJournalEntry(context, message, StepName);
-        }
+        Data?.AddJournalEntry(context, message, StepName);
     }
 
     public override ExecutionResult Run(IStepExecutionContext context)
     {
+        if (context.Workflow.Data is not WorkflowDataWithState data)
+        {
+            throw new InvalidOperationException("Workflow.Data must inherit from WorkflowDataWithState");
+        }
+
+        Data = data;
+
         var start = DateTime.UtcNow;
 
         Journal(context, "Entering step");
@@ -33,10 +37,7 @@ public abstract class SafeStep : StepBody
         }
         catch (Exception ex)
         {
-            if (context.Workflow.Data is IWorkflowDataWithState data)
-            {
-                data.LastException = WorkflowExceptionInfo.From(ex);
-            }
+            Data.LastException = WorkflowExceptionInfo.From(ex);
 
             var duration = DateTime.UtcNow - start;
             Journal(context, $"Exception after {duration.TotalMilliseconds:F0} ms: {ex.Message}");

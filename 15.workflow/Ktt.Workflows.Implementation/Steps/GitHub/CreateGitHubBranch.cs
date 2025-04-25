@@ -20,8 +20,9 @@ public class CreateGitHubBranch : SafeStep
 
     public class GitHubBranchDefinition
     {
-        public string Repository { get; set; } = default!;
-        public string Branch { get; set; } = default!;
+        public required string Repository { get; set; }
+
+        public required string Branch { get; set; }
     }
 }
 

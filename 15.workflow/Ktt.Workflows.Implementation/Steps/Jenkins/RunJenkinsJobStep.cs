@@ -15,19 +15,30 @@ public class RunJenkinsJobStep : SafeStep
         var jenkinsUrl = $"https://jenkins.example.com/job/{d.JobName}";
         var output = $"Simulated Jenkins output for {d.JobName} with parameters: {string.Join(", ", d.Parameters)}";
 
-        context.SetStepState("jenkinsUrl", jenkinsUrl);
-        context.SetStepState("jenkinsOutput", output);
+        Data.SetStepState(context, new JenkinsStepResult
+        {
+            Url = jenkinsUrl,
+            Output = output
+        });
 
-        Journal(context, $"Jenkins job '{d.JobName}' triggered.");
-        Journal(context, $"URL: {jenkinsUrl}");
-        Journal(context, $"Output:\n{output}");
+        Journal(context, $"Triggered Jenkins job: {d.JobName}");
+        Journal(context, $"Jenkins URL: {jenkinsUrl}");
+        Journal(context, $"Jenkins output:\n{output}");
 
         return ExecutionResult.Next();
     }
 
     public class JenkinsJobDefinition
     {
-        public string JobName { get; set; } = default!;
+        public required string JobName { get; set; }
+
         public Dictionary<string, string> Parameters { get; set; } = new();
+    }
+
+    public class JenkinsStepResult
+    {
+        public required string Url { get; set; }
+
+        public required string Output { get; set; } 
     }
 }

@@ -1,4 +1,4 @@
-﻿using Ktt.Workflows.Core.Steps;
+﻿using Ktt.Workflows.Core;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -6,21 +6,27 @@ namespace Ktt.Workflows.Implementation.Steps.GitHub;
 
 public class CreateGitHubPr : SafeStep
 {
-    public GitHubPrDefinition Definition { get; set; } = default!;
+    public required GitHubPrDefinition Definition { get; set; }
 
     protected override ExecutionResult Execute(IStepExecutionContext context)
     {
         var d = Definition;
 
-        Journal(context, $"Created PR for branch '{d.Branch}' in '{d.Repository}' with message: {d.Description}");
+        var prId = $"{Guid.NewGuid().ToString()[..8]}";
+        var prUrl = $"https://github.com/{d.Repository}/pull/{prId}";
 
-        // Simulate PR creation API call here
+        Journal(context, $"Created pull request in {d.Repository}: {prUrl}");
+
+        Data.SetFormValue(WorkflowFormKeys.GitHubPullRequestId, prId);
+        Data.SetFormValue(WorkflowFormKeys.GitHubPullRequestUrl, prUrl);
+
         return ExecutionResult.Next();
     }
 
-    public record GitHubPrDefinition(
-        string Repository,
-        string Branch,
-        string Description
-    );
+    public class GitHubPrDefinition
+    {
+        public required string Repository { get; set; }
+        public required string Branch { get; set; }
+        public required string Description { get; set; }
+    }
 }
