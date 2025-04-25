@@ -9,7 +9,7 @@ public class DivideStep : SafeStep
 {
     public int Divisor { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         if (context.Workflow.Data is not MathWorkflowData data)
         {
@@ -23,6 +23,6 @@ public class DivideStep : SafeStep
 
         data.CurrentNumber = data.CurrentNumber / Divisor;
 
-        return ExecutionResult.Next();
+        return Next();
     }
 }

@@ -4,9 +4,9 @@ using WorkflowCore.Models;
 
 public class ProcessTerraformOutputStep : SafeStep
 {
-    public TerraformOutputProcessor Process { get; set; }
+    public TerraformOutputProcessor? Process { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var output = "test";
 
@@ -17,9 +17,8 @@ public class ProcessTerraformOutputStep : SafeStep
 
         Journal(context, "Processed Terraform output");
 
-        return ExecutionResult.Next();
+        return Next();
     }
 }
-
 
 public delegate void TerraformOutputProcessor(string output, IWorkflowDataWithState data, IStepExecutionContext context);

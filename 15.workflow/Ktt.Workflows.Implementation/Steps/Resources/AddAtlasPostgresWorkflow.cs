@@ -98,13 +98,12 @@ public class AddAtlasPostgresWorkflow : IWorkflow<AddAtlasPostgresWorkflowData>
                     GitHubPullRequestUrl = data.GetRequiredFormValue(WorkflowFormKeys.GitHubPullRequestUrl)
                 })
 
-
-            .Status($"8/{total} Resolving URL...")
-            .Then<ProcessTerraformOutputStep>()
-                .Input(x => x.Process, _ => new Action<string, IWorkflowDataWithState>((content, data) =>
-                {
+            //.Status($"8/{total} Resolving URL...")
+            //.Then<ProcessTerraformOutputStep>()
+            //    .Input(x => x.Process, _ => (content, data, context) =>
+            //    {
                     
-                }))
+            //    }))
 
             .Finish($"9/{total} Finished adding Postgres instance.");
     }

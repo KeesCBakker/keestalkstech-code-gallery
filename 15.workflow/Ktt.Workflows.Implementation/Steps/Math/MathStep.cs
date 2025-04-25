@@ -11,7 +11,7 @@ public class MathStep : SafeStep
 
     public MathStepOperator Operator { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         if (context.Workflow.Data is not ICurrentNumber data)
         {
@@ -42,10 +42,10 @@ public class MathStep : SafeStep
             stepState.Progress += 1;
             data.SetStepState(context, stepState);
 
-            return ExecutionResult.Sleep(TimeSpan.FromMilliseconds(10), null);
+            return Sleep(TimeSpan.FromMilliseconds(10));
         }
 
-        return ExecutionResult.Next();
+        return Next();
     }
 
     private sealed class StepProgress

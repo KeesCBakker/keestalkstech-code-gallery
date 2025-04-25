@@ -8,7 +8,7 @@ public class RunJenkinsJobStep : SafeStep
 {
     public JenkinsJobDefinition Definition { get; set; } = default!;
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var d = Definition;
 
@@ -25,7 +25,7 @@ public class RunJenkinsJobStep : SafeStep
         Journal(context, $"Jenkins URL: {jenkinsUrl}");
         Journal(context, $"Jenkins output:\n{output}");
 
-        return ExecutionResult.Next();
+        return Next();
     }
 
     public class JenkinsJobDefinition

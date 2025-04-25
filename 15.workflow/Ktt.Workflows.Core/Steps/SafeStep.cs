@@ -2,7 +2,7 @@
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
-public abstract class SafeStep : StepBody
+public abstract class SafeStep : StepBodyAsync
 {
     private string StepName => GetType().Name;
 
@@ -13,7 +13,7 @@ public abstract class SafeStep : StepBody
         Data?.AddJournalEntry(context, message, StepName);
     }
 
-    public override ExecutionResult Run(IStepExecutionContext context)
+    public async override sealed Task<ExecutionResult> RunAsync(IStepExecutionContext context)
     {
         if (context.Workflow.Data is not WorkflowDataWithState data)
         {
@@ -28,7 +28,7 @@ public abstract class SafeStep : StepBody
 
         try
         {
-            var result = Execute(context);
+            var result = await ExecuteAsync(context);
 
             var duration = DateTime.UtcNow - start;
             Journal(context, $"Exiting step (Duration: {duration.TotalMilliseconds:F0} ms)");
@@ -46,5 +46,15 @@ public abstract class SafeStep : StepBody
         }
     }
 
-    protected abstract ExecutionResult Execute(IStepExecutionContext context);
+    protected abstract Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context);
+
+    protected static Task<ExecutionResult> Next()
+    {
+        return Task.FromResult(ExecutionResult.Next());
+    }
+
+    protected static Task<ExecutionResult> Sleep(TimeSpan ts)
+    {
+        return Task.FromResult(ExecutionResult.Sleep(ts, null));
+    }
 }

@@ -10,7 +10,7 @@ public abstract class EditGitHubFile : SafeStep
 
     protected abstract string Edit(string currentContent);
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var d = Definition;
 
@@ -19,7 +19,7 @@ public abstract class EditGitHubFile : SafeStep
 
         // Simulate editing the file via GitHub API here
 
-        return ExecutionResult.Next();
+        return Next();
     }
 
     public class GitHubFileDefinition

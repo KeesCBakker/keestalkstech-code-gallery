@@ -7,7 +7,7 @@ public class TerraformWithJenkinsStep : RunJenkinsJobStep
 {
     public TerraformJobDefinition TerraformData { get; set; } = default!;
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         Definition = new()
         {
@@ -20,7 +20,7 @@ public class TerraformWithJenkinsStep : RunJenkinsJobStep
             }
         };
 
-        return base.Execute(context);
+        return base.ExecuteAsync(context);
     }
 
     public class TerraformJobDefinition

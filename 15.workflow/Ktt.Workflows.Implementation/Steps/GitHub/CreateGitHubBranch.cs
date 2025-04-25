@@ -8,14 +8,14 @@ public class CreateGitHubBranch : SafeStep
 {
     public GitHubBranchDefinition Definition { get; set; } = default!;
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var d = Definition;
 
         Journal(context, $"Created branch '{d.Branch}' in repository '{d.Repository}'");
 
         // Simulate GitHub API branch creation here
-        return ExecutionResult.Next();
+        return Next();
     }
 
     public class GitHubBranchDefinition

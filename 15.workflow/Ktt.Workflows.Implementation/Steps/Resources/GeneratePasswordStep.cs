@@ -10,7 +10,7 @@ public class GeneratePasswordStep : SafeStep
 {
     public int Length { get; set; } = 16;
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var password = GenerateSecurePassword(Length);
 
@@ -21,7 +21,7 @@ public class GeneratePasswordStep : SafeStep
         Data.SetFormValue(WorkflowFormKeys.GeneratedPassword, password);
 
         Journal(context, $"Generated a {Length}-character password.");
-        return ExecutionResult.Next();
+        return Next();
     }
 
 

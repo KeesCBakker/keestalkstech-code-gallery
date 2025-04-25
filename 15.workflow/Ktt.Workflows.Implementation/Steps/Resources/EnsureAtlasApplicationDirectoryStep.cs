@@ -10,11 +10,11 @@ public class EnsureAtlasApplicationDirectoryStep : SafeStep
 
     public required string Repository { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         // Simulated logic — in reality this might check a GitHub repo for a path
         Journal(context, $"Ensured application directory for '{ApplicationName}' in environment '{Environment}' in repository '{Repository}'.");
 
-        return ExecutionResult.Next();
+        return Next();
     }
 }

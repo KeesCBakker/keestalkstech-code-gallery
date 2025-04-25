@@ -8,7 +8,7 @@ public class CreateGitHubPr : SafeStep
 {
     public required GitHubPrDefinition Definition { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         var d = Definition;
 
@@ -20,7 +20,7 @@ public class CreateGitHubPr : SafeStep
         Data.SetFormValue(WorkflowFormKeys.GitHubPullRequestId, prId);
         Data.SetFormValue(WorkflowFormKeys.GitHubPullRequestUrl, prUrl);
 
-        return ExecutionResult.Next();
+        return Next();
     }
 
     public class GitHubPrDefinition

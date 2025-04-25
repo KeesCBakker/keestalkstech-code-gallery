@@ -9,10 +9,10 @@ public class NotifyStep(INotificationService notifier) : SafeStep
 {
     public string Message { get; set; } = string.Empty;
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         notifier.Send(Message);
 
-        return ExecutionResult.Next();
+        return Next();
     }
 }

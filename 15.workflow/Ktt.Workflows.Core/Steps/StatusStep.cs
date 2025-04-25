@@ -12,7 +12,7 @@ public class StatusStep : SafeStep
 
     public WorkflowExecutionState? State { get; set; }
 
-    protected override ExecutionResult Execute(IStepExecutionContext context)
+    protected override Task<ExecutionResult> ExecuteAsync(IStepExecutionContext context)
     {
         if (context.Workflow.Data is not IWorkflowDataWithState data)
         {
@@ -27,6 +27,6 @@ public class StatusStep : SafeStep
             data.State = State.Value;
         }
 
-        return ExecutionResult.Next();
+        return Next();
     }
 }
