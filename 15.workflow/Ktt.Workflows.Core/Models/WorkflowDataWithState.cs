@@ -11,7 +11,6 @@ public abstract class WorkflowDataWithState : IWorkflowDataWithState
 
     public string StatusDescription { get; set; } = string.Empty;
 
-
     public WorkflowExecutionState State { get; set; } = WorkflowExecutionState.Running;
 
     public WorkflowExceptionInfo? LastException { get; set; }

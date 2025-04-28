@@ -1,17 +1,14 @@
 ﻿using Ktt.Workflows.Core;
 using Ktt.Workflows.Core.Models;
-using Ktt.Workflows.Core.Workflows;
-using Ktt.Workflows.Implementation.Steps.GitHub;
-using Ktt.Workflows.Implementation.Steps.Jenkins;
+using Ktt.Workflows.Core.Steps;
 using Ktt.Workflows.Implementation.Steps.Resources;
+using Ktt.Workflows.Implementation.Workflows.Provisioning;
 using WorkflowCore.Interface;
-using static Ktt.Workflows.Implementation.Steps.Jenkins.TerraformWithJenkinsStep;
 using static Ktt.Workflows.Implementation.Steps.Resources.AddPostgresTerraformStep;
-using static Ktt.Workflows.Implementation.Steps.Resources.GeneratePasswordStep;
 
 namespace Ktt.Workflows.Implementation.Workflows;
 
-public class AddPostgresWorkflowData : WorkflowDataWithState, IPostgresInstanceDefinition
+public class AddPostgresWorkflowData : WorkflowDataWithState, IPostgresInstanceDefinition, IInstanceDefinition
 {
     public string Environment { get; set; } = default!;
 
@@ -27,60 +24,22 @@ public class AddPostgresWorkflowData : WorkflowDataWithState, IPostgresInstanceD
 }
 
 [AutoRegisterWorkflow]
-public class AddPostgresWorkflow : IWorkflow<AddPostgresWorkflowData>
+public class AddPostgresWorkflow : AddBlazeResourceWorkflow<AddPostgresWorkflowData, AddPostgresTerraformStep>
 {
-    public string Id => "AddPostgres";
-    public int Version => 1;
+    public override string Id => "AddPostgres";
 
-    public void Build(IWorkflowBuilder<AddPostgresWorkflowData> builder)
+    protected override string TerraformFileName => "postgres.tf";
+
+    protected override IStepBuilder<AddPostgresWorkflowData, AddPostgresTerraformStep> BuildAddTerraformStep(IStepBuilder<AddPostgresWorkflowData, StatusStep> builder)
     {
-        const string repository = "platform-infra";
-        const int total = 6;
-
-        builder
-            .Status($"1/{total} Creating GitHub branch...")
-            .Then<CreateGitHubBranch>()
-                .Input(x => x.Definition, data => new()
-                {
-                    Repository = repository,
-                    Branch = data.BranchName
-                })
-
-            .Status($"2/{total} Generating database password...")
-            .Then<GeneratePasswordStep>()
-                .Input(x => x.Length, _ => 32)
-
-            .Status($"3/{total} Adding Terraform for Postgres...")
-            .Then<AddPostgresTerraformStep>()
-                .Input(x => x.Instance, data => data)
-                .Input(x => x.Password, data => data.GetRequiredFormValue(WorkflowFormKeys.GeneratedPassword))
-                .Input(x => x.Definition, data => new()
-                {
-                    Repository = repository,
-                    Branch = data.BranchName,
-                    FilePath = $"{data.Environment}/postgres.tf"
-                })
-
-            .Status($"4/{total} Planning Terraform...")
-            .Then<TerraformWithJenkinsStep>()
-                .Input(x => x.TerraformData, data => new()
-                {
-                    Environment = data.Environment,
-                    Branch = data.BranchName,
-                    Action = TerraformAction.Plan,
-                    GitHubPullRequestUrl = data.GetRequiredFormValue(WorkflowFormKeys.GitHubPullRequestUrl)
-                })
-
-            .Status($"5/{total} Applying Terraform...")
-            .Then<TerraformWithJenkinsStep>()
-                .Input(x => x.TerraformData, data => new()
-                {
-                    Environment = data.Environment,
-                    Branch = data.BranchName,
-                    Action = TerraformAction.Apply,
-                    GitHubPullRequestUrl = data.GetRequiredFormValue(WorkflowFormKeys.GitHubPullRequestUrl)
-                })
-
-            .Finish($"6/{total} Finished");
+        return builder.Then<AddPostgresTerraformStep>()
+            .Input(x => x.Instance, data => data)
+            .Input(x => x.Password, data => data.GetRequiredFormValue(WorkflowFormKeys.GeneratedPassword))
+            .Input(x => x.Definition, data => new()
+            {
+                Repository = "platform-infra",
+                Branch = data.BranchName,
+                FilePath = $"{data.Environment}/{TerraformFileName}"
+            });
     }
 }

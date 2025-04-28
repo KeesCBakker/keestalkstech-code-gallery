@@ -17,8 +17,5 @@ var host = builder.Build();
 var workflowHost = host.Services.GetRequiredService<IWorkflowHost>();
 workflowHost.Start();
 
-// Create and run a sample workflow
-var workflowController = host.Services.GetRequiredService<IWorkflowController>();
-
 // Keep the application running
 await host.RunAsync();

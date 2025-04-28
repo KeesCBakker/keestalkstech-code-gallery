@@ -3,12 +3,13 @@ using Ktt.Workflows.Core.Models;
 using Ktt.Workflows.Core.Workflows;
 using Ktt.Workflows.Implementation.Steps.GitHub;
 using Ktt.Workflows.Implementation.Steps.Jenkins;
+using Ktt.Workflows.Implementation.Steps.Resources;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 using static Ktt.Workflows.Implementation.Steps.Jenkins.TerraformWithJenkinsStep;
 using static Ktt.Workflows.Implementation.Steps.Resources.AddPostgresTerraformStep;
 
-namespace Ktt.Workflows.Implementation.Steps.Resources;
+namespace Ktt.Workflows.Implementation.Workflows.Provisioning;
 
 public class AddAtlasPostgresWorkflowData : WorkflowDataWithState, IPostgresInstanceDefinition
 {
@@ -84,8 +85,7 @@ public class AddAtlasPostgresWorkflow : IWorkflow<AddAtlasPostgresWorkflowData>
                 {
                     Environment = data.Environment,
                     Branch = data.BranchName,
-                    Action = TerraformAction.Plan,
-                    GitHubPullRequestUrl = data.GetRequiredFormValue(WorkflowFormKeys.GitHubPullRequestUrl)
+                    Action = TerraformAction.Plan
                 })
 
             .Status($"7/{total} Applying Terraform...")
@@ -94,16 +94,12 @@ public class AddAtlasPostgresWorkflow : IWorkflow<AddAtlasPostgresWorkflowData>
                 {
                     Environment = data.Environment,
                     Branch = data.BranchName,
-                    Action = TerraformAction.Apply,
-                    GitHubPullRequestUrl = data.GetRequiredFormValue(WorkflowFormKeys.GitHubPullRequestUrl)
+                    Action = TerraformAction.Apply
                 })
 
-            //.Status($"8/{total} Resolving URL...")
-            //.Then<ProcessTerraformOutputStep>()
-            //    .Input(x => x.Process, _ => (content, data, context) =>
-            //    {
-                    
-            //    }))
+            .Status($"8/{total} Resolving URL...")
+            .Then<ProcessTerraformOutputStep>()
+                .Input(x => x.Process, _ => (c, d, _) => d.SetFormValue("length", c.Length.ToString()))
 
             .Finish($"9/{total} Finished adding Postgres instance.");
     }

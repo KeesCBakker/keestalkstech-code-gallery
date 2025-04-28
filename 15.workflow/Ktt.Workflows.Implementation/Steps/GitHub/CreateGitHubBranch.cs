@@ -1,4 +1,5 @@
-﻿using Ktt.Workflows.Core.Steps;
+﻿using Ktt.Workflows.Core;
+using Ktt.Workflows.Core.Steps;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
@@ -15,6 +16,7 @@ public class CreateGitHubBranch : SafeStep
         Journal(context, $"Created branch '{d.Branch}' in repository '{d.Repository}'");
 
         // Simulate GitHub API branch creation here
+
         return Next();
     }
 

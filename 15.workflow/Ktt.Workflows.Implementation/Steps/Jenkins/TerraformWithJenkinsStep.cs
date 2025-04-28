@@ -30,8 +30,6 @@ public class TerraformWithJenkinsStep : RunJenkinsJobStep
         public required string Branch { get; set; }
 
         public required TerraformAction Action { get; set; }
-
-        public required string GitHubPullRequestUrl { get; set; }
     }
 
     public enum TerraformAction

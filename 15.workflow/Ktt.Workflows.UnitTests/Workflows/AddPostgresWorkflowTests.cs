@@ -39,7 +39,7 @@ public class AddPostgresWorkflowTests
 
         while(true)
         {
-            await Task.Delay(200);
+            await Task.Delay(500);
             result = await engine.GetWorkflowStatusAsync(workflowId);
             if (result?.State is WorkflowExecutionState.Finished or WorkflowExecutionState.Failed)
             {
