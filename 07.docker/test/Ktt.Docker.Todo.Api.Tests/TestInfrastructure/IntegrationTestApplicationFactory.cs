@@ -5,7 +5,7 @@ using StackExchange.Redis;
 
 using IContainer = DotNet.Testcontainers.Containers.IContainer;
 
-namespace Ktt.Todo.Api.Tests.TestInfrastructure;
+namespace Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 
 public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncLifetime
 {

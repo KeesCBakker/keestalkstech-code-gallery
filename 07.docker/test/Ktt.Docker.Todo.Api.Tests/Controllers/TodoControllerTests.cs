@@ -1,5 +1,5 @@
 ﻿using Ktt.Docker.Todo.Api.Models;
-using Ktt.Todo.Api.Tests.TestInfrastructure;
+using Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 using System.Net;
 using System.Net.Http.Json;
 

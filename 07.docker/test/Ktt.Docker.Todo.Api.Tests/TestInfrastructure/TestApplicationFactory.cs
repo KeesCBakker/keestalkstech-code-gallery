@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Ktt.Todo.Api.Tests.TestInfrastructure;
+namespace Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 
 public class TestApplicationFactory : WebApplicationFactory<Program>
 {
