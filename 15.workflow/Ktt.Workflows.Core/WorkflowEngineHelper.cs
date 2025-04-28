@@ -1,5 +1,7 @@
 ﻿using Ktt.Workflows.Core.Models;
+using System.Security.Cryptography.X509Certificates;
 using WorkflowCore.Interface;
+using WorkflowCore.Models;
 
 namespace Ktt.Workflows.Core;
 
@@ -26,11 +28,20 @@ public class WorkflowEngineHelper
     public async Task<WorkflowStatusResult?> GetWorkflowStatusAsync(string id)
     {
         var instance = await _persistenceProvider.GetWorkflowInstance(id);
+
         if (instance?.Data is not IWorkflowDataWithState data)
             return null;
 
         var statusTitle = data.StatusTitle;
         var statusDescription = data.StatusDescription;
+
+
+        var failedStep = instance.ExecutionPointers.FirstOrDefault(x => x.Status == PointerStatus.Failed);
+        if (failedStep != null)
+        {
+            data.State = WorkflowExecutionState.Failed;
+        }
+
 
         if (data.State == WorkflowExecutionState.Failed)
         {
