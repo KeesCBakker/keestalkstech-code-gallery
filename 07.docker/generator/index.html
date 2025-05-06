@@ -4,7 +4,7 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.4.0";
+      this.version = "v2.4.1";
       this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
       this.aspNetVersion = ko.observable("8.0");
@@ -92,9 +92,9 @@ ARG \
    EXECUTE_TESTS="true"
 <!-- /ko -->
 
-#########################################################################
+##########################################################################
 # Build image, uses VERBOSITY, EXECUTE_TESTS, PROJECTS_TO_PUBLISH, APP_DIR
-#########################################################################
+##########################################################################
 
 FROM mcr.microsoft.com/dotnet/sdk:$ASPNET_VERSION AS build
 
