@@ -15,9 +15,6 @@ public class GeneratePasswordStep : SafeStep
         var password = GenerateSecurePassword(Length);
 
         // Store in step state for later retrieval
-        Data.SetStepState(context, new PasswordResult { Password = password });
-
-        // Also store it in the workflow's form
         Data.SetFormValue(WorkflowFormKeys.GeneratedPassword, password);
 
         Journal(context, $"Generated a {Length}-character password.");

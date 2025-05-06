@@ -20,14 +20,6 @@ public interface IWorkflowDataWithState
     string GetRequiredFormValue(string key);
 
     // ───────────────────────────────────────────────
-    // ▶ Per-step State
-    // ───────────────────────────────────────────────
-    Dictionary<string, object> StepState { get; }
-    T GetStepState<T>(IStepExecutionContext context) where T : new();
-    void SetStepState<T>(IStepExecutionContext context, T value);
-    T? GetLastStepState<T>(string stepName) where T : class;
-
-    // ───────────────────────────────────────────────
     // ▶ Journal Logging
     // ───────────────────────────────────────────────
     List<string> Journal { get; set; }

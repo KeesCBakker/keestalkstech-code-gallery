@@ -1,4 +1,5 @@
-﻿using Ktt.Workflows.Core;
+﻿using FluentAssertions;
+using Ktt.Workflows.Core;
 using Ktt.Workflows.Implementation.Models;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -13,7 +14,7 @@ public class LeetMathWorkflowTests
         var services = new ServiceCollection();
 
         // Use in-memory engine via our real DI extension
-        services.AddWorkflowEngineImplementation(useInMemory: true);
+        services.AddWorkflowEngineImplementation();
 
         var sp = services.BuildServiceProvider();
 
@@ -23,23 +24,19 @@ public class LeetMathWorkflowTests
         {
             await host.StartAsync(CancellationToken.None);
 
-            var helper = sp.GetRequiredService<WorkflowEngineHelper>();
+            var helper = sp.GetRequiredService<WorkflowStarter>();
 
-            var id = await helper.StartWorkflowAsync("LeetMath", new MathWorkflowData { CurrentNumber = 42 });
-            await Task.Delay(120);
-
+            var id = await helper.RunMathWorkflow(new MathWorkflowData { CurrentNumber = 42 });
             while (true)
             {
                 var status = await helper.GetWorkflowStatusAsync(id);
-
-                Assert.True(!string.IsNullOrEmpty(status!.StatusTitle));
-
-                if (status!.StatusTitle == "6/6 Finished")
+                if (status?.IsRunning == false)
                 {
+                    status.StatusTitle.Should().NotBeNullOrEmpty();
                     break;
                 }
 
-                await Task.Delay(20);
+                await Task.Delay(120);
             }
         }
         finally

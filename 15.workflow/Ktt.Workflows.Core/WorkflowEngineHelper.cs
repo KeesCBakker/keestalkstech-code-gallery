@@ -1,16 +1,25 @@
 ﻿using Ktt.Workflows.Core.Models;
-using System.Security.Cryptography.X509Certificates;
 using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Ktt.Workflows.Core;
 
-public class WorkflowEngineHelper
+public class WorkflowService
 {
     private readonly IWorkflowHost _workflowHost;
     private readonly IPersistenceProvider _persistenceProvider;
 
-    public WorkflowEngineHelper(
+    public static string ResolveWorkflowId<TWorkflow>()
+    {
+        return ResolveWorkflowId(typeof(TWorkflow));
+    }
+
+    public static string ResolveWorkflowId(Type type)
+    {
+        return type.Name.Replace("Workflow", "");
+    }
+
+    public WorkflowService(
         IWorkflowHost workflowHost,
         IPersistenceProvider persistenceProvider)
     {
@@ -18,8 +27,13 @@ public class WorkflowEngineHelper
         _persistenceProvider = persistenceProvider;
     }
 
-    public async Task<string> StartWorkflowAsync<TData>(string workflowId, TData data)
-        where TData : class, new()
+    public Task<string> StartWorkflowAsync<TWorkflow>(object data)
+    {
+        var workflowId = ResolveWorkflowId<TWorkflow>();
+        return StartWorkflowAsync(workflowId, data);
+    }
+
+    public async Task<string> StartWorkflowAsync(string workflowId, object data)
     {
         var id = await _workflowHost.StartWorkflow(workflowId, 1, data);
         return id;
@@ -27,21 +41,31 @@ public class WorkflowEngineHelper
 
     public async Task<WorkflowStatusResult?> GetWorkflowStatusAsync(string id)
     {
-        var instance = await _persistenceProvider.GetWorkflowInstance(id);
+
+        WorkflowInstance instance;
+
+        try
+        {
+            instance = await _persistenceProvider.GetWorkflowInstance(id);
+        }
+        catch(Exception)
+        {
+            return null;
+        }
 
         if (instance?.Data is not IWorkflowDataWithState data)
+        {
             return null;
+        }
 
         var statusTitle = data.StatusTitle;
         var statusDescription = data.StatusDescription;
-
 
         var failedStep = instance.ExecutionPointers.FirstOrDefault(x => x.Status == PointerStatus.Failed);
         if (failedStep != null)
         {
             data.State = WorkflowExecutionState.Failed;
         }
-
 
         if (data.State == WorkflowExecutionState.Failed)
         {
@@ -55,15 +79,6 @@ public class WorkflowEngineHelper
             {
                 statusTitle += " failed";
             }
-
-            // Append exception to description if available
-            if (data.LastException != null)
-            {
-                var message = $"failed: {data.LastException.Message}";
-                statusDescription = string.IsNullOrWhiteSpace(statusDescription)
-                    ? message
-                    : $"{statusDescription} ({message})";
-            }
         }
 
         return new WorkflowStatusResult
@@ -71,9 +86,11 @@ public class WorkflowEngineHelper
             WorkflowId = id,
             StatusTitle = statusTitle,
             StatusDescription = statusDescription ?? string.Empty,
+            LastExceptionMessage = data.LastException?.Message ?? string.Empty,
             State = data.State,
             Form = data.Form,
-            Journal = data.Journal
+            Journal = data.Journal,
+            WorkflowDefinitionId = instance.WorkflowDefinitionId
         };
     }
 }

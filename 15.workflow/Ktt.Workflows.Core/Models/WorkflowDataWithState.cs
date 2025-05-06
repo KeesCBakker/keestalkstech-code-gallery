@@ -2,7 +2,7 @@
 
 namespace Ktt.Workflows.Core.Models;
 
-public abstract class WorkflowDataWithState : IWorkflowDataWithState
+public class WorkflowDataWithState : IWorkflowDataWithState
 {
     // ───────────────────────────────────────────────
     // ▶ Workflow Status
@@ -34,41 +34,6 @@ public abstract class WorkflowDataWithState : IWorkflowDataWithState
         }
 
         return value;
-    }
-
-    // ───────────────────────────────────────────────
-    // ▶ Per-step State
-    // ───────────────────────────────────────────────
-    public Dictionary<string, object> StepState { get; init; } = [];
-
-    private static string BuildKey(IStepExecutionContext context)
-        => $"exec:{context.ExecutionPointer.Id}:{context.Step.BodyType.Name}";
-
-    public T GetStepState<T>(IStepExecutionContext context) where T : new()
-    {
-        var key = BuildKey(context);
-        if (StepState.TryGetValue(key, out var obj) && obj is T value)
-        {
-            return value;
-        }
-
-        var fresh = new T();
-        StepState[key] = fresh;
-        return fresh;
-    }
-
-    public void SetStepState<T>(IStepExecutionContext context, T value)
-    {
-        StepState[BuildKey(context)] = value!;
-    }
-
-    public T? GetLastStepState<T>(string stepName) where T : class
-    {
-        return StepState
-            .Where(kvp => kvp.Key.EndsWith($":{stepName}"))
-            .Select(kvp => kvp.Value)
-            .OfType<T>()
-            .LastOrDefault();
     }
 
     // ───────────────────────────────────────────────

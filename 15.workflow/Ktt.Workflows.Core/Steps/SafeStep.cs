@@ -55,6 +55,6 @@ public abstract class SafeStep : StepBodyAsync
 
     protected static Task<ExecutionResult> Sleep(TimeSpan ts)
     {
-        return Task.FromResult(ExecutionResult.Sleep(ts, null));
+        return Task.FromResult(ExecutionResult.Sleep(ts, new object()));
     }
 }

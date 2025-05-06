@@ -1,33 +1,31 @@
-﻿using Ktt.Workflows.Core.Steps;
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System.Reflection;
 using WorkflowCore.Interface;
+using WorkflowCore.Models;
 
 namespace Ktt.Workflows.Core;
 
 public static class AssemblyScanner
 {
-    public static IServiceCollection AddWorkflowEngine(this IServiceCollection services, bool useInMemory = false)
+    public static IServiceCollection AddWorkflowEngine(
+        this IServiceCollection services,
+        Action<WorkflowOptions>? configureWorkflowEngine = null)
     {
-        services.AddLogging();
-
-        services.AddWorkflow(cfg =>
-        {
-            if (!useInMemory)
-            {
-                cfg.UseSqlite("Data Source=workflow.db;", true);
-            }
-        });
-
         RegisterAllSteps(services, typeof(SafeStep).Assembly);
 
-        services.AddSingleton<WorkflowHostedService>();
-        services.AddSingleton<IHostedService>(sp => sp.GetRequiredService<WorkflowHostedService>());
-
-        services.AddTransient<WorkflowEngineHelper>();
-
-        return services;
+        return services
+            .AddLogging()
+            .AddWorkflow(cfg =>
+            {
+                if (configureWorkflowEngine != null)
+                {
+                    configureWorkflowEngine(cfg);
+                }
+            })
+            .AddSingleton<WorkflowHostedService>()
+            .AddSingleton<IHostedService>(sp => sp.GetRequiredService<WorkflowHostedService>())
+            .AddTransient<WorkflowService>();
     }
 
     public static void RegisterAllSteps(this IServiceCollection services, Assembly assembly)
@@ -38,20 +36,6 @@ public static class AssemblyScanner
         foreach (var stepType in stepTypes)
         {
             services.AddTransient(stepType);
-        }
-    }
-
-    public static void RegisterAllWorkflows(this IServiceCollection services, Assembly assembly)
-    {
-        var workflowTypes = assembly.GetTypes()
-            .Where(t => t.GetCustomAttribute<AutoRegisterWorkflowAttribute>() != null)
-            .Where(t => t.GetInterfaces().Any(i =>
-                i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IWorkflow<>)))
-            .ToList();
-
-        foreach (var type in workflowTypes)
-        {
-            services.AddTransient(type);
         }
     }
 

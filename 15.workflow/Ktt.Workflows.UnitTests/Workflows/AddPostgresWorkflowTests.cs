@@ -13,7 +13,7 @@ public class AddPostgresWorkflowTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddWorkflowEngineImplementation(useInMemory: true); // registers WorkflowHostedService
+        services.AddWorkflowEngineImplementation(); // registers WorkflowHostedService
 
         using var provider = services.BuildServiceProvider();
 
@@ -21,7 +21,7 @@ public class AddPostgresWorkflowTests
         var hostedService = provider.GetRequiredService<WorkflowHostedService>();
         await hostedService.StartAsync(default);
 
-        var engine = provider.GetRequiredService<WorkflowEngineHelper>();
+        var engine = provider.GetRequiredService<WorkflowService>();
 
         var data = new AddPostgresWorkflowData
         {
@@ -50,7 +50,7 @@ public class AddPostgresWorkflowTests
         // Assert
         result.Should().NotBeNull();
         result.State.Should().Be(WorkflowExecutionState.Finished);
-        result.StatusTitle.Should().Be("6/6 Finished");
+        result.StatusTitle.Should().Be("7/7 Finished");
         result.Form.Should().ContainKey(WorkflowFormKeys.GeneratedPassword);
         result.Form[WorkflowFormKeys.GeneratedPassword].Should().NotBeNullOrWhiteSpace();
 

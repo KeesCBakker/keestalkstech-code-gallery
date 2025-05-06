@@ -13,19 +13,18 @@ public class DivisionWorkflowTests
         var services = new ServiceCollection();
 
         // Use in-memory engine via our real DI extension
-        services.AddWorkflowEngineImplementation(useInMemory: true);
+        services.AddWorkflowEngineImplementation();
 
         var sp = services.BuildServiceProvider();
-
         var host = sp.GetRequiredService<WorkflowHostedService>();
 
         try
         {
             await host.StartAsync(CancellationToken.None);
 
-            var helper = sp.GetRequiredService<WorkflowEngineHelper>();
+            var helper = sp.GetRequiredService<WorkflowStarter>();
 
-            var id = await helper.StartWorkflowAsync("DivisionWorkflow", new MathWorkflowData { CurrentNumber = 42 });
+            var id = await helper.RunDivisionWorkflow(new MathWorkflowData { CurrentNumber = 42 });
             await Task.Delay(100);
 
             var status = await helper.GetWorkflowStatusAsync(id);
