@@ -16,13 +16,7 @@ public static class AssemblyScanner
 
         return services
             .AddLogging()
-            .AddWorkflow(cfg =>
-            {
-                if (configureWorkflowEngine != null)
-                {
-                    configureWorkflowEngine(cfg);
-                }
-            })
+            .AddWorkflow(cfg => configureWorkflowEngine?.Invoke(cfg))
             .AddSingleton<WorkflowHostedService>()
             .AddSingleton<IHostedService>(sp => sp.GetRequiredService<WorkflowHostedService>())
             .AddTransient<WorkflowService>();

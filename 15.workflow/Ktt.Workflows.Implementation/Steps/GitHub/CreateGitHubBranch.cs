@@ -1,6 +1,4 @@
-﻿using Ktt.Workflows.Core;
-using Ktt.Workflows.Core.Steps;
-using WorkflowCore.Interface;
+﻿using WorkflowCore.Interface;
 using WorkflowCore.Models;
 
 namespace Ktt.Workflows.Implementation.Steps.GitHub;
