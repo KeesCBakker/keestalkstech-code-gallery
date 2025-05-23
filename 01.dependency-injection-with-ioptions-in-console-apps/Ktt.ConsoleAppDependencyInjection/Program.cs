@@ -2,6 +2,7 @@
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 static void ConfigureServices(IServiceCollection services)
 {
@@ -26,7 +27,20 @@ static void ConfigureServices(IServiceCollection services)
             .AddSingleton(p => p.GetRequiredService<IOptions<TConfig>>().Value)
             .AddOptionsWithValidateOnStart<TConfig>()
             .BindConfiguration(sectionName)
-            .ValidateDataAnnotations();
+            .Validate(options =>
+            {
+                var results = new List<ValidationResult>();
+                var context = new ValidationContext(options);
+                if (!Validator.TryValidateObject(options, context, results, validateAllProperties: true))
+                {
+                    throw new OptionsValidationException(
+                        sectionName,
+                        typeof(TConfig),
+                        results.Select(r => $"[{sectionName}] {r.ErrorMessage}")
+                    );
+                }
+                return true;
+            });
     }
 
     Configure<AppOptions>(AppOptions.SectionName);

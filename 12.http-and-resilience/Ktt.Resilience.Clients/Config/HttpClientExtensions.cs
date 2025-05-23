@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Http.Resilience;
 using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Resilience.Clients.Config;
 
@@ -78,7 +79,20 @@ public static class HttpClientExtensions
         services
             .AddOptionsWithValidateOnStart<TOptions>(sectionName)
             .BindConfiguration(sectionName)
-            .ValidateDataAnnotations();
+            .Validate(options =>
+            {
+                var results = new List<ValidationResult>();
+                var context = new ValidationContext(options);
+                if (!Validator.TryValidateObject(options, context, results, validateAllProperties: true))
+                {
+                    throw new OptionsValidationException(
+                        sectionName,
+                        typeof(TOptions),
+                        results.Select(r => $"[{sectionName}] {r.ErrorMessage}")
+                    );
+                }
+                return true;
+            });
 
         // note: we need to bind {name-standard} to hook up resilience options
         services
