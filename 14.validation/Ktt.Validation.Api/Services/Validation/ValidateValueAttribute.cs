@@ -3,21 +3,20 @@
 namespace Ktt.Validation.Api.Services.Validation;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
-public abstract class IsNotOneOfValidationAttribute : ValidationAttribute
+public abstract class CustomValidationAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(
         object? value,
         ValidationContext validationContext)
     {
-        var forbiddenValues = GetForbiddenValues(validationContext);
-        var exists = forbiddenValues.Contains(value);
+        var valid = IsValidValue(value, validationContext);
 
-        if (!exists)
+        if (!valid)
         {
             return ValidationResult.Success!;
         }
 
-        var msg = GetInvalidValueMessage(value, forbiddenValues);
+        var msg = GetInvalidValueMessage(value);
         string[] members = validationContext.MemberName is not null
         ? [validationContext.MemberName]
         : [];
@@ -25,9 +24,9 @@ public abstract class IsNotOneOfValidationAttribute : ValidationAttribute
         return new ValidationResult(msg, members);
     }
 
-    protected abstract object[] GetForbiddenValues(ValidationContext validationContext);
+    protected abstract bool IsValidValue(object? value, ValidationContext validationContext);
 
-    protected virtual string GetInvalidValueMessage(object? invalidValue, object[] validValues)
+    protected virtual string GetInvalidValueMessage(object? invalidValue)
     {
         return $"{invalidValue} is not valid or allowed.";
     }

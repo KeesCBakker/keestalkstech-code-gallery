@@ -30,4 +30,10 @@ public class ProvisionerService(IDataAnnotationsValidator validator)
             "no-such-app-name",
         });
     }
+
+    public async Task<bool> Exists(string name)
+    {
+        var applications = await GetApplicationNames();
+        return applications.Contains(name);
+    }
 }
