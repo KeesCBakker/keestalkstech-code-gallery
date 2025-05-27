@@ -2,34 +2,41 @@
 using Ktt.Validation.Api.Services;
 using NCrontab;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ktt.Validation.Api.Models;
 
 public class ComplexApplication : IValidatableObject
 {
     [Required]
-    public string Environment { get; set; } = string.Empty;
+    public string Name { get; set; } = default!;
+
+    [Required]
+    public string Environment { get; set; } = default!;
 
     public ComplexApplicationType Type { get; set; }
 
     [Required, MinLength(3), MaxLength(75)]
-    public string DockerHubRepo { get; set; } = string.Empty;
+    public string DockerHubRepo { get; set; } = default!;
 
     [Required]
-    public string ImageTag { get; set; } = string.Empty;
+    public string ImageTag { get; set; } = default!;
 
     [Required, RegularExpression("^\\d+m$")]
-    public string Cpu { get; set; } = string.Empty;
+    public string Cpu { get; set; } = default!;
 
     [Required, RegularExpression("^\\d+Mi$")]
-    public string Ram { get; set; } = string.Empty;
+    public string Ram { get; set; } = default!;
 
-    public string Command { get; set; } = string.Empty;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? Command { get; set; } = default!;
 
-    public string Schedule { get; set; } = string.Empty;
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
+    public string? Schedule { get; set; } = default!;
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     [RegularExpression(@"^$|^(?!.*(cron|site|service))([a-z0-9-]*)$", ErrorMessage = "The value must be lower-kebab-case and may not contain the words cron, site or service.")]
-    public string Postfix { get; set; } = string.Empty;
+    public string? Postfix { get; set; } = default!;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {

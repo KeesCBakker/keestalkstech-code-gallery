@@ -2,26 +2,28 @@
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation.Attributes;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace Ktt.Validation.Api.Models;
 
-public class ApplicationProvisioningRequest : IValidatableObject
+public class SimpleApplication : IValidatableObject
 {
     [Required, MinLength(5), ApplicationNameAvailable]
     public string Name { get; set; } = string.Empty;
 
     public ApplicationType Type { get; set; }
 
+    [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
     public string? EntryPoint { get; set; }
 
     public int MagicNumber { get; set; }
 
-    [ValidLabel]
+    [Label]
     public string Label { get; set; } = string.Empty;
 
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
-        var v = new InlineValidator<ApplicationProvisioningRequest>();
+        var v = new InlineValidator<SimpleApplication>();
 
         // conditional validation
         v.RuleFor(x => x.EntryPoint)

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace Ktt.Validation.Api.Services.Validation;
 
@@ -12,7 +13,7 @@ public interface IDataAnnotationsValidator
     );
 
     void ThrowIfInvalid(
-        object obj,
-        string? parameterName = null
+        object argument,
+        [CallerArgumentExpression(nameof(argument))] string? paramName = null
     );
 }

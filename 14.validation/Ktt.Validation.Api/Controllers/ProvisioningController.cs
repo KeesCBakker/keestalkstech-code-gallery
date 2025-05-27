@@ -12,26 +12,26 @@ namespace Ktt.Validation.Api.Controllers;
 public class ProvisioningController(ProvisionerService service) : ControllerBase
 {
     /// <summary>
-    /// Validates an application provisioning request.
+    /// Provisions a simple application
     /// </summary>
-    /// <param name="request">The request.</param>
-    [HttpPost("application")]
+    [HttpPost("simple-application")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public void ProvisisionApplication(ApplicationProvisioningRequest request)
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    public void ProvisisionApplication(SimpleApplication request)
     {
         service.ProvisionApplication(request);
     }
 
     /// <summary>
-    /// Validates an application provisioning request.
+    /// Provisions a complex application
     /// </summary>
-    /// <param name="request">The request.</param>
-    [HttpPost("validate-complex-application")]
+    [HttpPost("complex-application")]
     [ProducesResponseType(200)]
-    [ProducesResponseType(400)]
-    public void ValidateComplexApplication(ComplexApplication request)
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    public void ProvisisionApplication(ComplexApplication request)
     {
-        var i = request.ImageTag;
+        service.ProvisionApplication(request);
     }
+
+
 }

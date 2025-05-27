@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Runtime.CompilerServices;
 
 namespace Ktt.Validation.Api.Services.Validation;
 
@@ -18,20 +19,22 @@ public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotati
     public bool TryValidate(object obj, out IList<ValidationResult> validationErrors) =>
         Validate(obj, out validationErrors);
 
-    public void ThrowIfInvalid(object obj, string? parameterName = null)
+    public void ThrowIfInvalid(
+        object argument,
+        [CallerArgumentExpression(nameof(argument))] string? paramName = null)
     {
-        var valid = Validate(obj, out IList<ValidationResult> validationErrors);
+        var valid = Validate(argument, out IList<ValidationResult> validationErrors);
         if (valid)
         {
             return;
         }
 
-        var msg = GetErrorMessage(validationErrors, obj?.GetType());
+        var msg = GetErrorMessage(validationErrors, argument?.GetType());
         Exception ex = new ValidationException(msg);
 
-        if (!string.IsNullOrEmpty(parameterName))
+        if (!string.IsNullOrEmpty(paramName))
         {
-            ex = new ArgumentException($"Parameter '{parameterName}' is invalid.", parameterName, ex);
+            ex = new ArgumentException($"Value is invalid.", paramName, ex);
         }
 
         throw ex;
@@ -39,7 +42,7 @@ public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotati
 
     public static string GetErrorMessage(IList<ValidationResult> validationErrors, Type? objectType)
     {
-        ArgumentNullException.ThrowIfNull(validationErrors, nameof(validationErrors));
+        ArgumentNullException.ThrowIfNull(validationErrors);
 
         var message = "Input invalid";
         if(objectType != null)

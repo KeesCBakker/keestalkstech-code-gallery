@@ -50,7 +50,7 @@ public class ApplicationProvisioningRequestTests
         // arrange
         var fixture = new TestServerFixture();
         var service = fixture.Services.GetRequiredService<ProvisionerService>();
-        var request = new ApplicationProvisioningRequest
+        var request = new SimpleApplication
         {
             Name = "My Application",
             Type = ApplicationType.Application,
@@ -79,7 +79,7 @@ public class ApplicationProvisioningRequestTests
     public void ValidateByValidator()
     {
         // arrange
-        var obj = new ApplicationProvisioningRequest
+        var obj = new SimpleApplication
         {
             Name = "My Application",
             Type = ApplicationType.Application,
@@ -116,7 +116,7 @@ public class ApplicationProvisioningRequestTests
             .AddSingleton(sp => sp)
             .BuildServiceProvider();
 
-        var obj = new ApplicationProvisioningRequest
+        var obj = new SimpleApplication
         {
             Name = "My Application",
             Type = ApplicationType.Application,
@@ -152,7 +152,7 @@ public class ApplicationProvisioningRequestTests
             .AddSingleton(sp => sp)
             .BuildServiceProvider();
 
-        var obj = new ApplicationProvisioningRequest
+        var obj = new SimpleApplication
         {
             Name = "My Application",
             Type = ApplicationType.Application,
