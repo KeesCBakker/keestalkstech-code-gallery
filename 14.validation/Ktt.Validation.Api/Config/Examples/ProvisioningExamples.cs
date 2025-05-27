@@ -3,7 +3,7 @@ using Swashbuckle.AspNetCore.Filters;
 
 namespace Ktt.Validation.Api.Config.Examples;
 
-public class ProvisioningExamples
+public static class ProvisioningExamples
 {
     public static string ApplicationName => "Example Application";
 
