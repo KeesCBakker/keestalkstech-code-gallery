@@ -1,4 +1,5 @@
 ﻿using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
 namespace Ktt.Validation.Api.Config;
@@ -31,6 +32,9 @@ public static class SwaggerConfig
             // Add XML comments for documentation
             options.IncludeXmlComments(XmlCommentsFilePath);
             options.SupportNonNullableReferenceTypes();
+            options.ExampleFilters();
         });
+
+        services.AddSwaggerExamplesFromAssemblyOf<Startup>();
     }
 }
