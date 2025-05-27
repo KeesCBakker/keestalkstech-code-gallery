@@ -17,6 +17,8 @@ public class ScheduleTests
     {
         return new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -36,8 +38,7 @@ public class ScheduleTests
         var request = CreateRequest(type);
         request.Schedule = string.Empty;
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Schedule", "Schedule must not be empty.");
     }
@@ -50,8 +51,7 @@ public class ScheduleTests
         var request = CreateRequest(type);
         request.Schedule = "this is not a cron";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Schedule", "Schedule must be a valid cron expression.");
     }
@@ -64,8 +64,7 @@ public class ScheduleTests
         var request = CreateRequest(type);
         request.Schedule = "*/5 * * * *";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Schedule");
     }
@@ -78,8 +77,7 @@ public class ScheduleTests
         var request = CreateRequest(type);
         request.Schedule = "*/5 * * * *";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Schedule");
     }

@@ -43,7 +43,7 @@ public static class ValidationResultAssertionsExtensions
     private static bool Matches(
         IEnumerable<ValidationResult> errors,
         string memberName,
-        string expectedMessage) =>
+        string? expectedMessage) =>
         errors.Any(e =>
             (expectedMessage == null || e.ErrorMessage == expectedMessage) &&
             e.MemberNames.Contains(memberName)
@@ -51,7 +51,7 @@ public static class ValidationResultAssertionsExtensions
 
     private static string BuildFailureMessage(
         string memberName,
-        string expectedMessage,
+        string? expectedMessage,
         bool isContainCheck,
         IEnumerable<ValidationResult> errors)
     {

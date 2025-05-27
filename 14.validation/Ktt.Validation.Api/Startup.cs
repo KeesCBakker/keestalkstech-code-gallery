@@ -1,7 +1,8 @@
-﻿using FluentValidation;
-using Ktt.Validation.Api.Config;
+﻿using Ktt.Validation.Api.Config;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation;
+using Microsoft.Extensions.Options;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace Ktt.Validation.Api;
@@ -12,12 +13,33 @@ public class Startup
     {
         FluentValidationLanguageManager.SetGlobalOptions();
 
+        services
+           .AddTransient(x => x.GetRequiredService<IOptions<ProvisioningOptions>>().Value)
+           .AddOptionsWithValidateOnStart<ProvisioningOptions>()
+           .BindConfiguration(ProvisioningOptions.SectionName)
+           .Validate(options =>
+           {
+               var results = new List<ValidationResult>();
+               var context = new ValidationContext(options);
+
+               if (!Validator.TryValidateObject(options, context, results, validateAllProperties: true))
+               {
+                   var sectionName = ProvisioningOptions.SectionName;
+                   throw new OptionsValidationException(
+                       sectionName,
+                       typeof(ProvisioningOptions),
+                       results.Select(r => $"[{sectionName}] {r.ErrorMessage}")
+                   );
+               }
+
+               return true;
+           });
+
         services.AddTransient<IMagicNumberProvider, MagicNumberProvider>();
         services.AddTransient<IDataAnnotationsValidator, DataAnnotationsValidator>();
         services.AddTransient<ProvisionerService>();
         services.AddTransient((serviceProvider) => serviceProvider);
         services.AddTransient<IDockerHubService, DockerHubService>();
-        services.AddTransient<IEnvironmentService, EnvironmentService>();
 
         services.AddSwagger();
 

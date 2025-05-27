@@ -31,6 +31,6 @@ public abstract class IsNotOneOfValidationAttribute : ValidationAttribute
         }
 
         var msg = GetInvalidValueMessage(value, forbiddenValues);
-        return new ValidationResult(msg);
+        return new ValidationResult(msg, [validationContext.MemberName!]);
     }
 }

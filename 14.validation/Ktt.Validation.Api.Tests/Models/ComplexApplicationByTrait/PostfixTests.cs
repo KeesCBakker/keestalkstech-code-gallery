@@ -17,6 +17,8 @@ public class PostfixTests
     {
         return new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -35,8 +37,7 @@ public class PostfixTests
     {
         var request = CreateDefaultRequestForType(type);
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Postfix", "Postfix must not be empty.");
     }
@@ -49,8 +50,7 @@ public class PostfixTests
         var request = CreateDefaultRequestForType(type);
         request.Postfix = "MyService";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
     }
@@ -63,8 +63,7 @@ public class PostfixTests
         var request = CreateDefaultRequestForType(type);
         request.Postfix = "cron-site-service";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Postfix", "The value must be lower-kebab-case and may not contain the words cron, site or service.");
     }
@@ -77,8 +76,7 @@ public class PostfixTests
         var request = CreateDefaultRequestForType(type);
         request.Postfix = "pinger";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Postfix");
     }
@@ -91,8 +89,7 @@ public class PostfixTests
         var request = CreateDefaultRequestForType(type);
         request.Postfix = string.Empty;
 
-        IList<ValidationResult> errors = new List<ValidationResult>();
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Postfix");
     }
@@ -105,8 +102,7 @@ public class PostfixTests
         var request = CreateDefaultRequestForType(type);
         request.Postfix = "pinger";
 
-        IList<ValidationResult> errors = new List<ValidationResult>();
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Postfix", "Postfix must be empty.");
     }

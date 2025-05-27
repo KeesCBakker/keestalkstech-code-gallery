@@ -2,9 +2,11 @@
 
 public class ProvisioningOptions
 {
-    public string[] Labels { get; set; }
-        = ["development", "test", "production"];
+    public const string SectionName = "Provisioning";
 
-    public string[] Environments { get; set; }
-        = ["server-one", "server-two", "server-three"];
+    public string[] Labels { get; set; } = [];
+
+    public string[] Environments { get; set; } = [];
+
+    public string[] Teams { get; set; } = [];
 }

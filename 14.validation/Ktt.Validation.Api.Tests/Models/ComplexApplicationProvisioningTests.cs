@@ -3,6 +3,7 @@ using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
 
 namespace Ktt.Validation.Api.Tests.Models;
 
@@ -25,15 +26,33 @@ public class ComplexApplicationProvisioningTests
             Type = type
         };
 
-        IList<ValidationResult> errors = [];
-
         // 1. validate required fields
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
+
+        errors.ShouldContain("Name", "The Name field is required.");
+        errors.ShouldContain("Team", "The Team field is required.");
         errors.ShouldContain("Cpu", "The Cpu field is required.");
         errors.ShouldContain("Environment", "The Environment field is required.");
         errors.ShouldContain("DockerHubRepo", "The DockerHubRepo field is required.");
         errors.ShouldContain("ImageTag", "The ImageTag field is required.");
         errors.ShouldContain("Ram", "The Ram field is required.");
+
+        // 2. Name
+        request.Name = "test";
+        _validator.TryValidate(request, out errors);
+        errors.ShouldNotContain("Name");
+
+        // 3. Team
+
+        // 3.1 invalid team
+        request.Team = "kaas";
+        _validator.TryValidate(request, out errors);
+        errors.ShouldContain("Team");
+
+        // 3.2 valid team
+        request.Team = "racing-green";
+        _validator.TryValidate(request, out errors);
+        errors.ShouldNotContain("Team");
 
         // 2. CPU
 
@@ -65,25 +84,26 @@ public class ComplexApplicationProvisioningTests
         errors.ShouldNotContain("Ram");
 
         // 5. environment
+
+        // 5.1 invalid environment
         request.Environment = "blah";
         _validator.TryValidate(request, out errors);
-        errors.ShouldNotContain("Environment");
+        errors.ShouldContain("Environment");
 
-        // 6. dockerhub repo
-        request.DockerHubRepo = "blah";
-        _validator.TryValidate(request, out errors);
-        errors.ShouldNotContain("DockerHubRepo", "The DockerHubRepo field is required.");
-
-        // 7. we should still have errors
-        errors.ShouldContain("DockerHubRepo", "The DockerHub repository does not exist.");
-        errors.ShouldContain("Environment", "Environment must exist.");
-
-        // 8. valid environment
+        // 5.2 valid environment
         request.Environment = "server-one";
         _validator.TryValidate(request, out errors);
         errors.ShouldNotContain("Environment");
 
-        // 9. valid dockerhub repo
+        // 6. dockerhub repo
+
+        // 6.1 invalid dockerhub repo
+
+        request.DockerHubRepo = "blah";
+        _validator.TryValidate(request, out errors);
+        errors.ShouldContain("DockerHubRepo");
+
+        // 6.2 valid dockerhub repo
         request.DockerHubRepo = "repo-one";
         _validator.TryValidate(request, out errors);
         errors.ShouldNotContain("DockerHubRepo");
@@ -96,6 +116,8 @@ public class ComplexApplicationProvisioningTests
     {
         var request = new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -104,11 +126,9 @@ public class ComplexApplicationProvisioningTests
             DockerHubRepo = "repo-one"
         };
 
-        IList<ValidationResult> errors = [];
-
         // 1. schedule must be empty
         request.Schedule = "blah";
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
         errors.ShouldContain("Schedule", "Schedule must be empty.");
 
         // 2. validate schedule empty
@@ -124,6 +144,8 @@ public class ComplexApplicationProvisioningTests
     {
         var request = new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -132,11 +154,9 @@ public class ComplexApplicationProvisioningTests
             DockerHubRepo = "repo-one"
         };
 
-        IList<ValidationResult> errors = [];
-
         // 1. schedule cannot be empty
         request.Schedule = string.Empty;
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
         errors.ShouldContain("Schedule", "Schedule must not be empty.");
 
         // 2. invalid schedule
@@ -157,6 +177,8 @@ public class ComplexApplicationProvisioningTests
     {
         var request = new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -165,12 +187,10 @@ public class ComplexApplicationProvisioningTests
             DockerHubRepo = "repo-one"
         };
 
-        IList<ValidationResult> errors = [];
-
         // 1. Command and Postfix must not be empty
         request.Command = string.Empty;
         request.Postfix = string.Empty;
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
         errors.ShouldContain("Command", "Command must not be empty.");
         errors.ShouldContain("Postfix", "Postfix must not be empty.");
 
@@ -209,6 +229,8 @@ public class ComplexApplicationProvisioningTests
     {
         var request = new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -217,12 +239,10 @@ public class ComplexApplicationProvisioningTests
             DockerHubRepo = "repo-one"
         };
 
-        IList<ValidationResult> errors = [];
-
         // 1. Some fields must be empty
         request.Command = "dotnet run /app/kaas.dll";
         request.Postfix = "kaas";
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
         errors.ShouldContain("Command", "Command must be empty.");
         errors.ShouldContain("Postfix", "Postfix must be empty.");
         

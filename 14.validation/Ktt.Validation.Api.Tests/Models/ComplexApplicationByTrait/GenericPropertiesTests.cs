@@ -2,7 +2,6 @@
 using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationProvisioningRequestByTrait;
 
@@ -27,9 +26,10 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
+        errors.ShouldContain("Name", "The Name field is required.");
+        errors.ShouldContain("Team", "The Team field is required.");
         errors.ShouldContain("Cpu", "The Cpu field is required.");
         errors.ShouldContain("Environment", "The Environment field is required.");
         errors.ShouldContain("DockerHubRepo", "The DockerHubRepo field is required.");
@@ -45,14 +45,15 @@ public class GenericTests
     public void Should_Reject_Invalid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Cpu = "blah";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Cpu", "The field Cpu must match the regular expression '^\\d+m$'.");
     }
@@ -65,14 +66,15 @@ public class GenericTests
     public void Should_Accept_Valid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Cpu = "100m";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Cpu");
     }
@@ -85,14 +87,15 @@ public class GenericTests
     public void Should_Reject_Invalid_DockerHubRepo(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.DockerHubRepo = "blah";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("DockerHubRepo", "The DockerHub repository does not exist.");
     }
@@ -105,14 +108,15 @@ public class GenericTests
     public void Should_Accept_Valid_DockerHubRepo(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.DockerHubRepo = "repo-one";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("DockerHubRepo");
     }
@@ -125,15 +129,16 @@ public class GenericTests
     public void Should_Reject_Invalid_Environment(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Environment = "blah";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
-        errors.ShouldContain("Environment", "Environment must exist.");
+        _validator.TryValidate(request, out var errors);
+        errors.ShouldContain("Environment", "blah is not a valid or allowed. Options are: [server-one]");
     }
 
     [Theory]
@@ -144,14 +149,15 @@ public class GenericTests
     public void Should_Accept_Valid_Environment(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
         request.Environment = "server-one";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Environment");
     }
@@ -164,14 +170,15 @@ public class GenericTests
     public void Should_Reject_Invalid_Ram_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "blah";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Ram", "The field Ram must match the regular expression '^\\d+Mi$'.");
     }
@@ -184,14 +191,15 @@ public class GenericTests
     public void Should_Accept_Valid_Ram_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
+        request.Name = "test";
+        request.Team = "racing-green";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
         request.Ram = "100Mi";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Ram");
     }

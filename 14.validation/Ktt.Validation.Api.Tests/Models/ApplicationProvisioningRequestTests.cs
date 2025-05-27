@@ -24,7 +24,7 @@ public class ApplicationProvisioningRequestTests
         var fixture = new TestServerFixture();
 
         // act
-        var request = await fixture.Client.PostAsJsonAsync("/provision/application", new
+        var request = await fixture.Client.PostAsJsonAsync("/provision/simple-application", new
         {
             name = "My Application",
             type = "Application",
@@ -69,7 +69,7 @@ public class ApplicationProvisioningRequestTests
             .WithParameterName("request")
             .WithInnerException<System.ComponentModel.DataAnnotations.ValidationException>()
             .WithMessage(
-                "Input invalid for 'ApplicationProvisioningRequest':\n" +
+                "Input invalid for '" + nameof(SimpleApplication) + "':\n" +
                 "EntryPoint: EntryPoint must be empty.\n" +
                 "MagicNumber: Magic number is invalid."
             );
@@ -112,7 +112,11 @@ public class ApplicationProvisioningRequestTests
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
             .AddSingleton<ProvisionerService>()
-            .AddSingleton(sp => Options.Create(new ProvisioningOptions()))
+            .AddSingleton(sp => new ProvisioningOptions
+            {
+                Labels = ["development", "production"]
+            })
+            .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()))
             .AddSingleton(sp => sp)
             .BuildServiceProvider();
 
@@ -148,7 +152,11 @@ public class ApplicationProvisioningRequestTests
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
             .AddSingleton<ProvisionerService>()
-            .AddSingleton(sp => Options.Create(new ProvisioningOptions()))
+            .AddSingleton(sp => new ProvisioningOptions
+            {
+                Labels = [ "development", "production"]
+            })
+            .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()))
             .AddSingleton(sp => sp)
             .BuildServiceProvider();
 

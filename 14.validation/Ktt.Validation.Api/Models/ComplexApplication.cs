@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using Ktt.Validation.Api.Services;
+using Ktt.Validation.Api.Services.Validation.Attributes;
 using NCrontab;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
@@ -11,7 +12,10 @@ public class ComplexApplication : IValidatableObject
     [Required]
     public string Name { get; set; } = default!;
 
-    [Required]
+    [Required, Team]
+    public string Team { get; set; } = default!;
+
+    [Required, Environment]
     public string Environment { get; set; } = default!;
 
     public ComplexApplicationType Type { get; set; }
@@ -41,7 +45,6 @@ public class ComplexApplication : IValidatableObject
     public IEnumerable<ValidationResult> Validate(ValidationContext validationContext)
     {
         var dockerHubService = validationContext.GetRequiredService<IDockerHubService>();
-        var environmentService = validationContext.GetRequiredService<IEnvironmentService>();
 
         var v = new InlineValidator<ComplexApplication>();
 
@@ -49,11 +52,6 @@ public class ComplexApplication : IValidatableObject
             .NotEmpty()
             .MustAsync(dockerHubService.Exists)
             .WithMessage("The DockerHub repository does not exist.");
-
-        v.RuleFor(x => x.Environment)
-            .NotEmpty()
-            .MustAsync(environmentService.Exists)
-            .WithMessage("Environment must exist.");
 
         var isTypeWithCommand = Type is ComplexApplicationType.ApplicationWithCommand or ComplexApplicationType.CronJobWithCommand;
         if (isTypeWithCommand)

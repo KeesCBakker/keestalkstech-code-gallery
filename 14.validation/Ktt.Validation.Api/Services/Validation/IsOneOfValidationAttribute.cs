@@ -31,6 +31,6 @@ public abstract class IsOneOfValidationAttribute : ValidationAttribute
         }
 
         var msg = GetInvalidValueMessage(value, values);
-        return new ValidationResult(msg);
+        return new ValidationResult(msg, [validationContext.MemberName!]);
     }
 }

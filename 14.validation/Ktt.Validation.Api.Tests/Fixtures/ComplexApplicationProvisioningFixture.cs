@@ -1,6 +1,7 @@
 ﻿using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Moq;
 
 namespace Ktt.Validation.Api.Tests.Fixtures;
@@ -11,7 +12,6 @@ public static class ComplexApplicationProvisioningFixture
     {
         FluentValidationLanguageManager.SetGlobalOptions();
 
-        string[] environments = ["server-one"];
         string[] repos = ["repo-one"];
 
         var dockerHubService = new Mock<IDockerHubService>(MockBehavior.Loose);
@@ -20,17 +20,18 @@ public static class ComplexApplicationProvisioningFixture
             It.IsAny<CancellationToken>())
         ).ReturnsAsync(true);
 
-        var environmentService = new Mock<IEnvironmentService>(MockBehavior.Loose);
-        environmentService.Setup(x => x.Exists(
-            It.IsIn(environments),
-            It.IsAny<CancellationToken>())
-        ).ReturnsAsync(true);
-
         var services = new ServiceCollection();
 
         services.AddSingleton(_ => dockerHubService.Object);
-        services.AddSingleton(_ => environmentService.Object);
         services.AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>();
+
+        services.AddSingleton(sp => new ProvisioningOptions
+        {
+            Labels = ["development", "production"],
+            Environments = ["server-one"],
+            Teams = ["Red Herrings", "racing-green"]
+        })
+        .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()));
 
         return services.BuildServiceProvider();
     }

@@ -1,4 +1,5 @@
-﻿using Microsoft.OpenApi.Models;
+﻿using Ktt.Validation.Api.Config.Examples;
+using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
@@ -31,8 +32,19 @@ public static class SwaggerConfig
 
             // Add XML comments for documentation
             options.IncludeXmlComments(XmlCommentsFilePath);
+
+            // Non nullable types render as required
             options.SupportNonNullableReferenceTypes();
+
+            // Automatically discover examples
             options.ExampleFilters();
+
+            // Add examples for parameters
+            options.OperationFilter<ParameterExamplesOperationFilter>();
+
+            // Turn config values into enums in the schema
+            options.SchemaFilter<ConfigValuesSchemaFilter>();
+
         });
 
         services.AddSwaggerExamplesFromAssemblyOf<Startup>();

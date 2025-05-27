@@ -10,6 +10,7 @@ public class TestServerFixture : IDisposable
 {
     private readonly TestServer _testServer;
     private readonly IHost _host;
+    private bool _disposed;
 
     public TestServerFixture(Action<IServiceCollection>? configureServices = null)
     {
@@ -45,6 +46,7 @@ public class TestServerFixture : IDisposable
 
     private void ConfigureMockedServices(IServiceCollection services)
     {
+        // add default mocking here
     }
 
     public static void RemoveService<T>(IServiceCollection services)
@@ -62,10 +64,24 @@ public class TestServerFixture : IDisposable
             .ForEach(service => services.Remove(service));
     }
 
-    public void Dispose()
+    protected virtual void Dispose(bool disposing)
     {
-        Client.Dispose();
-        _testServer.Dispose();
+        if (!_disposed)
+        {
+            if (disposing)
+            {
+                Client.Dispose();
+                _testServer.Dispose();
+                _host.Dispose();
+            }
+
+            _disposed = true;
+        }
     }
 
+    public void Dispose()
+    {
+        Dispose(disposing: true);
+        GC.SuppressFinalize(this);
+    }
 }

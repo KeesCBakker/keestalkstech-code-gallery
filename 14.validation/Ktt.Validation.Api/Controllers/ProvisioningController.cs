@@ -1,5 +1,6 @@
 using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
+using Ktt.Validation.Api.Services.Validation.Attributes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ktt.Validation.Api.Controllers;
@@ -33,5 +34,33 @@ public class ProvisioningController(ProvisionerService service) : ControllerBase
         service.ProvisionApplication(request);
     }
 
+    /// <summary>
+    /// Gets all the complex application.
+    /// </summary>
+    [HttpGet("complex-application")]
+    [ProducesResponseType(typeof(ComplexApplication[]), 200)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    public ComplexApplication[] GetComplexApplications(
+        [FromQuery, Team] string team,
+        [FromQuery, Environment] string environment
+    )
+    {
+        return [];
+    }
+
+    /// <summary>
+    /// Gets a complex application.
+    /// </summary>
+    [HttpGet("complex-application/{applicationName}")]
+    [ProducesResponseType(typeof(ComplexApplication[]), 200)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    public ComplexApplication[] GetComplexApplications(
+        [FromQuery, Team] string team,
+        [FromQuery, Environment] string environment,
+        string applicationName
+    )
+    {
+        return [];
+    }
 
 }

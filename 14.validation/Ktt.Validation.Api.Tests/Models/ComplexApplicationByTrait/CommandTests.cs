@@ -2,7 +2,6 @@
 using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationProvisioningRequestByTrait;
 
@@ -17,6 +16,8 @@ public class CommandTests
     {
         return new ComplexApplication
         {
+            Name = "test",
+            Team = "racing-green",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -36,8 +37,7 @@ public class CommandTests
         var request = CreateDefaultRequestForType(type);
         request.Command = "/app/start.sh";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Command", "Script files (.sh) may only be executed when tini is used.");
     }
@@ -50,8 +50,7 @@ public class CommandTests
         var request = CreateDefaultRequestForType(type);
         request.Command = "tini /app/start.sh";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Command");
     }
@@ -64,8 +63,7 @@ public class CommandTests
         var request = CreateDefaultRequestForType(type);
         request.Command = "dotnet run /app/main.dll";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldNotContain("Command");
     }
@@ -78,8 +76,7 @@ public class CommandTests
         var request = CreateDefaultRequestForType(type);
         request.Command = "dotnet run /app/service.dll";
 
-        IList<ValidationResult> errors = [];
-        _validator.TryValidate(request, out errors);
+        _validator.TryValidate(request, out var errors);
 
         errors.ShouldContain("Command", "Command must be empty.");
     }
