@@ -1,6 +1,19 @@
 ﻿using System.ComponentModel.DataAnnotations;
+
+namespace Ktt.Validation.Api.Tests.Models;
+
 public static class ValidationResultAssertionsExtensions
 {
+    public static void ShouldBeValid(this IEnumerable<ValidationResult> errors)
+    {
+        var length = errors.Count();
+
+        var formatted = string.Join("\n", errors.Select(e =>
+            $" - {string.Join(", ", e.MemberNames)}: {e.ErrorMessage}"));
+
+        Assert.True(length == 0, "There should be no validation errors, but found:\n" + formatted);
+    }
+
     public static void ShouldContain(
         this IEnumerable<ValidationResult> errors,
         string memberName,
@@ -30,7 +43,7 @@ public static class ValidationResultAssertionsExtensions
     private static bool Matches(
         IEnumerable<ValidationResult> errors,
         string memberName,
-        string? expectedMessage) =>
+        string expectedMessage) =>
         errors.Any(e =>
             (expectedMessage == null || e.ErrorMessage == expectedMessage) &&
             e.MemberNames.Contains(memberName)
@@ -38,7 +51,7 @@ public static class ValidationResultAssertionsExtensions
 
     private static string BuildFailureMessage(
         string memberName,
-        string? expectedMessage,
+        string expectedMessage,
         bool isContainCheck,
         IEnumerable<ValidationResult> errors)
     {
