@@ -2,7 +2,8 @@
 
 namespace Ktt.Validation.Api.Services.Validation.Attributes;
 
-public class ValidLabelAttribute : IsOneOfValidationAttribute
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
+public class LabelAttribute : IsOneOfValidationAttribute
 {
     protected override object[] GetValues(ValidationContext validationContext)
     {

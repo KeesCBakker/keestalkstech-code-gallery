@@ -3,13 +3,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Services.Validation;
 
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
 public abstract class IsNotOneOfValidationAttribute : ValidationAttribute
 {
-    protected abstract object[] GetValues(ValidationContext validationContext);
+    protected abstract object[] GetForbiddenValues(ValidationContext validationContext);
 
-    protected abstract string GetInvalidValueMessage(object? invalidValue);
+    protected abstract string GetInvalidValueMessage(
+        object? invalidValue,
+        object[] validValues);
 
-    protected TOption GetOption<TOption>(ValidationContext validationContext)
+    protected virtual TOption GetOption<TOption>(ValidationContext validationContext)
         where TOption : class, new()
     {
         return validationContext.GetRequiredService<IOptions<TOption>>().Value;
@@ -19,15 +22,15 @@ public abstract class IsNotOneOfValidationAttribute : ValidationAttribute
         object? value,
         ValidationContext validationContext)
     {
-        var values = GetValues(validationContext);
-        var exists = values.Contains(value);
+        var forbiddenValues = GetForbiddenValues(validationContext);
+        var exists = forbiddenValues.Contains(value);
 
         if (!exists)
         {
             return ValidationResult.Success!;
         }
 
-        var msg = GetInvalidValueMessage(value);
+        var msg = GetInvalidValueMessage(value, forbiddenValues);
         return new ValidationResult(msg);
     }
 }

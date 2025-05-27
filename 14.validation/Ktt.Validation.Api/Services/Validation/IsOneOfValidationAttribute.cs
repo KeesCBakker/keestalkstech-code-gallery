@@ -3,6 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Services.Validation;
 
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
 public abstract class IsOneOfValidationAttribute : ValidationAttribute
 {
     protected abstract object[] GetValues(ValidationContext validationContext);
@@ -11,7 +12,7 @@ public abstract class IsOneOfValidationAttribute : ValidationAttribute
         object? invalidValue,
         object[] validValues);
 
-    protected TOption GetOption<TOption>(ValidationContext validationContext)
+    protected virtual TOption GetOption<TOption>(ValidationContext validationContext)
         where TOption : class, new()
     {
         return validationContext.GetRequiredService<IOptions<TOption>>().Value;
