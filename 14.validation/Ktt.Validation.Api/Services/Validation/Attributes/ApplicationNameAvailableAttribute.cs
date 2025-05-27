@@ -1,5 +1,4 @@
-﻿
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Services.Validation.Attributes;
 

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-namespace Ktt.Validation.Api.Services.Validation;
+namespace Ktt.Validation.Api.Services.Validation.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
 public abstract class IsOneOfValidationAttribute : ValidationAttribute
