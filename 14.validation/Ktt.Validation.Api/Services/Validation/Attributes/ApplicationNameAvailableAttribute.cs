@@ -10,9 +10,4 @@ public class ApplicationNameAvailableAttribute : IsNotOneOfValidationAttribute
         var service = validationContext.GetRequiredService<ProvisionerService>();
         return service.GetApplicationNames().Result;
     }
-
-    protected override string GetInvalidValueMessage(object? invalidValue, object[] validValues)
-    {
-        return $"{invalidValue} is not a valid or allowed. Application name already exists.";
-    }
 }
