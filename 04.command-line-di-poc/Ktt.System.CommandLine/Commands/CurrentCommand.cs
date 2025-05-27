@@ -14,7 +14,7 @@ class CurrentCommand : Command
         var cityOption = new Option<string>("--city", () => _weather.Options.DefaultCity, "The city.");
 
         AddOption(cityOption);
-        
+
         this.SetHandler(Execute, cityOption);
     }
 

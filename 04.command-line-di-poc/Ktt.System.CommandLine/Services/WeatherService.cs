@@ -21,7 +21,7 @@ class WeatherService()
             $"Report for {city} for the next {days} days:"
         };
 
-        for (var i = 0; i<days; i++)
+        for (var i = 0; i < days; i++)
         {
             var date = DateTime.Now.AddDays(i + 1).ToString("yyyy-MM-dd");
             var report = $"- {date}: {Random.Shared.Next(-20, 40),3} degrees celcius.";

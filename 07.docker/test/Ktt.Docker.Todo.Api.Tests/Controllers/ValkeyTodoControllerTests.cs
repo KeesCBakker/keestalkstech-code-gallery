@@ -6,7 +6,7 @@ namespace Ktt.Todo.Api.Tests.Controllers;
 [Trait("Category", "Integration")]
 public class ValkeyTodoControllerTests : TodoControllerTests, IClassFixture<IntegrationTestApplicationFactory>
 {
-    public ValkeyTodoControllerTests(IntegrationTestApplicationFactory factory):
+    public ValkeyTodoControllerTests(IntegrationTestApplicationFactory factory) :
         base(factory)
     {
 

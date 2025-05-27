@@ -8,7 +8,7 @@ public class DemoRetry(
 {
     public async Task RunAsync()
     {
-        await Execute("CustomHttpStatusApiClient", async() => await customHttpStatusApiClient.Get() );
+        await Execute("CustomHttpStatusApiClient", async () => await customHttpStatusApiClient.Get());
         await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync());
 
         Console.WriteLine("");

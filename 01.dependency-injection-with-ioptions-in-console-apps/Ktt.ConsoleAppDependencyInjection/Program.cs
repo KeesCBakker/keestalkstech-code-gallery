@@ -14,7 +14,7 @@ static void ConfigureServices(IServiceCollection services)
     });
 
     // build config
-    services.AddSingleton<IConfiguration>(_ => 
+    services.AddSingleton<IConfiguration>(_ =>
         new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false)

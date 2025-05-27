@@ -21,7 +21,7 @@ public class VariousTests
         int a = IV - 1;
         int b = 4 - I;
         int c = IV - "I";
-        int d = (RomanNumeral) "IV" - I;
+        int d = (RomanNumeral)"IV" - I;
         int e = IV - I;
 
         Assert.Equivalent(3, a);
@@ -31,7 +31,7 @@ public class VariousTests
         Assert.Equivalent(3, e);
 
         string f = IV - 1;
-        string g = (RomanNumeral) 4 - I;
+        string g = (RomanNumeral)4 - I;
         string h = IV - "I";
         string i = "IV" - I;
         string j = IV - I;

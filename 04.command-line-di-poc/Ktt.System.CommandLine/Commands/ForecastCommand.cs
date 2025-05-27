@@ -11,7 +11,7 @@ class ForecastCommand : Command
     {
         _weather = weather;
 
-        var cityOption = new Option<string>("--city", ()=> _weather.Options.DefaultCity, "The city.");
+        var cityOption = new Option<string>("--city", () => _weather.Options.DefaultCity, "The city.");
         var daysOption = new Option<int>("--days", () => _weather.Options.DefaultForecastDays, "Number of days.");
 
         AddOption(cityOption);
