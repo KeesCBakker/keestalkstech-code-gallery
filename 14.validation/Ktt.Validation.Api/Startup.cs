@@ -34,6 +34,7 @@ public class Startup
 
     public void Configure(IApplicationBuilder app)
     {
+        app.UseDeveloperExceptionPage();
         app.UseResponseCompression();
         app.UseSwagger();
         app.UseSwaggerUI();
