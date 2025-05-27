@@ -45,7 +45,7 @@ public class DataAnnotationsValidator(IServiceProvider provider) : IDataAnnotati
         ArgumentNullException.ThrowIfNull(validationErrors);
 
         var message = "Input invalid";
-        if(objectType != null)
+        if (objectType != null)
         {
             message += $" for '{objectType.Name}'";
         }

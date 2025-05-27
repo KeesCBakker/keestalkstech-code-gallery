@@ -2,8 +2,6 @@
 using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace Ktt.Validation.Api.Tests.Models;
 
@@ -245,7 +243,7 @@ public class ComplexApplicationProvisioningTests
         _validator.TryValidate(request, out var errors);
         errors.ShouldContain("Command", "Command must be empty.");
         errors.ShouldContain("Postfix", "Postfix must be empty.");
-        
+
         // 2. Command is not allowed
         request.Command = string.Empty;
         _validator.TryValidate(request, out errors);

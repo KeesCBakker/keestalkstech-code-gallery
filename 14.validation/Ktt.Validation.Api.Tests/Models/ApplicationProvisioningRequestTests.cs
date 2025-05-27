@@ -154,7 +154,7 @@ public class ApplicationProvisioningRequestTests
             .AddSingleton<ProvisionerService>()
             .AddSingleton(sp => new ProvisioningOptions
             {
-                Labels = [ "development", "production"]
+                Labels = ["development", "production"]
             })
             .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()))
             .AddSingleton(sp => sp)

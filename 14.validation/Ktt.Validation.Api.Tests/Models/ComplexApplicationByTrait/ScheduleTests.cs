@@ -2,7 +2,6 @@
 using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
-using System.ComponentModel.DataAnnotations;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationProvisioningRequestByTrait;
 
