@@ -28,7 +28,7 @@ public class ProvisioningExamples
             Cpu = "250m",
             Ram = "128Mi",
             ImageTag = "latest",
-            Environment = "development"
+            Environment = "server-one"
         };
     }
 }
