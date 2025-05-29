@@ -3,7 +3,7 @@
 namespace Ktt.Validation.Api.Services.Validation.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
-public class ApplicationNameAvailableAttribute : CustomValidationAttribute
+public class ApplicationNameAvailableAttribute : SimpleValidationAttribute
 {
     protected override bool IsValidValue(object? value, ValidationContext validationContext)
     {

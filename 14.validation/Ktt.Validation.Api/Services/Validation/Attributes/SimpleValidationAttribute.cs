@@ -3,7 +3,7 @@
 namespace Ktt.Validation.Api.Services.Validation.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
-public abstract class CustomValidationAttribute : ValidationAttribute
+public abstract class SimpleValidationAttribute : ValidationAttribute
 {
     protected override ValidationResult IsValid(
         object? value,
