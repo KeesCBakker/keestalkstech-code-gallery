@@ -1,14 +1,33 @@
-﻿#!/usr/bin/env dotnet-script
+﻿#! "dotnet-script"
 #nullable enable
 
-// --- Globals ---
+using System;
+using System.Diagnostics;
+using System.IO;
+
 string Namespace => "Ktt.Resilience.Clients.Kiota";
 string HttpClientsDir => Namespace;
-string FullHttpClientsDir => Path.GetFullPath(HttpClientsDir);
+string DefaultWorkingDir => Path.GetFullPath(HttpClientsDir);
 
-// --- Entry Point ---
-EnsureKiotaInstalled();
-EnsureHttpClientsProjectReady();
+// 1. Install Kiota
+Console.WriteLine("🔄 Installing (or updating) Kiota tool...");
+Run(["dotnet", "tool", "install", "--global", "Microsoft.OpenApi.Kiota"], Environment.CurrentDirectory, quiet: false);
+
+// 2. Make sure HTTP project is present
+Console.WriteLine("🔄 Ensure HTTP projects is configured correctly...");
+if (!Directory.Exists(DefaultWorkingDir))
+  throw new DirectoryNotFoundException($"❌ HTTP client project folder not found at '{DefaultWorkingDir}'");
+
+// 3. Install packages
+Run(["dotnet", "add", "package", "Microsoft.Extensions.DependencyInjection"]);
+Run(["dotnet", "add", "package", "Microsoft.Extensions.DependencyInjection.Abstractions"]);
+Run(["dotnet", "add", "package", "Microsoft.Extensions.Options"]);
+Run(["dotnet", "add", "package", "Microsoft.Extensions.Http.Resilience"]);
+Run(["dotnet", "add", "package", "Microsoft.Extensions.Resilience"]);
+Run(["dotnet", "add", "package", "Microsoft.Kiota.Bundle"]);
+
+// 4. Generate Kiota clients
+Console.WriteLine("🔄 Generating Kiota clients...");
 
 GenerateKiotaClient(
     openApiUrl: "https://petstore.swagger.io/v2/swagger.json",
@@ -21,107 +40,53 @@ GenerateKiotaClient(
     clientName: "HttpStatus"
 );
 
-
 // --- Helpers ---
-
-string Quote(string s) => $"\"{s.Replace("\"", "\\\"")}\"";
-
-void Run(string command, string[] args, string? workingDir = null)
+void Run(string[] commandLine, string? workingDir = null, bool quiet = true)
 {
-  var psi = new ProcessStartInfo(command, string.Join(" ", args))
+  var psi = new ProcessStartInfo
   {
-    WorkingDirectory = workingDir ?? Environment.CurrentDirectory,
+    FileName = commandLine[0],
+    Arguments = string.Join(" ", commandLine[1..]),
+    WorkingDirectory = workingDir ?? DefaultWorkingDir,
     RedirectStandardOutput = true,
     RedirectStandardError = true,
     UseShellExecute = false
   };
 
   using var proc = Process.Start(psi)
-      ?? throw new Exception($"Failed to start: {command}");
+      ?? throw new Exception($"Failed to start: {commandLine[0]}");
 
-  var stderr = proc.StandardError.ReadToEnd();
+  string stdout = proc.StandardOutput.ReadToEnd();
+  string stderr = proc.StandardError.ReadToEnd();
   proc.WaitForExit();
+
+  if (!quiet && !string.IsNullOrWhiteSpace(stdout))
+    Console.WriteLine(stdout);
 
   if (!string.IsNullOrWhiteSpace(stderr))
     Console.Error.WriteLine(stderr);
 
   if (proc.ExitCode != 0)
-    throw new Exception($"{command} exited with code {proc.ExitCode}");
-}
-
-void EnsureKiotaInstalled()
-{
-  Console.WriteLine("▶ Ensuring Kiota is installed...");
-
-  try
-  {
-    Run("kiota", new[] { "--version" });
-  }
-  catch
-  {
-    Console.WriteLine("Kiota not found. Installing...");
-    Run("dotnet", new[] { "tool", "install", "--global", "Microsoft.OpenApi.Kiota" });
-
-    try
-    {
-      Run("kiota", new[] { "--version" });
-    }
-    catch
-    {
-      throw new Exception("❌ Kiota installation failed or is still not available in PATH.");
-    }
-  }
-}
-
-void EnsureHttpClientsProjectReady()
-{
-  Console.WriteLine("▶ Ensuring HttpClients project is ready...");
-
-  if (!Directory.Exists(HttpClientsDir))
-    throw new DirectoryNotFoundException($"❌ HTTP client project folder not found at '{HttpClientsDir}'");
-
-  string[] packages =
-  {
-        "Microsoft.Extensions.DependencyInjection",
-        "Microsoft.Extensions.DependencyInjection.Abstractions",
-        "Microsoft.Extensions.Options",
-        "Microsoft.Extensions.Http.Resilience",
-        "Microsoft.Extensions.Resilience",
-        "Microsoft.Kiota.Bundle"
-    };
-
-  foreach (var pkg in packages)
-  {
-    Run("dotnet", new[] { "add", "package", pkg }, FullHttpClientsDir);
-  }
+    throw new Exception($"{commandLine[0]} exited with code {proc.ExitCode}");
 }
 
 void GenerateKiotaClient(string openApiUrl, string clientName, string includePath = "/**")
 {
-  Console.WriteLine($"▶ Generating client '{clientName}'...");
   if (!openApiUrl.Contains("://"))
-  {
     openApiUrl = Path.Combine("..", openApiUrl);
-  }
 
-  var @namespace = $"{Namespace}.HttpClients.{clientName}";
-  var className = $"{clientName}Client";
-  string[] args = new[]
-  {
-        "generate",
-        "--openapi", Quote(openApiUrl),
-        "--language", "CSharp",
-        "--output", Quote($"HttpClients/{clientName}"),
-        "--namespace-name", Quote(@namespace),
-        "--class-name", Quote(className),
-        "--exclude-backward-compatible",
-        "--clean-output",
-        "--clear-cache",
-        "--include-path", Quote(includePath)
-  };
-
-  // Run Kiota in the correct working directory
-  Run("kiota", args, FullHttpClientsDir);
+  Console.WriteLine($"▶ Generating client '{clientName}' in {DefaultWorkingDir}...");
+  Run(["kiota", "generate",
+    "--openapi", openApiUrl,
+    "--language", "CSharp",
+    "--output", $"HttpClients/{clientName}",
+    "--namespace-name", $"{Namespace}.HttpClients.{clientName}",
+    "--class-name", $"{clientName}Client",
+    "--exclude-backward-compatible",
+    "--clean-output",
+    "--clear-cache",
+    "--include-path", includePath
+  ], quiet: false);
 
   Console.WriteLine($"✔ Generated client: '{clientName}'");
 }
