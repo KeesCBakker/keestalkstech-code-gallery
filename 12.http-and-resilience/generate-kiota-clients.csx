@@ -1,10 +1,6 @@
 ﻿#! "dotnet-script"
 #nullable enable
 
-using System;
-using System.Diagnostics;
-using System.IO;
-
 string Namespace => "Ktt.Resilience.Clients.Kiota";
 string HttpClientsDir => Namespace;
 string DefaultWorkingDir => Path.GetFullPath(HttpClientsDir);
