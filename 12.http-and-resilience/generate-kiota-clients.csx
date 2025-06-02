@@ -1,9 +1,5 @@
-﻿#r "System.Diagnostics.Process"
-#r "System.IO.FileSystem"
-
-using System;
-using System.IO;
-using System.Diagnostics;
+﻿#!/usr/bin/env dotnet-script
+#nullable enable
 
 // --- Globals ---
 string Namespace => "Ktt.Resilience.Clients.Kiota";
@@ -30,26 +26,24 @@ GenerateKiotaClient(
 
 string Quote(string s) => $"\"{s.Replace("\"", "\\\"")}\"";
 
-void Run(string command, string[] args, string workingDir = null)
+void Run(string command, string[] args, string? workingDir = null)
 {
-  var psi = new ProcessStartInfo
+  var psi = new ProcessStartInfo(command, string.Join(" ", args))
   {
-    FileName = command,
-    Arguments = string.Join(" ", args),
-    UseShellExecute = false,
+    WorkingDirectory = workingDir ?? Environment.CurrentDirectory,
     RedirectStandardOutput = true,
     RedirectStandardError = true,
-    WorkingDirectory = workingDir ?? Environment.CurrentDirectory
+    UseShellExecute = false
   };
 
-  using var proc = Process.Start(psi);
-  if (proc == null) throw new Exception($"Failed to start: {command}");
+  using var proc = Process.Start(psi)
+      ?? throw new Exception($"Failed to start: {command}");
 
-  proc.OutputDataReceived += (_, e) => { if (e.Data != null) Console.WriteLine(e.Data); };
-  proc.ErrorDataReceived += (_, e) => { if (e.Data != null) Console.Error.WriteLine(e.Data); };
-  proc.BeginOutputReadLine();
-  proc.BeginErrorReadLine();
+  var stderr = proc.StandardError.ReadToEnd();
   proc.WaitForExit();
+
+  if (!string.IsNullOrWhiteSpace(stderr))
+    Console.Error.WriteLine(stderr);
 
   if (proc.ExitCode != 0)
     throw new Exception($"{command} exited with code {proc.ExitCode}");
@@ -129,5 +123,5 @@ void GenerateKiotaClient(string openApiUrl, string clientName, string includePat
   // Run Kiota in the correct working directory
   Run("kiota", args, FullHttpClientsDir);
 
-  Console.WriteLine($"✔ Generated client: {clientName}");
+  Console.WriteLine($"✔ Generated client: '{clientName}'");
 }
