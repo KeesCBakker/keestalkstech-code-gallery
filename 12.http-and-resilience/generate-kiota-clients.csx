@@ -1,18 +1,14 @@
 ﻿#! "dotnet-script"
 #nullable enable
 
-string Namespace => "Ktt.Resilience.Clients.Kiota";
-string HttpClientsDir => Namespace;
-string DefaultWorkingDir => Path.GetFullPath(HttpClientsDir);
-
 // 1. Install Kiota
 Console.WriteLine("🔄 Installing (or updating) Kiota tool...");
 Run("dotnet tool install --global Microsoft.OpenApi.Kiota", Environment.CurrentDirectory, quiet: false);
 
 // 2. Make sure HTTP project is present
 Console.WriteLine("🔄 Ensure HTTP projects is configured correctly...");
-if (!Directory.Exists(DefaultWorkingDir))
-  throw new DirectoryNotFoundException($"❌ HTTP client project folder not found at '{DefaultWorkingDir}'");
+if (!Directory.Exists(HttpClientsDir))
+  throw new DirectoryNotFoundException($"❌ HTTP client project folder not found at '{HttpClientsDir}'");
 
 // 3. Install packages
 Run("dotnet add package Microsoft.Extensions.DependencyInjection");
@@ -36,6 +32,11 @@ GenerateKiotaClient(
     clientName: "HttpStatus"
 );
 
+// -- Config ---
+static string Namespace => "Ktt.Resilience.Clients.Kiota";
+static string HttpClientsDir => Path.GetFullPath(Namespace);
+static string Folder = "HttpClients";
+
 // --- Helpers ---
 void Run(string fullCommand, string? workingDir = null, bool quiet = true)
 {
@@ -44,7 +45,7 @@ void Run(string fullCommand, string? workingDir = null, bool quiet = true)
   {
     FileName = parts[0],
     Arguments = parts.Length > 1 ? parts[1] : "",
-    WorkingDirectory = workingDir ?? DefaultWorkingDir,
+    WorkingDirectory = workingDir ?? HttpClientsDir,
     RedirectStandardOutput = true,
     RedirectStandardError = true,
     UseShellExecute = false
@@ -72,13 +73,16 @@ void GenerateKiotaClient(string openApiUrl, string clientName, string includePat
   if (!openApiUrl.Contains("://"))
     openApiUrl = Path.Combine("..", openApiUrl);
 
-  Console.WriteLine($"▶ Generating client '{clientName}' in {DefaultWorkingDir}...");
+  var outputDir = string.IsNullOrEmpty(Folder) ? clientName : $"{Folder}/{clientName}";
+  var @namespace = string.IsNullOrEmpty(Folder) ? Namespace : $"{Namespace}.{Folder}";
+
+  Console.WriteLine($"▶ Generating client '{clientName}'...");
   Run($"""
     kiota generate 
       --openapi {openApiUrl} 
       --language CSharp 
-      --output HttpClients/{clientName} 
-      --namespace-name {Namespace}.HttpClients.{clientName} 
+      --output {outputDir} 
+      --namespace-name {@namespace}.{clientName} 
       --class-name {clientName}Client 
       --exclude-backward-compatible 
       --clean-output 
