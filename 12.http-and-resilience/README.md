@@ -21,3 +21,11 @@ git checkout main
 cd 12.http-and-resilience
 ls
 ```
+
+## Generate new clients
+You can generate new clients using the `dotnet script` command:
+
+```sh
+dotnet tool install -g dotnet-script
+dotnet script ./generate-kiota-clients.csx
+```
