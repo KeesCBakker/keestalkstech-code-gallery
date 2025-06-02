@@ -11,7 +11,7 @@ public abstract class SimpleValidationAttribute : ValidationAttribute
     {
         var valid = IsValidValue(value, validationContext);
 
-        if (!valid)
+        if (valid)
         {
             return ValidationResult.Success!;
         }
