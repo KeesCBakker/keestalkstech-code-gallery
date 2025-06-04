@@ -4,7 +4,7 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.4.1";
+      this.version = "v2.5.0";
       this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
       this.aspNetVersion = ko.observable("8.0");
@@ -20,7 +20,7 @@
           .join(" ");
       }, this);
 
-      this.folderStructureTypes = ["root", "src/test"];
+      this.folderStructureTypes = ["root", "src/test", "src/test/shared"];
       this.folderStructure = ko.observable("src/test");
       this.timeZone = ko.observable("Europe/Amsterdam");
 
@@ -124,10 +124,14 @@ RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/;
    && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
 
 # copy dirs that are only needed for building and testing
-COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' -->
+COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' || folderStructure() == 'src/test/shared' -->
 # copy src files to restore
 COPY src/*/*.csproj ./
-RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done<!-- ko if: addTesting -->
+RUN for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done<!-- ko if: folderStructure() == 'src/test/shared' -->
+
+# copy shared files to shared
+COPY shared/*/*.csproj ./
+RUN for file in $(ls *.csproj); do mkdir -p shared/${file%.*}/ && mv $file shared/${file%.*}/; done<!-- /ko --><!-- ko if: addTesting -->
 
 # copy test files to restore
 COPY test/*/*.csproj ./
@@ -140,7 +144,8 @@ RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${
    && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
 
 # copy dirs that are only needed for building and testing
-COPY src ./src<!-- ko if: addTesting -->
+COPY src ./src<!-- ko if: folderStructure() == 'src/test/shared' -->
+COPY shared ./shared<!-- /ko --><!-- ko if: addTesting -->
 COPY test ./test<!-- /ko --><!-- /ko -->
 
 # Note on build: don't use --no-restore, sometimes certain packages cannot be
