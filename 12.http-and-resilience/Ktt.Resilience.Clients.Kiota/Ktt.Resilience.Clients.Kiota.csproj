@@ -12,7 +12,7 @@
     <PackageReference Include="Microsoft.Extensions.Options" Version="9.0.5" />
     <PackageReference Include="Microsoft.Extensions.Http.Resilience" Version="9.5.0" />
     <PackageReference Include="Microsoft.Extensions.Resilience" Version="9.5.0" />
-    <PackageReference Include="Microsoft.Kiota.Bundle" Version="1.17.3" />
+    <PackageReference Include="Microsoft.Kiota.Bundle" Version="1.17.4" />
   </ItemGroup>
 
   <ItemGroup>
