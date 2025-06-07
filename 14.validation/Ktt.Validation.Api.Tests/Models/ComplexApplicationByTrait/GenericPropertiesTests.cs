@@ -138,7 +138,7 @@ public class GenericTests
         request.Environment = "blah";
 
         _validator.TryValidate(request, out var errors);
-        errors.ShouldContain("Environment", "blah is not a valid or allowed. Options are: [server-one]");
+        errors.ShouldContain("Environment", "blah is not valid or allowed. Options are: [server-one]");
     }
 
     [Theory]
