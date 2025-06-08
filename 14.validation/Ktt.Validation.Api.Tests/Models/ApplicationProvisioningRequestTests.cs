@@ -13,11 +13,6 @@ namespace Ktt.Validation.Api.Tests.Models;
 
 public class ApplicationProvisioningRequestTests
 {
-    public ApplicationProvisioningRequestTests()
-    {
-        FluentValidationLanguageManager.SetGlobalOptions();
-    }
-
     [Fact]
     public async Task ValidateByHttpValidation()
     {
@@ -111,6 +106,8 @@ public class ApplicationProvisioningRequestTests
     public void ValidateByValidatorWithServiceProvider()
     {
         // arrange
+        FluentValidationLanguageManager.SetGlobalOptions();
+
         var provider = new ServiceCollection()
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
@@ -151,6 +148,8 @@ public class ApplicationProvisioningRequestTests
     public void ValidateByDataAnnotationsValidator()
     {
         // arrange
+        FluentValidationLanguageManager.SetGlobalOptions();
+
         var provider = new ServiceCollection()
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
