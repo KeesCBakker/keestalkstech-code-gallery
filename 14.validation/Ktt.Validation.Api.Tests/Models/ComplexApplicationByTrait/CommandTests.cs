@@ -1,15 +1,15 @@
 ﻿using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services.Validation;
-using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
+using Provisioner.Api.UnitTests;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationProvisioningRequestByTrait;
 
 public class CommandTests
 {
     private readonly IDataAnnotationsValidator _validator =
-        ComplexApplicationProvisioningFixture
-            .GetServiceProvider()
+        new TestWebApplicationFactory()
+            .Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     private ComplexApplication CreateDefaultRequestForType(ComplexApplicationType type)
@@ -17,7 +17,7 @@ public class CommandTests
         return new ComplexApplication
         {
             Name = "test",
-            Team = "racing-green",
+            Team = "Racing Greens",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",

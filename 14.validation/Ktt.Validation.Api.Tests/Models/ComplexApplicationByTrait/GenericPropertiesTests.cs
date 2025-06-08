@@ -1,15 +1,15 @@
 ﻿using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services.Validation;
-using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
+using Provisioner.Api.UnitTests;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationProvisioningRequestByTrait;
 
 public class GenericTests
 {
     private readonly IDataAnnotationsValidator _validator =
-        ComplexApplicationProvisioningFixture
-            .GetServiceProvider()
+        new TestWebApplicationFactory()
+            .Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     private ComplexApplication CreateBaseRequest(ComplexApplicationType type) => new()
@@ -46,7 +46,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
@@ -67,7 +67,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
@@ -88,7 +88,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
@@ -109,7 +109,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.Environment = "server-one";
         request.ImageTag = "12-abcefe";
@@ -130,7 +130,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.ImageTag = "12-abcefe";
@@ -138,7 +138,7 @@ public class GenericTests
         request.Environment = "blah";
 
         _validator.TryValidate(request, out var errors);
-        errors.ShouldContain("Environment", "blah is not valid or allowed. Options are: [server-one]");
+        errors.ShouldContain("Environment", "blah is not valid or allowed. Options are: [server-one, server-two, server-three]");
     }
 
     [Theory]
@@ -150,7 +150,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.ImageTag = "12-abcefe";
@@ -171,7 +171,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";
@@ -192,7 +192,7 @@ public class GenericTests
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         request.Cpu = "100m";
         request.DockerHubRepo = "repo-one";
         request.Environment = "server-one";

@@ -9,7 +9,7 @@ public static class ProvisioningExamples
 
     public static string Environment => "server-one";
 
-    public static string Team => "racing-green";
+    public static string Team => "Red Herrings";
 
     public class SimpleApplicationExample : IExamplesProvider<SimpleApplication>
     {
