@@ -26,11 +26,6 @@ public class SwaggerExampleTest
 
         foreach (var (path, pathItem) in openApiDoc.Paths)
         {
-            if (path.Contains('{'))
-            {
-                continue;
-            }
-
             foreach (var (method, operation) in pathItem.Operations)
             {
                 if (operation.RequestBody?.Content == null)
@@ -67,15 +62,13 @@ public class SwaggerExampleTest
         }
     }
 
-    public static IEnumerable<object[]> GetValidationEndpoints() =>
-        _exampleMap.Keys
-            .Where(k => k.EndsWith("/validate"))
-            .Select(k => new object[] { k });
+    public static TheoryData<string> GetValidationEndpoints() =>
+        [.. _exampleMap.Keys
+            .Where(k => k.EndsWith("/validate"))];
 
-    public static IEnumerable<object[]> GetProvisioningEndpoints() =>
-        _exampleMap.Keys
-            .Where(k => k.StartsWith("POST ") && !k.EndsWith("/validate"))
-            .Select(k => new object[] { k });
+    public static TheoryData<string> GetProvisioningEndpoints() =>
+        [.. _exampleMap.Keys
+            .Where(k => k.StartsWith("POST ") && !k.EndsWith("/validate"))];
 
     [Theory]
     [MemberData(nameof(GetValidationEndpoints))]
