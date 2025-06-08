@@ -9,19 +9,7 @@ public static class ProvisioningExamples
 
     public static string Environment => "server-one";
 
-    public static string Team => "racing-green";
-
-    public static ComplexApplication ComplexApplication => new()
-    {
-        Name = ApplicationName,
-        Type = ComplexApplicationType.Application,
-        DockerHubRepo = "ktt/example-application",
-        Cpu = "250m",
-        Ram = "128Mi",
-        ImageTag = "latest",
-        Environment = Environment,
-        Team = Team
-    };
+    public static string Team => "Red Herrings";
 
     public class SimpleApplicationExample : IExamplesProvider<SimpleApplication>
     {
@@ -36,11 +24,16 @@ public static class ProvisioningExamples
 
     public class ComplexApplicationExample : IExamplesProvider<ComplexApplication>
     {
-        public ComplexApplication GetExamples() => ComplexApplication;
-    }
-
-    public class ComplexApplicationsExample : IExamplesProvider<ComplexApplication[]>
-    {
-        public ComplexApplication[] GetExamples() => [ComplexApplication];
+        public ComplexApplication GetExamples() => new()
+        {
+            Name = ApplicationName,
+            Type = ComplexApplicationType.Application,
+            DockerHubRepo = "ktt/example-application",
+            Cpu = "250m",
+            Ram = "128Mi",
+            ImageTag = "latest",
+            Environment = Environment,
+            Team = Team
+        };
     }
 }

@@ -6,33 +6,44 @@ using Moq;
 
 namespace Ktt.Validation.Api.Tests.Fixtures;
 
-public static class ComplexApplicationProvisioningFixture
+public class TestServiceOverrides
 {
-    public static IServiceProvider GetServiceProvider()
+    public Mock<IDockerHubService> DockerHubService { get; } = new(MockBehavior.Loose);
+
+    public ProvisioningOptions ProvisioningOptions { get; } = new();
+
+    public TestServiceOverrides()
+    {
+        SetupDockerHubService();
+    }
+
+    public void Apply(IServiceCollection services)
     {
         FluentValidationLanguageManager.SetGlobalOptions();
 
+        services
+            .AddSingleton(_ => DockerHubService.Object)
+            .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
+            .AddSingleton(_ => ProvisioningOptions)
+            .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()));
+    }
+
+    protected virtual void SetupDockerHubService()
+    {
         string[] repos = ["repo-one"];
 
-        var dockerHubService = new Mock<IDockerHubService>(MockBehavior.Loose);
-        dockerHubService.Setup(x => x.Exists(
-            It.IsIn(repos),
-            It.IsAny<CancellationToken>())
-        ).ReturnsAsync(true);
+        DockerHubService
+            .Setup(x => x.Exists(
+                It.IsAny<string>(),
+                It.IsAny<CancellationToken>())
+            ).ReturnsAsync((string repo, CancellationToken _) =>
+            {
+                if (repo.StartsWith("ktt/"))
+                {
+                    return true;
+                }
 
-        var services = new ServiceCollection();
-
-        services.AddSingleton(_ => dockerHubService.Object);
-        services.AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>();
-
-        services.AddSingleton(sp => new ProvisioningOptions
-        {
-            Labels = ["development", "production"],
-            Environments = ["server-one"],
-            Teams = ["Red Herrings", "racing-green"]
-        })
-        .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()));
-
-        return services.BuildServiceProvider();
+                return repos.Contains(repo);
+            });
     }
 }

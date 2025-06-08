@@ -5,6 +5,7 @@ using Ktt.Validation.Api.Services.Validation;
 using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
+using Provisioner.Api.UnitTests;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 
@@ -21,10 +22,11 @@ public class ApplicationProvisioningRequestTests
     public async Task ValidateByHttpValidation()
     {
         // arrange
-        var fixture = new TestServerFixture();
+        var fixture = new TestWebApplicationFactory();
+        var client = fixture.CreateClient();
 
         // act
-        var request = await fixture.Client.PostAsJsonAsync("/provision/simple-application", new
+        var request = await client.PostAsJsonAsync("/provision/simple-application", new
         {
             name = "My Application",
             type = "Application",
@@ -47,9 +49,10 @@ public class ApplicationProvisioningRequestTests
     [Fact]
     public void ValidateByService()
     {
-        // arrange
-        var fixture = new TestServerFixture();
+        var fixture = new TestWebApplicationFactory();
         var service = fixture.Services.GetRequiredService<ProvisionerService>();
+
+        // arrange
         var request = new SimpleApplication
         {
             Name = "My Application",

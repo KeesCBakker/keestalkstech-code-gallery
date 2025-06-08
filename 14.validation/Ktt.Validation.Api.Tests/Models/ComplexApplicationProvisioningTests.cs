@@ -1,15 +1,15 @@
 ﻿using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services.Validation;
-using Ktt.Validation.Api.Tests.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
+using Provisioner.Api.UnitTests;
 
 namespace Ktt.Validation.Api.Tests.Models;
 
 public class ComplexApplicationProvisioningTests
 {
     private readonly IDataAnnotationsValidator _validator =
-        ComplexApplicationProvisioningFixture
-            .GetServiceProvider()
+        new TestWebApplicationFactory()
+            .Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     [Theory]
@@ -48,7 +48,7 @@ public class ComplexApplicationProvisioningTests
         errors.ShouldContain("Team");
 
         // 3.2 valid team
-        request.Team = "racing-green";
+        request.Team = "Racing Greens";
         _validator.TryValidate(request, out errors);
         errors.ShouldNotContain("Team");
 
@@ -115,7 +115,7 @@ public class ComplexApplicationProvisioningTests
         var request = new ComplexApplication
         {
             Name = "test",
-            Team = "racing-green",
+            Team = "Racing Greens",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -143,7 +143,7 @@ public class ComplexApplicationProvisioningTests
         var request = new ComplexApplication
         {
             Name = "test",
-            Team = "racing-green",
+            Team = "Racing Greens",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -176,7 +176,7 @@ public class ComplexApplicationProvisioningTests
         var request = new ComplexApplication
         {
             Name = "test",
-            Team = "racing-green",
+            Team = "Racing Greens",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",
@@ -228,7 +228,7 @@ public class ComplexApplicationProvisioningTests
         var request = new ComplexApplication
         {
             Name = "test",
-            Team = "racing-green",
+            Team = "Racing Greens",
             Type = type,
             Cpu = "100m",
             Ram = "100Mi",

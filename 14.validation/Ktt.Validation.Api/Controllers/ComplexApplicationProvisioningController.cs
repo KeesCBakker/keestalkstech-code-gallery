@@ -2,36 +2,38 @@ using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation.Attributes;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Ktt.Validation.Api.Controllers;
 
 /// <summary>
-/// Controller for provisioning operations.
+/// Provisioning controller for complex applications.
 /// </summary>
 [ApiController]
-[Route("provision")]
-public class ProvisioningController(ProvisionerService service) : ControllerBase
+[Route("provision/complex-application")]
+public class ComplexApplicationProvisioningController(ProvisionerService service) : ControllerBase
 {
     /// <summary>
-    /// Provisions a simple application
+    /// Provisions a complex application.
     /// </summary>
-    [HttpPost("simple-application")]
+    [HttpPost]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-    public void ProvisisionApplication(SimpleApplication request)
+    public void Provision(ComplexApplication request)
     {
         service.ProvisionApplication(request);
     }
 
     /// <summary>
-    /// Provisions a complex application
+    /// Validates a complex application.
     /// </summary>
-    [HttpPost("complex-application")]
+    [HttpPost("validate")]
     [ProducesResponseType(200)]
     [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-    public void ProvisisionApplication(ComplexApplication request)
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Needed for the validation pipeline.")]
+    public void Validate(ComplexApplication request)
     {
-        service.ProvisionApplication(request);
+        // validation is done by attribute validation
     }
 
     /// <summary>
@@ -43,21 +45,6 @@ public class ProvisioningController(ProvisionerService service) : ControllerBase
     public ComplexApplication[] GetComplexApplications(
         [FromQuery, Team] string team,
         [FromQuery, Environment] string environment
-    )
-    {
-        return [];
-    }
-
-    /// <summary>
-    /// Gets a complex application.
-    /// </summary>
-    [HttpGet("complex-application/{applicationName}")]
-    [ProducesResponseType(typeof(ComplexApplication[]), 200)]
-    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-    public ComplexApplication[] GetComplexApplications(
-        [FromQuery, Team] string team,
-        [FromQuery, Environment] string environment,
-        string applicationName
     )
     {
         return [];
