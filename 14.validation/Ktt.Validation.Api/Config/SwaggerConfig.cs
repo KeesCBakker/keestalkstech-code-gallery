@@ -36,14 +36,14 @@ public static class SwaggerConfig
             // Non nullable types render as required
             options.SupportNonNullableReferenceTypes();
 
-            // Automatically discover examples
+            // Tip 1: Turn config values into enums in the schema
+            options.SchemaFilter<ConfigValuesSchemaFilter>();
+
+            // Tip 2: Automatically discover examples
             options.ExampleFilters();
 
-            // Add examples for parameters
+            // Tip 3: Add examples for parameters
             options.OperationFilter<ParameterExamplesOperationFilter>();
-
-            // Turn config values into enums in the schema
-            options.SchemaFilter<ConfigValuesSchemaFilter>();
 
         });
 
