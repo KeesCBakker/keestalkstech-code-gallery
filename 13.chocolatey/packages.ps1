@@ -44,4 +44,6 @@
   choco install -y powershell-core
   ## TeraCopy
   choco install -y teracopy
+  ## OpenSSL: generate strong secrets
+  choco install -y openssl
 }
