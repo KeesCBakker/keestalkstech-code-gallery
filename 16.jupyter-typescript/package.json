@@ -1,0 +1,26 @@
+{
+  "name": "project-16-jupyter-typescript",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "private": "true",
+  "scripts": {
+    "start": "npm run dev",
+    "dev": "ts-node-dev --respawn --transpile-only --clear --watch '*.json,2*/*.*,*.ts' index.ts",
+    "debug": "ts-node-dev --transpile-only --clear --watch '*.json,2*/*.*,*.ts' index.ts",
+    "new": "ts-node-dev new.ts",
+    "script": "ts-node --transpile-only",
+    "monitor": "watch \"ps aux | grep -E 'node|npm'\""
+  },
+  "author": "Kees C. Bakker",
+  "license": "ISC",
+  "dependencies": {
+    "@types/lodash": "^4.17.21",
+    "@types/node": "^24.10.1",
+    "chalk": "^4",
+    "dotenv": "^17.2.3",
+    "lodash": "^4.17.21",
+    "ts-node": "^10.9.2",
+    "ts-node-dev": "^2.0.0"
+  }
+}
