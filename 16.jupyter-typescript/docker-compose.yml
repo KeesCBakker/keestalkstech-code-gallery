@@ -10,7 +10,7 @@ services:
       - |
         cd /work &&
         npm install &&
-        tini -- jupyter server \
+        exec tini -g -- jupyter server \
           --ServerApp.token='' \
           --ServerApp.password='' \
           --ip=0.0.0.0 \
