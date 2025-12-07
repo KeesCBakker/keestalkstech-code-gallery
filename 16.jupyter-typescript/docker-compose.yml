@@ -1,15 +1,11 @@
 services:
   jupyter:
     build: .
-    container_name: project-16-jupyter-typescript
     ports:
       - "127.0.0.1:8118:8118"
     working_dir: /work
-    command: sh -c "cd /work && npm install && jupyter lab --NotebookApp.token='' --NotebookApp.password='' --ip=0.0.0.0 --port=8118 --no-browser"
+    command: sh -c "cd /work && npm install && jupyter server --ServerApp.token='' --ServerApp.password='' --ip=0.0.0.0 --port=8118 --no-browser"
     volumes:
       - ./:/work
     environment:
-      JUPYTER_ENABLE_LAB: "true"
-      JUPYTER_ENABLE_METRICS: "false"
-      JUPYTER_TOKEN: "my-aoc-token"
       FORCE_COLOR: "3"
