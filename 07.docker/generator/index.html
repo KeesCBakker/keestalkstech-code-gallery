@@ -4,11 +4,10 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.5.0";
+      this.version = "v2.6.0";
       this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
-      this.aspNetVersion = ko.observable("8.0");
-      this.addTesting = ko.observable(true);
+      this.aspNetVersion = ko.observable("10.0");
       this.addIntegrationTesting = ko.observable(false);
       this.addMultiProjectSupport = ko.observable(true);
       this.otherProjects = ko.observable("");
@@ -22,6 +21,19 @@
 
       this.folderStructureTypes = ["root", "src/test", "src/test/shared"];
       this.folderStructure = ko.observable("src/test");
+
+      this.modes = ["restore+build+test+publish", "restore+publish"];
+      this.mode = ko.observable("restore+build+test+publish");
+
+      this.addTesting = ko.computed(function () {
+        return this.mode().includes("test");
+      }, this);
+
+      this.addBuilding = ko.computed(function () {
+        return this.mode().includes("build");
+      }, this);
+
+
       this.timeZone = ko.observable("Europe/Amsterdam");
 
       this.srcFolder = ko.computed(function () {
@@ -66,7 +78,9 @@
     </div>
     <div><label for="port">Port:</label><input type="number" min="0" id="port" name="port" data-bind="value: port, valueUpdate: 'afterkeydown'" /></div>
     <div><label for="timeZone">Time zone:</label><input type="text" id="timeZone" name="timeZone" data-bind="value: timeZone, valueUpdate: 'afterkeydown'" /></div>
-    <div><label for="addTesting">Add testing:</label><input type="checkbox" id="addTesting" name="addTesting" data-bind="checked: addTesting" /></div>
+    <div><label for="mode">Mode:</label>
+      <select data-bind="value: mode, options: modes"></select>
+    </div>
     <div data-bind="css: { 'grayed-out': !addTesting() }, attr: { 'aria-disabled': !addTesting() }"><label for="addIntegrationTesting">Integration testing:</label><input type="checkbox" id="addIntegrationTesting" name="addIntegrationTesting" data-bind="checked: addIntegrationTesting" />
       <a target="_blank" href="https://keestalkstech.com/rethinking-our-asp-net-docker-ci/#step-3-integration-testing-stage">(for test containers)</a>
     </div>
@@ -121,7 +135,8 @@ RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/;
    && echo "RESTORING" \
    && echo "---------" \
    && echo "" \
-   && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
+   && <!-- /ko -->for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done; \
+      for p in $(find . -name "*.csproj"); do dotnet restore "$p" || exit 1; done
 
 # copy dirs that are only needed for building and testing
 COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' || folderStructure() == 'src/test/shared' -->
@@ -141,13 +156,13 @@ RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${
    && echo "RESTORING" \
    && echo "---------" \
    && echo "" \
-   && <!-- /ko -->dotnet restore --verbosity "$VERBOSITY" || exit 1
+   && <!-- /ko -->for p in $(find . -name "*.csproj"); do dotnet restore "$p" || exit 1; done
 
 # copy dirs that are only needed for building and testing
 COPY src ./src<!-- ko if: folderStructure() == 'src/test/shared' -->
 COPY shared ./shared<!-- /ko --><!-- ko if: addTesting -->
 COPY test ./test<!-- /ko --><!-- /ko -->
-
+<!-- ko if: addBuilding() -->
 # Note on build: don't use --no-restore, sometimes certain packages cannot be
 # restored by the dotnet restore. The build will add them, as it has more context (!?)
 # example: Package System.Text.Json, version 6.0.0 was not found
@@ -157,7 +172,7 @@ RUN <!-- ko if: echo -->echo "" \
    && echo "BUILDING" \
    && echo "--------" \
    && echo "" \
-   && <!-- /ko -->dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
+   && <!-- /ko -->dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1<!-- /ko -->
 
 <!-- ko if: addTesting --># defining the argument here caches the previous layers when the value switches
 ARG EXECUTE_TESTS
@@ -183,7 +198,7 @@ RUN <!-- ko if: echo -->echo "" \
       dotnet publish "<span data-bind="text: srcFolder"></span>$project/$project.csproj" \
         --configuration Release \
         --output "$APP_DIR/$project" \
-        --no-restore -nowarn:NETSDK1004 || exit 1; \
+        -nowarn:NETSDK1004 || exit 1; \
    done
 
 <!-- ko if: addTesting() && addIntegrationTesting() -->
@@ -227,7 +242,7 @@ CMD bash -euo pipefail -c '\
 # Runtime image, uses PORT, TAG, MAIN_API_DLL, MAIN_API_NAME, APP_DIR
 #####################################################################
 
-FROM mcr.microsoft.com/dotnet/aspnet:$ASPNET_VERSION-alpine as runtime
+FROM mcr.microsoft.com/dotnet/aspnet:$ASPNET_VERSION-alpine AS runtime
 
 RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib<!-- ko if: timeZone --> tzdata<!-- /ko -->
 
@@ -254,9 +269,9 @@ ENV \
 EXPOSE $PORT
 
 WORKDIR "$APP_DIR/$MAIN_API_NAME"
-
 ENV PROGRAM="$MAIN_API_DLL"
-ENTRYPOINT dotnet "$PROGRAM"</pre>
+ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
+</pre>
   <!-- ko if:  code -->
   <div data-bind="template: { name: 'codeTemplate', data: code, afterRender: applyHighlight }"></div>
   <!-- /ko -->
