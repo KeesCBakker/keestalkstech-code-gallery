@@ -1,5 +1,5 @@
 ﻿#################################
-# Configuration settings (v2.6.1)
+# Configuration settings (v2.6.2)
 #################################
 
 ARG MAIN_API_NAME="Ktt.Docker.Todo.Api"
