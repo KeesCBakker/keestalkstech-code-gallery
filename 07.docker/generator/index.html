@@ -4,7 +4,7 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.6.0";
+      this.version = "v2.6.1";
       this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
       this.aspNetVersion = ko.observable("10.0");
@@ -138,7 +138,6 @@ RUN for file in $(ls *.csproj); do mkdir -p ${file%.*}/ && mv $file ${file%.*}/;
    && <!-- /ko -->for file in $(ls *.csproj); do mkdir -p src/${file%.*}/ && mv $file src/${file%.*}/; done; \
       for p in $(find . -name "*.csproj"); do dotnet restore "$p" || exit 1; done
 
-# copy dirs that are only needed for building and testing
 COPY . .<!-- /ko --><!-- ko if: folderStructure() == 'src/test' || folderStructure() == 'src/test/shared' -->
 # copy src files to restore
 COPY src/*/*.csproj ./
@@ -158,12 +157,11 @@ RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${
    && echo "" \
    && <!-- /ko -->for p in $(find . -name "*.csproj"); do dotnet restore "$p" || exit 1; done
 
-# copy dirs that are only needed for building and testing
 COPY src ./src<!-- ko if: folderStructure() == 'src/test/shared' -->
 COPY shared ./shared<!-- /ko --><!-- ko if: addTesting -->
 COPY test ./test<!-- /ko --><!-- /ko -->
-<!-- ko if: addBuilding() -->
-# Note on build: don't use --no-restore, sometimes certain packages cannot be
+
+<!-- ko if: addBuilding() --># Note on build: don't use --no-restore, sometimes certain packages cannot be
 # restored by the dotnet restore. The build will add them, as it has more context (!?)
 # example: Package System.Text.Json, version 6.0.0 was not found
 
@@ -172,9 +170,9 @@ RUN <!-- ko if: echo -->echo "" \
    && echo "BUILDING" \
    && echo "--------" \
    && echo "" \
-   && <!-- /ko -->dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1<!-- /ko -->
-
-<!-- ko if: addTesting --># defining the argument here caches the previous layers when the value switches
+   && <!-- /ko -->dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
+<!-- /ko --><!-- ko if: addTesting -->
+ # defining the argument here caches the previous layers when the value switches
 ARG EXECUTE_TESTS
 RUN <!-- ko if: echo -->echo "" \
    && echo "-------" \
