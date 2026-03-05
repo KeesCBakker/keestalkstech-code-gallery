@@ -1,5 +1,5 @@
 ﻿#################################
-# Configuration settings (v2.6.2)
+# Configuration settings (v2.6.3)
 #################################
 
 ARG MAIN_API_NAME="Ktt.Docker.Todo.Api"
@@ -114,18 +114,21 @@ RUN apt-get update && \
 COPY --from=build /build /build
 
 # run Docker daemon and tests
-CMD bash -euo pipefail -c '\
-  trap "echo Shutting down dockerd; pkill dockerd || true" EXIT; \
-  echo "Starting Docker daemon..."; \
-  dockerd > /var/log/dockerd.log 2>&1 & \
-  for i in {1..30}; do \
-    docker info > /dev/null 2>&1 && break || echo "Waiting for Docker... ($i/30)"; sleep 1; \
-  done; \
-  if ! docker info > /dev/null 2>&1; then \
-    echo "❌ Docker failed to start. Log output:"; cat /var/log/dockerd.log || echo "(No log found)"; exit 1; \
-  fi; \
-  echo "✅ Docker is ready. Running integration tests..."; \
-  dotnet test --filter "Category=Integration" --nologo --logger "console;verbosity=${VERBOSITY:-minimal}"'
+CMD ["bash", "-euo", "pipefail", "-c", "\
+trap 'echo Shutting down dockerd; pkill dockerd || true' EXIT; \
+echo 'Starting Docker daemon...'; \
+dockerd > /var/log/dockerd.log 2>&1 & \
+for i in {1..30}; do \
+  docker info > /dev/null 2>&1 && break || echo \"Waiting for Docker... ($i/30)\"; sleep 1; \
+done; \
+if ! docker info > /dev/null 2>&1; then \
+  echo '❌Docker failed to start. Log output:'; \
+  cat /var/log/dockerd.log || echo '(No log found)'; \
+  exit 1; \
+fi; \
+echo '✅ Docker is ready. Running integration tests...'; \
+dotnet test --filter 'Category=Integration' --nologo --logger \"console;verbosity=${VERBOSITY:-minimal}\" \
+"]
 
 
 #####################################################################
