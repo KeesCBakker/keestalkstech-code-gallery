@@ -1,5 +1,5 @@
 ﻿#################################
-# Configuration settings (v2.4.0)
+# Configuration settings (v2.6.1)
 #################################
 
 ARG MAIN_API_NAME="Ktt.Docker.Todo.Api"
@@ -7,7 +7,7 @@ ARG \
    MAIN_API_DLL="$MAIN_API_NAME.dll" \
    PROJECTS_TO_PUBLISH="$MAIN_API_NAME" \
    PORT=5000 \
-   ASPNET_VERSION="8.0" \
+   ASPNET_VERSION="10.0" \
    # options: q[uiet], m[inimal], n[ormal], d[etailed], and diag[nostic]
    # minimal keeps your pipeline readable while informing you what's going on
    VERBOSITY="minimal" \
@@ -16,9 +16,9 @@ ARG \
    EXECUTE_TESTS="true"
 
 
-#########################################################################
+##########################################################################
 # Build image, uses VERBOSITY, EXECUTE_TESTS, PROJECTS_TO_PUBLISH, APP_DIR
-#########################################################################
+##########################################################################
 
 FROM mcr.microsoft.com/dotnet/sdk:$ASPNET_VERSION AS build
 
@@ -49,16 +49,14 @@ RUN for file in $(ls *.csproj); do mkdir -p test/${file%.*}/ && mv $file test/${
    && echo "RESTORING" \
    && echo "---------" \
    && echo "" \
-   && dotnet restore --verbosity "$VERBOSITY" || exit 1
+   && for p in $(find . -name "*.csproj"); do dotnet restore "$p" || exit 1; done
 
-# copy dirs that are only needed for building and testing
 COPY src ./src
 COPY test ./test
 
 # Note on build: don't use --no-restore, sometimes certain packages cannot be
 # restored by the dotnet restore. The build will add them, as it has more context (!?)
 # example: Package System.Text.Json, version 6.0.0 was not found
-
 RUN echo "" \
    && echo "--------" \
    && echo "BUILDING" \
@@ -66,7 +64,7 @@ RUN echo "" \
    && echo "" \
    && dotnet build --configuration Release --verbosity "$VERBOSITY" -nowarn:NETSDK1004 || exit 1
 
-# defining the argument here caches the previous layers when the value switches
+ # defining the argument here caches the previous layers when the value switches
 ARG EXECUTE_TESTS
 RUN echo "" \
    && echo "-------" \
@@ -90,7 +88,7 @@ RUN echo "" \
       dotnet publish "src/$project/$project.csproj" \
         --configuration Release \
         --output "$APP_DIR/$project" \
-        --no-restore -nowarn:NETSDK1004 || exit 1; \
+        -nowarn:NETSDK1004 || exit 1; \
    done
 
 
@@ -134,7 +132,7 @@ CMD bash -euo pipefail -c '\
 # Runtime image, uses PORT, TAG, MAIN_API_DLL, MAIN_API_NAME, APP_DIR
 #####################################################################
 
-FROM mcr.microsoft.com/dotnet/aspnet:$ASPNET_VERSION-alpine as runtime
+FROM mcr.microsoft.com/dotnet/aspnet:$ASPNET_VERSION-alpine AS runtime
 
 RUN apk add --no-cache icu-libs krb5-libs libgcc libintl libssl3 libstdc++ zlib tzdata
 
@@ -161,6 +159,5 @@ ENV \
 EXPOSE $PORT
 
 WORKDIR "$APP_DIR/$MAIN_API_NAME"
-
 ENV PROGRAM="$MAIN_API_DLL"
-ENTRYPOINT dotnet "$PROGRAM"
+ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]

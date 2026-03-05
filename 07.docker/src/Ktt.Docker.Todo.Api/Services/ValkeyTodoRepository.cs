@@ -22,10 +22,10 @@ public class ValkeyTodoRepository : ITodoRepository
 
         foreach (var key in keys)
         {
-            var json = await _db.StringGetAsync(key);
-            if (!json.IsNullOrEmpty)
+            var json = (string?)await _db.StringGetAsync(key);
+            if (!string.IsNullOrEmpty(json))
             {
-                items.Add(JsonSerializer.Deserialize<TodoItem>(json!)!);
+                items.Add(JsonSerializer.Deserialize<TodoItem>(json)!);
             }
         }
 
@@ -34,8 +34,8 @@ public class ValkeyTodoRepository : ITodoRepository
 
     public async Task<TodoItem?> GetAsync(string id)
     {
-        var json = await _db.StringGetAsync($"{KeyPrefix}{id}");
-        return json.IsNullOrEmpty ? null : JsonSerializer.Deserialize<TodoItem>(json!);
+        var json = (string?)await _db.StringGetAsync($"{KeyPrefix}{id}");
+        return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<TodoItem>(json);
     }
 
     public async Task SaveAsync(TodoItem item)

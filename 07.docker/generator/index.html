@@ -164,7 +164,6 @@ COPY test ./test<!-- /ko --><!-- /ko -->
 <!-- ko if: addBuilding() --># Note on build: don't use --no-restore, sometimes certain packages cannot be
 # restored by the dotnet restore. The build will add them, as it has more context (!?)
 # example: Package System.Text.Json, version 6.0.0 was not found
-
 RUN <!-- ko if: echo -->echo "" \
    && echo "--------" \
    && echo "BUILDING" \
