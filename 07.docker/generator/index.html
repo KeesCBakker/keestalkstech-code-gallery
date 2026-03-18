@@ -4,7 +4,7 @@
     function Model() {
       let self = this;
 
-      this.version = "v2.6.3";
+      this.version = "v2.6.4";
       this.serviceName = ko.observable("Ktt.Docker.Todo.Api");
       this.port = ko.observable("5000");
       this.aspNetVersion = ko.observable("10.0");
@@ -125,7 +125,7 @@ WORKDIR /build
 # in cacheable layers. This will speed up the build process greatly.
 
 # copy global files to restore
-COPY *.sln *.*config ./
+COPY *.sln* *.*config ./
 <!-- ko if: folderStructure() == 'root' -->
 # copy files to restore
 COPY */*.csproj ./
