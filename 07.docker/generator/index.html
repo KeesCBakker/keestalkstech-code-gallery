@@ -1,5 +1,5 @@
 <div id="source">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/knockout/3.5.0/knockout-min.js"></script>
+  <script src="https://knockoutjs.com/downloads/knockout-3.5.3.js"></script>
   <script async>
     function Model() {
       let self = this;
@@ -394,16 +394,47 @@ ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
   }
 </style>
 <script>
+  const createStorageWrapper = storage => ({
+    set: (key, value) => {
+      try {
+        const json = JSON.stringify(value);
+
+        if (json === undefined) {
+          storage.removeItem(key);
+          return;
+        }
+
+        storage.setItem(key, json);
+      } catch (error) {
+        console.warn("Could not store", key, error);
+      }
+    },
+    get: key => {
+      try {
+        const json = storage.getItem(key);
+
+        if (json === null) {
+          return { found: false };
+        }
+
+        return { found: true, value: JSON.parse(json) };
+      } catch (error) {
+        console.warn("Could not restore", key, error);
+        return { found: false };
+      }
+    }
+  });
+
   ko.trackChange = (store, observable, key, echo = null) => {
     //initialize from stored value, or if no value is stored yet,
     //use the current value
 
-    const value = store.get(key);
-    if (value !== null) {
-      if (echo) echo("Restoring value for", key, value);
+    const stored = store.get(key);
+    if (stored.found) {
+      if (echo) echo("Restoring value for", key, stored.value);
 
       //restore current value
-      observable(value);
+      observable(stored.value);
     }
 
     //track the changes
@@ -413,26 +444,19 @@ ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
     });
   };
 
-  ko.isComputed = instance => {
-    if (!instance || !instance.__ko_proto__) {
-      return false;
-    }
-
-    if (instance.__ko_proto__ === ko.dependentObservable) {
-      return true;
-    }
-
-    // Walk the prototype chain
-    return ko.isComputed(instance.__ko_proto__);
-  };
-
   const defaultOptions = Object.freeze({
     storage: localStorage,
     traverseNonObservableProperties: true,
     debug: false
   });
 
-  ko.persistChanges = (model, prefix = "model-", options = defaultOptions, deep = 0) => {
+  ko.persistChanges = (
+    model,
+    prefix = "model-",
+    options = defaultOptions,
+    deep = 0,
+    visited = new WeakSet()
+  ) => {
     options = Object.assign({}, defaultOptions, options);
     options.echo = function () {
       if (!options.debug) return;
@@ -443,15 +467,17 @@ ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
       console.log(...arguments);
     };
 
-    const storageWrapper = {
-      set: (key, value) => options.storage.setItem(key, JSON.stringify(value)),
-      get: key => JSON.parse(options.storage.getItem(key))
-    };
+    if (visited.has(model)) {
+      options.echo("Skipping", prefix, "because the object was already visited.");
+      return;
+    }
+    visited.add(model);
 
+    const storageWrapper = createStorageWrapper(options.storage);
     const skip = new Set(model.__skip || []);
     skip.add("__skip");
 
-    for (let n in model) {
+    for (const n of Object.keys(model)) {
       const observable = model[n];
       const key = prefix + n;
 
@@ -483,7 +509,7 @@ ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
 
       if (typeof observable === "object" && observable !== null && !Array.isArray(observable)) {
         options.echo("Tracking change for object", key);
-        ko.persistChanges(observable, key + "-", options, deep + 1);
+        ko.persistChanges(observable, key + "-", options, deep + 1, visited);
         continue;
       }
 
@@ -494,30 +520,31 @@ ENTRYPOINT ["sh", "-c", "exec dotnet \"$PROGRAM\""]
 <script>
   class QueryStringStorage {
     getItem(key) {
-      let value = new URLSearchParams(window.location.search).get(key);
+      const value = new URL(window.location.href).searchParams.get(key);
 
-      if (!value) return value;
-
-      if (value != "false" && value != "true" && value.length > 0 && !["{", "[", '"'].includes(value[0])) {
-        return '"' + value + '"';
+      if (value === null) {
+        return null;
       }
 
-      return value;
+      if (["true", "false", "null"].includes(value)) {
+        return value;
+      }
+
+      return JSON.stringify(value);
     }
 
-    setItem(key, value) {
-      const params = new URLSearchParams(window.location.search);
+    setItem(key, json) {
+      const url = new URL(window.location.href);
+      const value = JSON.parse(json);
 
-      if (value && value.length > 0) {
-        let f = value[0];
-        if (f == '"') {
-          //string
-          value = value.substring(1, value.length - 1);
-        }
-      }
+      url.searchParams.set(key, value === null ? "null" : String(value));
+      window.history.replaceState(window.history.state, "", url);
+    }
 
-      params.set(key, value);
-      window.history.replaceState({}, "", "?" + params.toString());
+    removeItem(key) {
+      const url = new URL(window.location.href);
+      url.searchParams.delete(key);
+      window.history.replaceState(window.history.state, "", url);
     }
   }
 </script>

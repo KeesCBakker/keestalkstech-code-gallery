@@ -354,3 +354,6 @@ MigrationBackup/
 /coverage.xml
 /Dockerfile
 /12.kiota-and-resilience/Ktt.KiotaAndResilience.backup
+
+# Local test artifacts
+/tmp/
