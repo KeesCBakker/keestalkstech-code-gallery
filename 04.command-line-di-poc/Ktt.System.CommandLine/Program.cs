@@ -1,10 +1,19 @@
 using Ktt.System.CommandLine.Commands;
 using Ktt.System.CommandLine.Services;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
 
 static void ConfigureServices(IServiceCollection services)
 {
+    // build configuration from environment variables
+    var configuration = new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .Build();
+
+    // configure WeatherServiceOptions from environment variables
+    services.Configure<WeatherServiceOptions>(configuration);
+
     // add commands:
     services.AddTransient<Command, CurrentCommand>();
     services.AddTransient<Command, ForecastCommand>();

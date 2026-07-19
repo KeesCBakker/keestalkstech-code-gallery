@@ -1,8 +1,10 @@
+using Microsoft.Extensions.Options;
+
 namespace Ktt.System.CommandLine.Services;
 
-class WeatherService()
+class WeatherService(IOptions<WeatherServiceOptions> opts)
 {
-    public WeatherServiceOptions Options { get; } = new WeatherServiceOptions();
+    public WeatherServiceOptions Options { get; } = opts.Value;
 
     public Task<string> GetTemperature(string? city = null)
     {
