@@ -124,3 +124,11 @@ Let's explore validation using .NET Data Annotations and FluentValidation.
 - <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Let’s combine Data Annotation Validation with FluentValidation</a>
 - <a href="https://keestalkstech.com/data-annotation-validation-in-a-business-service/">Data Annotation validation with dependency injection in a business service</a>
 - <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>
+
+## 17. Named arguments in Bash
+
+Parse readable named arguments in a standalone Bash script or move the parser into a reusable sourced library. Only declared variables included in an explicit whitelist can be updated.
+
+- <a href="17.bash-named-arguments">17.bash-named-arguments</a>
+- <a href="https://keestalkstech.com/named-arguments-in-a-bash-script/">Named Arguments in a Bash Script</a>
+- <a href="https://keestalkstech.com/bash-script-with-a-lib-for-named-parameters/">Bash Script with a Lib for Named Parameters</a>
