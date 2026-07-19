@@ -46,10 +46,12 @@ function Check-Expiration {
     if ($now -lt $exp) {
         $remaining = $exp - $now
         $minutes = [math]::Floor($remaining / 60)
-        Write-Host "Token expires at: $(Get-Date -Date ([datetime]::FromFileTimeUtc($exp * 10000000 + 116444736000000000)))"
+        $expDate = [DateTimeOffset]::FromUnixTimeSeconds($exp).LocalDateTime
+        Write-Host "Token expires at: $(Get-Date -Date $expDate)"
         Write-Host "Time remaining: $minutes minutes."
     } else {
-        Write-Host "Token has expired. Expired at: $(Get-Date -Date ([datetime]::FromFileTimeUtc($exp * 10000000 + 116444736000000000)))"
+        $expDate = [DateTimeOffset]::FromUnixTimeSeconds($exp).LocalDateTime
+        Write-Host "Token has expired. Expired at: $(Get-Date -Date $expDate)"
     }
 }
 
