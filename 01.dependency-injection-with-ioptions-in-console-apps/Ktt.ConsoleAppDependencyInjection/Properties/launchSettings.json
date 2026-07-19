@@ -2,10 +2,16 @@
   "profiles": {
     "Greet Kees": {
       "commandName": "Project",
-      "commandLineArgs": "Kees"
+      "commandLineArgs": "Kees",
+      "environmentVariables": {
+        "ENVIRONMENT": "Local"
+      }
     },
     "Greet World": {
-      "commandName": "Project"
+      "commandName": "Project",
+      "environmentVariables": {
+        "ENVIRONMENT": "Local"
+      }
     }
   }
 }

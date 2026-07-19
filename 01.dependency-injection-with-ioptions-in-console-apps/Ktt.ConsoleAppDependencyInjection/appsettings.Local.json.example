@@ -1,0 +1,5 @@
+{
+  "App": {
+    "Greeting": "Howdy {0}! Welcome from your local machine."
+  }
+}

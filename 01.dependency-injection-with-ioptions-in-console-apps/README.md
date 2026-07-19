@@ -9,9 +9,19 @@ want the same features in your Console app.
 
 ## Features
 
-- Support for .NET 8
+- Support for .NET 10
 - Support for <a href="https://learn.microsoft.com/en-us/dotnet/api/system.commandline.rootcommand">System.CommandLine.RootCommand</a>
-- Support for appsettings.json configuration
+- Support for appsettings.json configuration with environment-specific overrides (``appsettings.{ENVIRONMENT}.json``)
 - Support for environment variables configuration
 - Support for IOption injection
-- Support for IOption data validation validation on startup
+- Support for IOption data validation on startup
+
+## Configuration
+
+The application uses the `ENVIRONMENT` environment variable to load environment-specific settings:
+
+- `appsettings.json` — base settings for all environments
+- `appsettings.{ENVIRONMENT}.json` — environment-specific overrides (optional)
+
+See <a href="https://keestalkstech.com/2019/01/setup-multiple-setting-files-with-a-net-console-application/">Setup Multiple Settings Files with a .NET Console Application</a> for more details.
+

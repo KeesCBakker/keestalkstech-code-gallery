@@ -349,6 +349,8 @@ MigrationBackup/
 # Ionide (cross platform F# VS Code tools) working folder
 .ionide/
 .env
+# Local appsettings files (environment-specific overrides)
+appsettings.Local.json
 .sonarqube
 /build.sh
 /coverage.xml
@@ -357,3 +359,4 @@ MigrationBackup/
 
 # Local test artifacts
 /tmp/
+

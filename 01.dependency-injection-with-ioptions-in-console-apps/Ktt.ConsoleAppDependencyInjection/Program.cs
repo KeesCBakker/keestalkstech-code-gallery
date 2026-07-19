@@ -1,10 +1,12 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
 
-static void ConfigureServices(IServiceCollection services)
+var environmentName = Environment.GetEnvironmentVariable("ENVIRONMENT") ?? "Production";
+
+static void ConfigureServices(IServiceCollection services, string environmentName)
 {
     // configure logging
     services.AddLogging(builder =>
@@ -18,6 +20,7 @@ static void ConfigureServices(IServiceCollection services)
         new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json", optional: false)
+            .AddJsonFile($"appsettings.{environmentName}.json", optional: true)
             .AddEnvironmentVariables()
             .Build());
 
@@ -54,7 +57,7 @@ static void ConfigureServices(IServiceCollection services)
 
 // create service collection
 var services = new ServiceCollection();
-ConfigureServices(services);
+ConfigureServices(services, environmentName);
 
 // create service provider
 using var serviceProvider = services.BuildServiceProvider();
