@@ -1,4 +1,4 @@
-﻿using Ktt.System.CommandLine.Commands;
+using Ktt.System.CommandLine.Commands;
 using Ktt.System.CommandLine.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.CommandLine;
@@ -22,10 +22,10 @@ using var serviceProvider = services.BuildServiceProvider();
 
 // entry to run app
 var rootCommand = new RootCommand("Weather information using a very unreliable weather service.");
-serviceProvider
-    .GetServices<Command>()
-    .ToList()
-    .ForEach(rootCommand.AddCommand);
 
-await rootCommand.InvokeAsync(args);
+foreach (var command in serviceProvider.GetServices<Command>())
+{
+    rootCommand.Subcommands.Add(command);
+}
 
+return rootCommand.Parse(args).Invoke();

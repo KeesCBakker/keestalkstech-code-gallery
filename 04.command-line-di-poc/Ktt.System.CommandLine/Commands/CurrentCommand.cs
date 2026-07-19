@@ -1,4 +1,4 @@
-﻿using Ktt.System.CommandLine.Services;
+using Ktt.System.CommandLine.Services;
 using System.CommandLine;
 
 namespace Ktt.System.CommandLine.Commands;
@@ -11,16 +11,19 @@ class CurrentCommand : Command
     {
         _weather = weather ?? throw new ArgumentNullException(nameof(weather));
 
-        var cityOption = new Option<string>("--city", () => _weather.Options.DefaultCity, "The city.");
+        var cityOption = new Option<string>("--city")
+        {
+            Description = "The city.",
+            DefaultValueFactory = _ => _weather.Options.DefaultCity
+        };
 
-        AddOption(cityOption);
+        Options.Add(cityOption);
 
-        this.SetHandler(Execute, cityOption);
-    }
-
-    private async Task Execute(string city)
-    {
-        var report = await _weather.GetTemperature(city);
-        Console.WriteLine(report);
+        this.SetAction(async (parseResult, cancellationToken) =>
+        {
+            var city = parseResult.GetValue(cityOption);
+            var report = await _weather.GetTemperature(city);
+            Console.WriteLine(report);
+        });
     }
 }

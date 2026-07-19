@@ -1,4 +1,4 @@
-﻿using Ktt.System.CommandLine.Services;
+using Ktt.System.CommandLine.Services;
 using System.CommandLine;
 
 namespace Ktt.System.CommandLine.Commands;
@@ -11,21 +11,29 @@ class ForecastCommand : Command
     {
         _weather = weather;
 
-        var cityOption = new Option<string>("--city", () => _weather.Options.DefaultCity, "The city.");
-        var daysOption = new Option<int>("--days", () => _weather.Options.DefaultForecastDays, "Number of days.");
-
-        AddOption(cityOption);
-        AddOption(daysOption);
-
-        this.SetHandler(Execute, cityOption, daysOption);
-    }
-
-    private async Task Execute(string city, int days)
-    {
-        var report = await _weather.Forecast(days, city);
-        foreach (var item in report)
+        var cityOption = new Option<string>("--city")
         {
-            Console.WriteLine(item);
-        }
+            Description = "The city.",
+            DefaultValueFactory = _ => _weather.Options.DefaultCity
+        };
+        var daysOption = new Option<int>("--days")
+        {
+            Description = "Number of days.",
+            DefaultValueFactory = _ => _weather.Options.DefaultForecastDays
+        };
+
+        Options.Add(cityOption);
+        Options.Add(daysOption);
+
+        this.SetAction(async (parseResult, cancellationToken) =>
+        {
+            var city = parseResult.GetValue(cityOption);
+            var days = parseResult.GetValue(daysOption);
+            var report = await _weather.Forecast(days, city);
+            foreach (var item in report)
+            {
+                Console.WriteLine(item);
+            }
+        });
     }
 }

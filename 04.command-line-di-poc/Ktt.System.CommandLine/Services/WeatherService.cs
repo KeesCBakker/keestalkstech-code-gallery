@@ -1,4 +1,4 @@
-﻿namespace Ktt.System.CommandLine.Services;
+namespace Ktt.System.CommandLine.Services;
 
 class WeatherService()
 {
@@ -8,7 +8,7 @@ class WeatherService()
     {
         if (city == null) city = Options.DefaultCity;
 
-        var report = $"In {city} it is now {Random.Shared.Next(-20, 40)} degrees celcius.";
+        var report = $"In {city} it is now {Random.Shared.Next(-20, 40)} degrees Celsius.";
         return Task.FromResult(report);
     }
 
@@ -24,7 +24,7 @@ class WeatherService()
         for (var i = 0; i < days; i++)
         {
             var date = DateTime.Now.AddDays(i + 1).ToString("yyyy-MM-dd");
-            var report = $"- {date}: {Random.Shared.Next(-20, 40),3} degrees celcius.";
+            var report = $"- {date}: {Random.Shared.Next(-20, 40),3} degrees Celsius.";
             reports.Add(report);
         }
 
