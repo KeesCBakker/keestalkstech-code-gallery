@@ -6,12 +6,12 @@ $EnablePauseBeforeAdminPrompt = $true
 $CountDownBeforeContinueSeconds = 5
 
 # Vars
-$WallpaperPath = "$PicturesFolder\wallpaper.jpg"
-$WallpaperTxtPath = "$PicturesFolder\wallpaper.txt"
-$WallpaperStyle = 4
-$TileWallpaper = 0
-$Restart = $false
-$ImagePath = ""
+$WallpaperPath         = "$PicturesFolder\wallpaper.jpg"
+$WallpaperTxtPath      = "$PicturesFolder\wallpaper.txt"
+$WallpaperStyle        = 4
+$TileWallpaper         = 0
+$Restart               = $false
+$ImagePath             = ""
 $RegistryRootKey       = "HKCU:\Software\Microsoft\Windows\CurrentVersion\Policies\System"
 $CurrentWallpaper      = (Get-ItemProperty -Path $RegistryRootKey -Name Wallpaper).Wallpaper
 $CurrentWallpaperStyle = (Get-ItemProperty -Path $RegistryRootKey -Name WallpaperStyle).WallpaperStyle
