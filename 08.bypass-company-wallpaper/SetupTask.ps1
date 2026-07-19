@@ -6,8 +6,9 @@
     $ErrorActionPreference = "Stop"  # Ensure the script stops on errors
 
     # Ensure the script is running as administrator
-    $isAdmin = [Security.Principal.WindowsIdentity]::GetCurrent().Groups -contains 'S-1-5-32-544'
-    if (-not $isAdmin) {
+    $CurrentPrincipal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+    $IsAdmin = $CurrentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+    if (-not $IsAdmin) {
         Write-Output "This script must be run as an administrator. Please restart it with administrative privileges."
         exit 1
     }

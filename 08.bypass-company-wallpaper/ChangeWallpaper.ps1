@@ -21,7 +21,8 @@ $ShouldChange = $CurrentWallpaper -ne $WallpaperPath -or `
                 $CurrentWallpaperStyle -ne $WallpaperStyle -or `
                 $CurrentTileWallpaper -ne $TileWallpaper
 
-$IsAdmin = $null -ne ([Security.Principal.WindowsIdentity]::GetCurrent().Groups | Where-Object { $_.Value -eq 'S-1-5-32-544' })
+$CurrentPrincipal = [Security.Principal.WindowsPrincipal]::new([Security.Principal.WindowsIdentity]::GetCurrent())
+$IsAdmin = $CurrentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
 $ErrorActionPreference = "Stop" # Fail on the first error
 
 # Step 1: Determine the image path
@@ -69,21 +70,18 @@ if (-not $Restart) {
     return
 }
 
-try {
+if (-not ('Wallpaper' -as [type])) {
     Add-Type -TypeDefinition @"
     using System;
     using System.Runtime.InteropServices;
 
     public class Wallpaper {
-        [DllImport("user32.dll", CharSet = CharSet.Auto)]
-        public static extern int SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
+        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, string pvParam, uint fWinIni);
     }
 "@
 }
-catch {
-    # only on the first time the script runs
-    # the type can be added
- }
 
 $SPI_SETDESKWALLPAPER = 0x0014
 $SPIF_UPDATEINIFILE = 0x01
@@ -91,6 +89,10 @@ $SPIF_SENDCHANGE = 0x02
 
 $Result = [Wallpaper]::SystemParametersInfo($SPI_SETDESKWALLPAPER, 0, $null, $SPIF_UPDATEINIFILE -bor $SPIF_SENDCHANGE)
 
+if (-not $Result) {
+    $ErrorCode = [Runtime.InteropServices.Marshal]::GetLastWin32Error()
+    throw "Failed to refresh the wallpaper. Win32 error: $ErrorCode"
+}
 
 Write-Output "Wallpaper changed."
 timeout /t $CountDownBeforeContinueSeconds
