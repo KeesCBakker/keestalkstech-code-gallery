@@ -1,21 +1,62 @@
 # Simple Python code to send messages to a Slack channel (without packages)
 
-For more information check my blog: <a href="https://keestalkstech.com/2019/10/simple-python-code-to-send-message-to-slack-channel-without-packages/#manifest">Simple Python code to send messages to a Slack channel (without packages)</a>.
+For more information check my blog: [Simple Python code to send messages to a Slack channel (without packages)](https://keestalkstech.com/2019/10/simple-python-code-to-send-message-to-slack-channel-without-packages/#manifest).
 
-To get started:
+## Prerequisites
 
-1. Goto https://api.slack.com/apps?new_app=1
-1. Choose _From An App Manifest_ and paste the contents of the `slack-app-manifest.yml`.
-1. Install the app and copy the token.
-1. Copy the `example.env` to `.env`.
-1. Paste the token in the file.
-1. Now you can change the `slack_channel` variable. Make sure your bot is added to that Slack channel.
+- Python 3.8+
+- Jupyter Notebook (optional — the code can also run as a regular Python script)
+- A Slack workspace where you can install apps
 
-More on app manifests here: https://keestalkstech.com/2022/09/dont-use-slack-incoming-webhooks-app-creation-is-dead-simple/
+## Files
+
+| File | Description |
+|------|-------------|
+| `slack.ipynb` | Jupyter notebook with functions to post messages, blocks, and files to Slack |
+| `slack-app-manifest.yml` | Slack app manifest — use this to create the bot app |
+| `example.env` | Template for the `.env` file — contains `SLACK_BOT_TOKEN` |
+| `wall-e-and-eve.jpg` | Example image used in the file upload demo |
+
+## Setup
+
+1. Go to [Create a Slack App](https://api.slack.com/apps?new_app=1)
+2. Choose _From An App Manifest_ and paste the contents of `slack-app-manifest.yml`
+3. Install the app and copy the **Bot User OAuth Token**
+4. Copy `example.env` to `.env` and paste the token:
+
+```
+SLACK_BOT_TOKEN=xoxb-...
+```
+
+5. Invite the bot to your target channel (e.g. `/invite @Eve`)
+6. Open `slack.ipynb` and set `slack_channel` to your channel name
+
+> The app manifest requests the following OAuth scopes: `channels:read`, `chat:write`, `chat:write.customize`, `files:read`, `files:write`.
+
+## Dependencies
+
+Install the required packages:
+
+```sh
+pip install python-dotenv requests
+```
+
+## Usage
+
+Open the notebook:
+
+```sh
+jupyter notebook slack.ipynb
+```
+
+Or extract the functions into a standalone `.py` script. The key functions are:
+
+- `post_message_to_slack(text, blocks, unfurl_links)` — send a plain or richly formatted message
+- `post_file_to_slack(text, file_name, file_bytes, snippet_type, title)` — upload a file or image
+
+More on app manifests: [Don't use Slack Incoming Webhooks — app creation is dead simple](https://keestalkstech.com/2022/09/dont-use-slack-incoming-webhooks-app-creation-is-dead-simple/)
 
 ## Checkout only this project
-
-Do the following:
 
 ```sh
 git clone --no-checkout https://github.com/KeesCBakker/keestalkstech-code-gallery.git
