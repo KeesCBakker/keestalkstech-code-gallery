@@ -71,6 +71,7 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var body = await response.Content.ReadFromJsonAsync<WhoAmIResponse>();
 
         Assert.NotNull(body);
+        Assert.Equal("tstusr", body.UserName);
         Assert.Equal("service-1", body.Issuer);
     }
 
@@ -86,6 +87,7 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         var body = await response.Content.ReadFromJsonAsync<WhoAmIResponse>();
 
         Assert.NotNull(body);
+        Assert.Equal("tstusr", body.UserName);
         Assert.Equal("service-2", body.Issuer);
     }
 
