@@ -3,8 +3,8 @@
 Parsing Roman Numerals in C# is a good way to explore
 (implicit) operator overloading.
 
-<a href="https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/">Read the blog on KeesTalksTech: Parsing Roman Numerals using C#</a>
-<a href="https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/">Read the blog on KeesTalksTech: Calculations with Roman Numerals using C#</a>
+<a href="https://keestalkstech.com/parsing-roman-numerals-using-csharp/">Read the blog on KeesTalksTech: Parsing Roman Numerals using C#</a>
+<a href="https://keestalkstech.com/calculations-with-roman-numerals-in-csharp/">Read the blog on KeesTalksTech: Calculations with Roman Numerals using C#</a>
 
 ## Features
 
