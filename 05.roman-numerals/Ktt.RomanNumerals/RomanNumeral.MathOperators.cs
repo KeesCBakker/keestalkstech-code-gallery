@@ -42,6 +42,8 @@ public partial class RomanNumeral
         return r.ToString();
     }
 
+    // Negative results default to 0 (NULLA) — Romans had no concept of negative numbers
+    // See: https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/
     public static RomanNumeral operator -(RomanNumeral r1, RomanNumeral r2)
     {
         var n = r1.Number - r2.Number;

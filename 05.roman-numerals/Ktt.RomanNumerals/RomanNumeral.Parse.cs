@@ -8,6 +8,8 @@ public partial class RomanNumeral
         "M", "CM", "D", "Q", "CD", "P", "G", "C", "XC", "L", "F", "XL", "IIXX", "XIIX", "O", "X", "IX", "V", "IV", "I"
     };
 
+    // Empty string is a valid representation of 0 (NULLA)
+    // See: https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/
     public static RomanNumeral Parse(string? str)
     {
         if (string.IsNullOrEmpty(str))
