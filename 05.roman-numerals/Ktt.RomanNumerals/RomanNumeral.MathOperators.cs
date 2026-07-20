@@ -4,8 +4,7 @@ public partial class RomanNumeral
 {
     public static int operator +(int r1, RomanNumeral r2)
     {
-        var r = new RomanNumeral(r1) + r2;
-        return r.Number;
+        return r1 + r2.Number;
     }
 
     public static string operator +(string r1, RomanNumeral r2)

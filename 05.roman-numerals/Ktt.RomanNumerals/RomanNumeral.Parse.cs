@@ -34,9 +34,9 @@ public partial class RomanNumeral
         strToRead = strToRead.Replace('U', 'V');
 
         //check simple numbers directly in dictionary
-        if (VALUES.ContainsKey(str))
+        if (VALUES.ContainsKey(strToRead))
         {
-            return new RomanNumeral(VALUES[str]);
+            return new RomanNumeral(VALUES[strToRead]);
         }
 
         var resultNumber = 0;
@@ -89,7 +89,7 @@ public partial class RomanNumeral
             Parse(str);
             return true;
         }
-        catch
+        catch (InvalidCastException)
         {
             return false;
         }

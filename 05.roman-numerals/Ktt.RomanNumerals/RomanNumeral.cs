@@ -8,7 +8,7 @@ public partial class RomanNumeral
 
     public RomanNumeralNotation Notation { get; set; }
 
-    public RomanNumeral(int number, RomanNumeralNotation notation = RomanNumeralNotation.Substractive)
+    public RomanNumeral(int number, RomanNumeralNotation notation = RomanNumeralNotation.Subtractive)
     {
         if (number < 0)
         {
