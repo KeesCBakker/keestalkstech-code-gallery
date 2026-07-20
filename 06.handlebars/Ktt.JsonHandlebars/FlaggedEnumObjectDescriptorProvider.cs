@@ -1,4 +1,6 @@
-﻿using HandlebarsDotNet.Compiler;
+﻿using HandlebarsDotNet;
+using HandlebarsDotNet.Compiler;
+using HandlebarsDotNet.IO;
 using HandlebarsDotNet.Iterators;
 using HandlebarsDotNet.ObjectDescriptors;
 using HandlebarsDotNet.PathStructure;
@@ -72,7 +74,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
 
     internal class FlagEnumIterator : IIterator
     {
-        public void Iterate(in HandlebarsDotNet.EncodedTextWriter writer, HandlebarsDotNet.BindingContext context, ChainSegment[] blockParamsVariables, object input, TemplateDelegate template, TemplateDelegate ifEmpty)
+        public void Iterate(in EncodedTextWriter writer, BindingContext context, ChainSegment[] blockParamsVariables, object input, TemplateDelegate template, TemplateDelegate ifEmpty)
         {
             using var innerContext = context.CreateFrame();
             var iterator = new IteratorValues(innerContext);
