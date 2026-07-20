@@ -1,6 +1,5 @@
 ﻿using HandlebarsDotNet;
 using Newtonsoft.Json;
-using static Ktt.JsonHandlebars.JsonHandlebarsDotNet;
 
 namespace Ktt.JsonHandlebars;
 
@@ -36,10 +35,6 @@ public class JsonTemplateGenerator : IJsonTemplateGenerator
     {
         try
         {
-            // replace tabs with spaces, as tabs make the JSON in the
-            // console unreadable:
-            json = json.Replace("\t", "  ");
-
             return JsonConvert.DeserializeObject<dynamic>(json);
         }
         catch (Exception ex)

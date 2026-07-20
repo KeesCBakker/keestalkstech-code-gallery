@@ -47,8 +47,7 @@ public class BlogTests
             body = "First!"
         };
 
-        var action = new Action(() => JsonHandlebarsDotNet.Parse(source, data));
-        var exception = Assert.Throws<InvalidJsonException>(action);
+        var exception = Assert.Throws<InvalidJsonException>(() => JsonHandlebarsDotNet.Parse(source, data));
 
         var expects = @"After parsing a value an unexpected character was encountered: "". Path 'tags[0]', line 8, position 19.
 
@@ -59,14 +58,6 @@ public class BlogTests
 09 |   ""body"": ""First!""
 10 | }".Replace("\r", "");
 
-        try
-        {
-            var json = JsonHandlebarsDotNet.Parse(source, data);
-            Console.WriteLine(json);
-        }
-        catch (Exception ex)
-        {
-            Assert.Equivalent(expects, ex.Message);
-        }
+        Assert.Equivalent(expects, exception.Message);
     }
 }

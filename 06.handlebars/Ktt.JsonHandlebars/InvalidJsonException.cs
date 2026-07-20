@@ -11,16 +11,19 @@ public partial class InvalidJsonException(Exception ex, string jsonText) : Excep
         var message = ex.Message;
 
         //Example: After parsing a value an unexpected character was encountered: ". Path 'title', line 4, position 4.
-        var match = LinePositionRegex().Match(message);
+            var match = LinePositionRegex().Match(message);
 
-        if (match.Success)
-        {
-            var line = int.Parse(match.Groups["line"].Value);
-            var position = int.Parse(match.Groups["position"].Value);
+            if (match.Success)
+            {
+                var line = int.Parse(match.Groups["line"].Value);
+                var position = int.Parse(match.Groups["position"].Value);
 
-            // add lines numbers
-            var padding = (line + linesUnder).ToString().Length;
-            var lines = json.Split("\n")
+                // replace tabs with spaces, as tabs would misalign the caret:
+                json = json.Replace("\t", "  ");
+
+                // add lines numbers
+                var padding = (line + linesUnder).ToString().Length;
+                var lines = json.Split("\n")
                 .Select((str, index) => $"{(index + 1).ToString().PadLeft(padding, '0')} | {str}")
                 .ToList();
 

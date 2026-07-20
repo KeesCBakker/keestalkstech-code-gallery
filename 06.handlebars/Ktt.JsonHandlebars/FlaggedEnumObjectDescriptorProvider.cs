@@ -23,7 +23,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
             type,
             null,
             null,
-            self => new FlagEnumInterator()
+            self => new FlagEnumIterator()
         );
 
         return true;
@@ -70,7 +70,7 @@ public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
 
     }
 
-    internal class FlagEnumInterator : IIterator
+    internal class FlagEnumIterator : IIterator
     {
         public void Iterate(in HandlebarsDotNet.EncodedTextWriter writer, HandlebarsDotNet.BindingContext context, ChainSegment[] blockParamsVariables, object input, TemplateDelegate template, TemplateDelegate ifEmpty)
         {
