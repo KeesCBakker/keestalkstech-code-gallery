@@ -1,16 +1,23 @@
 # Roman Numerals
+
 Parsing Roman Numerals in C# is a good way to explore
 (implicit) operator overloading.
 
-More information can be found in these blogs:
-- <a href="https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/">Parsing Roman Numerals using C##</a>
-- <a href="https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/">Calculations with Roman Numerals using C#</a>
+<a href="https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/">Read the blog on KeesTalksTech: Parsing Roman Numerals using C#</a>
+<a href="https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/">Read the blog on KeesTalksTech: Calculations with Roman Numerals using C#</a>
+
+## Features
+
+- Support for .NET 10
+- Support for parsing Roman numerals from strings
+- Support for implicit operators (string to RomanNumeral and back)
+- Support for math operators (addition, subtraction)
+- Support for comparison operators
+- Support for casting between RomanNumeral and int
 
 ## Examples
-I mean, this looks pretty cool, right?
 
 ```csharp
-
 RomanNumeral I = "I";
 RomanNumeral IV = "IV";
 
