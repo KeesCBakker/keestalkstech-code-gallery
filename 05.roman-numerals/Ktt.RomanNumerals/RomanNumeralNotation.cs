@@ -2,6 +2,6 @@
 
 public enum RomanNumeralNotation
 {
-    Subtractive = 0,
-    Additive = 1
+  Subtractive = 0,
+  Additive = 1
 }

@@ -2,11 +2,11 @@
 
 public partial class RomanNumeral
 {
-    // 0, nothing, nada. The zero wasn't invented yet ;-)
-    public const string NULLA = "NULLA";
+  // 0, nothing, nada. The zero wasn't invented yet ;-)
+  public const string NULLA = "NULLA";
 
-    //values - a readonly dictionary where the numerals are the keys to values
-    public static readonly IReadOnlyDictionary<string, int> VALUES = new Dictionary<string, int>
+  //values - a readonly dictionary where the numerals are the keys to values
+  public static readonly IReadOnlyDictionary<string, int> VALUES = new Dictionary<string, int>
     {
         {"I",       1 },
         {"IV",      4 },
@@ -31,6 +31,6 @@ public partial class RomanNumeral
         {"G",       400 },
         {"Q",       500 }
     }
-    .AsReadOnly();
+  .AsReadOnly();
 
 }
