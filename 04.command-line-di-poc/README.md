@@ -1,7 +1,7 @@
 # .NET Console Application with injectable commands
 How to use `System.CommandLine` to build a CLI with commands and dependency injection.
 
-The code is a companion of the blog <a href="https://keestalkstech.com/2023/03/net-console-application-with-injectable-commands/">.NET Console Application with injectable commands</a>.
+The code is a companion of the blog <a href="https://keestalkstech.com/net-console-application-with-injectable-commands/">.NET Console Application with injectable commands</a>.
 
 ## Command to execute
 

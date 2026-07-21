@@ -5,7 +5,7 @@ ease of Dependency Injection (DI) and the way settings can be specified in a
 JSON file and accessed through DI (``IOptions<T>``). It's only logical to 
 want the same features in your Console app.
 
-<a href="https://keestalkstech.com/2018/04/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Read the blog on KeesTalksTech: Dependency injection (with IOptions) in Console Apps in .NET</a>
+<a href="https://keestalkstech.com/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Read the blog on KeesTalksTech: Dependency injection (with IOptions) in Console Apps in .NET</a>
 
 ## Features
 
@@ -22,5 +22,5 @@ The application uses the `ENVIRONMENT` environment variable to load environment-
 - `appsettings.json` — base settings for all environments
 - `appsettings.{ENVIRONMENT}.json` — environment-specific overrides (optional)
 
-See <a href="https://keestalkstech.com/2019/01/setup-multiple-setting-files-with-a-net-console-application/">Setup Multiple Settings Files with a .NET Console Application</a> for more details.
+See <a href="https://keestalkstech.com/setup-multiple-setting-files-with-a-net-console-application/">Setup Multiple Settings Files with a .NET Console Application</a> for more details.
 

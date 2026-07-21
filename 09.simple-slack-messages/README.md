@@ -1,6 +1,6 @@
 # Simple Python code to send messages to a Slack channel (without packages)
 
-For more information check my blog: [Simple Python code to send messages to a Slack channel (without packages)](https://keestalkstech.com/2019/10/simple-python-code-to-send-message-to-slack-channel-without-packages/#manifest).
+For more information check my blog: [Simple Python code to send messages to a Slack channel (without packages)](https://keestalkstech.com/simple-python-code-to-send-message-to-slack-channel-without-packages/#manifest).
 
 ## Prerequisites
 
@@ -54,7 +54,7 @@ Or extract the functions into a standalone `.py` script. The key functions are:
 - `post_message_to_slack(text, blocks, unfurl_links)` — send a plain or richly formatted message
 - `post_file_to_slack(text, file_name, file_bytes, snippet_type, title)` — upload a file or image
 
-More on app manifests: [Don't use Slack Incoming Webhooks — app creation is dead simple](https://keestalkstech.com/2022/09/dont-use-slack-incoming-webhooks-app-creation-is-dead-simple/)
+More on app manifests: [Don't use Slack Incoming Webhooks — app creation is dead simple](https://keestalkstech.com/dont-use-slack-incoming-webhooks-app-creation-is-dead-simple/)
 
 ## Checkout only this project
 

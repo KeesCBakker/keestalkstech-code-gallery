@@ -1,4 +1,4 @@
-﻿# KeesTalksTech Gallery Repository
+# KeesTalksTech Gallery Repository
 
 This repository contains code samples for articles on my blog.
 It is easier to keep the code up to date when all of the items are grouped.
@@ -11,7 +11,7 @@ JSON file and accessed through DI (``IOptions<T>``). It's only logical to
 want the same features in your Console app.
 
 - <a href="01.dependency-injection-with-ioptions-in-console-apps">01.dependency-injection-with-ioptions-in-console-apps</a>
-- <a href="https://keestalkstech.com/2018/04/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Dependency injection (with IOptions) in Console Apps in .NET</a>
+- <a href="https://keestalkstech.com/dependency-injection-with-ioptions-in-console-apps-in-dotnet/">Dependency injection (with IOptions) in Console Apps in .NET</a>
 
 
 ## 2. Simple JWT Access Policies for API security in .NET
@@ -21,7 +21,7 @@ We can configure the access for each issuer using standard .NET claims.
 
 - <a href="02.simple-jwt-access-policies-for-api-security-in-net">02.simple-jwt-access-policies-for-api-security-in-net</a>
 - <a href="https://keestalkstech.com/debug-a-jwt-token-expiration-locally-with-bash-or-powershell/">Debug a JWT token expiration locally with bash or PowerShell</a>
-- <a href="https://keestalkstech.com/2024/11/simple-jwt-access-policies-for-api-security-in-net/">Simple JWT Access Policies for API security in .NET</a>
+- <a href="https://keestalkstech.com/simple-jwt-access-policies-for-api-security-in-net/">Simple JWT Access Policies for API security in .NET</a>
 
 ## 3. Options Injection
 
@@ -38,15 +38,15 @@ How to use `System.CommandLine` to build a CLI with commands and
 dependency injection.
 
 - <a href="04.command-line-di-poc">04.command-line-di-poc</a>
-- <a href="https://keestalkstech.com/2023/03/net-console-application-with-injectable-commands/">.NET Console Application with injectable commands</a>
+- <a href="https://keestalkstech.com/net-console-application-with-injectable-commands/">.NET Console Application with injectable commands</a>
 
 ## 5. Roman Numerals
 Parsing Roman Numerals in C# is a good way to explore
 (implicit) operator overloading.
 
 - <a href="05.roman-numerals">05.roman-numerals</a>
-- <a href="https://keestalkstech.com/2017/08/parsing-roman-numerals-using-csharp/">Parsing Roman Numerals using C#</a>
-- <a href="https://keestalkstech.com/2017/08/calculations-with-roman-numerals-in-csharp/">Calculations with Roman Numerals using C#</a>
+- <a href="https://keestalkstech.com/parsing-roman-numerals-using-csharp/">Parsing Roman Numerals using C#</a>
+- <a href="https://keestalkstech.com/calculations-with-roman-numerals-in-csharp/">Calculations with Roman Numerals using C#</a>
 
 ## 6. Handlebars.Net & JSON templates
 
@@ -57,8 +57,8 @@ show how to instruct Handlebars to parse into JSON and add some nice error messa
 if your template fails.
 
 - <a href="06.handlebars">06.handlebars</a>
-- <a href="https://keestalkstech.com/2022/09/handlebars-net-json-templates/">Handlebars.Net & JSON templates</a>
-- <a href="https://keestalkstech.com/2022/09/handlebars-net-fun-with-flags/">Handlebars.Net: Fun with [Flags]</a>
+- <a href="https://keestalkstech.com/handlebars-net-json-templates/">Handlebars.Net & JSON templates</a>
+- <a href="https://keestalkstech.com/handlebars-net-fun-with-flags/">Handlebars.Net: Fun with [Flags]</a>
 
 ## 7. Docker
 
@@ -80,7 +80,7 @@ you might be able to (temporarily) override the wallpaper, by editing your regis
 triggering a refresh of the wallpaper. If you can, you can automate it using PowerShell.
 
 - <a href="08.bypass-company-wallpaper">08.bypass-company-wallpaper</a>
-- <a href="https://keestalkstech.com/2024/12/how-to-bypass-company-background-image-as-local-admin-on-windows-11/">How to bypass company wallpaper as local admin on Windows 11</a>
+- <a href="https://keestalkstech.com/how-to-bypass-company-background-image-as-local-admin-on-windows-11/">How to bypass company wallpaper as local admin on Windows 11</a>
 
 ## 9. Simple Python code to send messages to a Slack channel (without packages)
 

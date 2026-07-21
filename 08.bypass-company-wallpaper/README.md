@@ -7,7 +7,7 @@ to Setting > Personalization > Background, I see the message:
 you might be able to (temporarily) override the wallpaper, by editing your registry and
 triggering a refresh of the wallpaper. If you can, you can automate it using PowerShell.
 
-The code is a companion of the blog [How to bypass company wallpaper as local admin on Windows 11](https://keestalkstech.com/2024/12/how-to-bypass-company-background-image-as-local-admin-on-windows-11/).
+The code is a companion of the blog [How to bypass company wallpaper as local admin on Windows 11](https://keestalkstech.com/how-to-bypass-company-background-image-as-local-admin-on-windows-11/).
 
 ## Prerequisites
 
