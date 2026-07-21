@@ -2,27 +2,27 @@
 
 public class JwtOptions
 {
-    public const string SectionName = "JwtSettings";
+  public const string SectionName = "JwtSettings";
 
-    [Required(AllowEmptyStrings = false)]
-    public string ValidAudience { get; set; } = string.Empty;
+  [Required(AllowEmptyStrings = false)]
+  public string ValidAudience { get; set; } = string.Empty;
 
-    [MinLength(1)]
-    public Dictionary<string, string> TrustedServices { get; } = [];
+  [MinLength(1)]
+  public Dictionary<string, string> TrustedServices { get; } = [];
 
-    public Dictionary<string, string[]> AccessPolicies { get; } = [];
+  public Dictionary<string, string[]> AccessPolicies { get; } = [];
 
-    public bool SkipEmptyPublicKeys { get; set; }
+  public bool SkipEmptyPublicKeys { get; set; }
 
-    public Dictionary<string, string> GetTrustedServices()
+  public Dictionary<string, string> GetTrustedServices()
+  {
+    if (!SkipEmptyPublicKeys)
     {
-        if (!SkipEmptyPublicKeys)
-        {
-            return TrustedServices;
-        }
-
-        return TrustedServices
-            .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
-            .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+      return TrustedServices;
     }
+
+    return TrustedServices
+        .Where(kvp => !string.IsNullOrWhiteSpace(kvp.Value))
+        .ToDictionary(kvp => kvp.Key, kvp => kvp.Value);
+  }
 }
