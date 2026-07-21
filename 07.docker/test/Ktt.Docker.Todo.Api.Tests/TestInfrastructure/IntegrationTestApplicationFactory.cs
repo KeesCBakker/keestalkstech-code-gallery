@@ -14,11 +14,10 @@ public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncL
 
     public async Task InitializeAsync()
     {
-        _valkeyContainer = new ContainerBuilder()
-            .WithImage("valkey/valkey:latest")
+        _valkeyContainer = new ContainerBuilder("valkey/valkey:latest")
             .WithName("valkey-test")
             .WithPortBinding(6379, assignRandomHostPort: true)
-            .WithWaitStrategy(Wait.ForUnixContainer().UntilPortIsAvailable(6379))
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
             .Build();
 
         await _valkeyContainer.StartAsync();
