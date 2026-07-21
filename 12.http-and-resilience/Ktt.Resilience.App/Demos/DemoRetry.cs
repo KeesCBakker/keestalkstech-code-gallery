@@ -11,12 +11,12 @@ public class DemoRetry(
     public async Task RunAsync()
     {
         await Execute("CustomHttpStatusApiClient", customHttpStatusApiClient.Get);
-        await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync());
+        await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync() ?? string.Empty);
 
         Console.WriteLine("");
     }
 
-    private static async Task Execute(string name, Func<Task<string?>> execute)
+    private static async Task Execute(string name, Func<Task<string>> execute)
     {
         Console.WriteLine($"Retry Demo for {name}...");
 
