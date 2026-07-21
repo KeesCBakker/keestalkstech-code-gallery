@@ -1,4 +1,4 @@
 ﻿public class SupportedLanguageOptions : List<string>
 {
-    public const string SectionName = "SupportedLanguages";
+  public const string SectionName = "SupportedLanguages";
 }
