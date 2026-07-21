@@ -19,9 +19,9 @@ public class VariousTests
         RomanNumeral IV = "IV";
 
         int a = IV - 1;
-        var b = 4 - I;
+        int b = 4 - I;
         int c = IV - "I";
-        int d = (RomanNumeral)"IV" - I;
+        int d = "IV" - I;
         int e = IV - I;
 
         Assert.Equivalent(3, a);
@@ -31,9 +31,9 @@ public class VariousTests
         Assert.Equivalent(3, e);
 
         string f = IV - 1;
-        string g = (RomanNumeral)4 - I;
+        string g = 4 - I;
         string h = IV - "I";
-        var i = "IV" - I;
+        string i = "IV" - I;
         string j = IV - I;
 
         Assert.Equivalent("III", f);
@@ -42,16 +42,16 @@ public class VariousTests
         Assert.Equivalent("III", i);
         Assert.Equivalent("III", j);
 
-        var k = IV - 1;
+        RomanNumeral k = IV - 1;
         RomanNumeral l = 4 - I;
-        var m = IV - "I";
+        RomanNumeral m = IV - "I";
         RomanNumeral n = "IV" - I;
-        var o = IV - I;
+        RomanNumeral o = IV - I;
 
-        Assert.Equivalent("III", k.ToString());
-        Assert.Equivalent("III", l.ToString());
-        Assert.Equivalent("III", m.ToString());
-        Assert.Equivalent("III", n.ToString());
-        Assert.Equivalent("III", o.ToString());
+        Assert.Equivalent(3, k);
+        Assert.Equivalent(3, l);
+        Assert.Equivalent(3, m);
+        Assert.Equivalent(3, n);
+        Assert.Equivalent(3, o);
     }
 }
