@@ -8,20 +8,20 @@ namespace Ktt.Resilience.Clients.Kiota;
 
 public static class Clients
 {
-    public static IServiceCollection AddKiotaClients(this IServiceCollection services)
-    {
-        services.AddKiotaClient<PetStoreClient>("HttpClients:PetStore");
+  public static IServiceCollection AddKiotaClients(this IServiceCollection services)
+  {
+    services.AddKiotaClient<PetStoreClient>("HttpClients:PetStore");
 
-        services.AddKiotaClient<HttpStatusClient>("HttpClients:HttpStatus")
-            .Configure(config =>
-            {
-                config.Retry.OnRetry = async args =>
-                {
-                    Console.WriteLine($"Retry {args.AttemptNumber}: Retrying after {args.RetryDelay} due to {args.Outcome.Result?.StatusCode}");
-                    await Task.CompletedTask;
-                };
-            });
+    services.AddKiotaClient<HttpStatusClient>("HttpClients:HttpStatus")
+        .Configure(config =>
+        {
+          config.Retry.OnRetry = async args =>
+              {
+                Console.WriteLine($"Retry {args.AttemptNumber}: Retrying after {args.RetryDelay} due to {args.Outcome.Result?.StatusCode}");
+                await Task.CompletedTask;
+              };
+        });
 
-        return services;
-    }
+    return services;
+  }
 }
