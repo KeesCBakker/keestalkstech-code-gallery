@@ -32,12 +32,13 @@ by default.
 
 - <a href="03.option-injection">03.option-injection</a>
 
-## 4. .NET Console Application with injectable commands (System.CommandLine preview)
+## 4. .NET Console Application with injectable commands
 
 How to use `System.CommandLine` to build a CLI with commands and
 dependency injection.
 
 - <a href="04.command-line-di-poc">04.command-line-di-poc</a>
+- <a href="https://keestalkstech.com/2023/03/net-console-application-with-injectable-commands/">.NET Console Application with injectable commands</a>
 
 ## 5. Roman Numerals
 Parsing Roman Numerals in C# is a good way to explore
@@ -110,11 +111,12 @@ any client generation, with a Kiota client.
 - <a href="12.http-and-resilience">12.http-and-resilience</a>
 - <a href="https://keestalkstech.com/implementing-http-resilience-by-microsoft/">Implementing HTTP Resilience by Microsoft</a>
 - <a href="https://keestalkstech.com/kiota-dependency-injection-and-resilience/">Kiota, dependency injection and resilience</a>
+- <a href="https://keestalkstech.com/kiota-client-unit-testing-mocking-data/">Kiota Client Unit Testing: mocking data</a>
 
 ## 13. Chocolatey
 With the <a href="https://community.chocolatey.org/">Chocolatey Package Manager</a> for Windows, it is super easy to install software from the command-line. This makes your installs scriptable and thus repeatable. In this article, I'll show you how to render installation instructions from a machine and how to use the Windows Task Scheduler to update your packages regularly.
 
-- <a href="13.chocolatey">12.kiota-and-resilience</a>
+- <a href="13.chocolatey">13.chocolatey</a>
 - <a href="https://keestalkstech.com/notes-on-chocolatey/">Notes on Chocolatey</a>
 
 ## 14. Validation
@@ -124,6 +126,18 @@ Let's explore validation using .NET Data Annotations and FluentValidation.
 - <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Let’s combine Data Annotation Validation with FluentValidation</a>
 - <a href="https://keestalkstech.com/data-annotation-validation-in-a-business-service/">Data Annotation validation with dependency injection in a business service</a>
 - <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>
+
+## 15. Workflow
+
+Building a workflow system with configurable steps and dependency injection.
+
+- <a href="15.workflow">15.workflow</a>
+
+## 16. Jupyter TypeScript
+
+Exploring TypeScript in Jupyter notebooks.
+
+- <a href="16.jupyter-typescript">16.jupyter-typescript</a>
 
 ## 17. Named arguments in Bash
 

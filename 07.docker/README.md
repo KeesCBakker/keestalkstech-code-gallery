@@ -1,4 +1,4 @@
-## 7. Docker
+# Docker
 
 All my applications run in Docker. Having a fast CI is paramount. As Docker is not
 unline a layered cake, it is important to understand how to build your images in such

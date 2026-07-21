@@ -1,4 +1,4 @@
-## Validation
+# Validation
 Let's explore validation using .NET Data Annotations and FluentValidation.
 
 - <a href="https://keestalkstech.com/lets-combine-data-annotation-validation-with-fluentvalidation/">Let’s combine Data Annotation Validation with FluentValidation</a>
