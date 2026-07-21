@@ -2,15 +2,14 @@
 
 public partial class RomanNumeral
 {
-    public static int operator +(int r1, RomanNumeral r2)
+    public static RomanNumeral operator +(int r1, RomanNumeral r2)
     {
-        return r1 + r2.Number;
+        return new RomanNumeral(r1) + r2;
     }
 
-    public static string operator +(string r1, RomanNumeral r2)
+    public static RomanNumeral operator +(string r1, RomanNumeral r2)
     {
-        var r = Parse(r1) + r2;
-        return r.ToString();
+        return Parse(r1) + r2;
     }
 
     public static RomanNumeral operator +(RomanNumeral r1, string r2)
@@ -30,16 +29,14 @@ public partial class RomanNumeral
         return new RomanNumeral(n);
     }
 
-    public static int operator -(int r1, RomanNumeral r2)
+    public static RomanNumeral operator -(int r1, RomanNumeral r2)
     {
-        var r = new RomanNumeral(r1) - r2;
-        return r.Number;
+        return new RomanNumeral(r1) - r2;
     }
 
-    public static string operator -(string r1, RomanNumeral r2)
+    public static RomanNumeral operator -(string r1, RomanNumeral r2)
     {
-        var r = Parse(r1) - r2;
-        return r.ToString();
+        return Parse(r1) - r2;
     }
 
     // Negative results default to 0 (NULLA) — Romans had no concept of negative numbers
