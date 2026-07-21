@@ -2,5 +2,5 @@
 
 public interface IMagicNumberProvider
 {
-    Task<int> GetMagicNumber();
+  Task<int> GetMagicNumber();
 }

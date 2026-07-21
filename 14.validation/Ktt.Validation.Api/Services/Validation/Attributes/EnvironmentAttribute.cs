@@ -3,8 +3,8 @@
 namespace Ktt.Validation.Api.Services.Validation.Attributes;
 
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
-public class EnvironmentAttribute : IsOneOfValidationAttribute
+public class EnvironmentAttribute : IsOneOfValidationAttributeBase
 {
-    protected override object[] GetValidValues(ValidationContext validationContext) =>
-        GetOption<ProvisioningOptions>(validationContext).Environments;
+  protected override object[] GetValidValues(ValidationContext validationContext) =>
+      GetOption<ProvisioningOptions>(validationContext).Environments;
 }

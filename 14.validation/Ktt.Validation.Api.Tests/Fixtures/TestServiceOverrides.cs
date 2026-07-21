@@ -8,42 +8,42 @@ namespace Ktt.Validation.Api.Tests.Fixtures;
 
 public class TestServiceOverrides
 {
-    public Mock<IDockerHubService> DockerHubService { get; } = new(MockBehavior.Loose);
+  public Mock<IDockerHubService> DockerHubService { get; } = new(MockBehavior.Loose);
 
-    public ProvisioningOptions ProvisioningOptions { get; } = new();
+  public ProvisioningOptions ProvisioningOptions { get; } = new();
 
-    public TestServiceOverrides()
-    {
-        SetupDockerHubService();
-    }
+  public TestServiceOverrides()
+  {
+    SetupDockerHubService();
+  }
 
-    public void Apply(IServiceCollection services)
-    {
-        FluentValidationLanguageManager.SetGlobalOptions();
+  public void Apply(IServiceCollection services)
+  {
+    FluentValidationLanguageManager.SetGlobalOptions();
 
-        services
-            .AddSingleton(_ => DockerHubService.Object)
-            .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
-            .AddSingleton(_ => ProvisioningOptions)
-            .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()));
-    }
+    services
+        .AddSingleton(_ => DockerHubService.Object)
+        .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
+        .AddSingleton(_ => ProvisioningOptions)
+        .AddTransient(sp => Options.Create(sp.GetRequiredService<ProvisioningOptions>()));
+  }
 
-    protected virtual void SetupDockerHubService()
-    {
-        string[] repos = ["repo-one"];
+  protected virtual void SetupDockerHubService()
+  {
+    string[] repos = ["repo-one"];
 
-        DockerHubService
-            .Setup(x => x.Exists(
-                It.IsAny<string>(),
-                It.IsAny<CancellationToken>())
-            ).ReturnsAsync((string repo, CancellationToken _) =>
-            {
-                if (repo.StartsWith("ktt/"))
-                {
-                    return true;
-                }
+    DockerHubService
+        .Setup(x => x.Exists(
+            It.IsAny<string>(),
+            It.IsAny<CancellationToken>())
+        ).ReturnsAsync((string repo, CancellationToken _) =>
+        {
+          if (repo.StartsWith("ktt/"))
+          {
+            return true;
+          }
 
-                return repos.Contains(repo);
-            });
-    }
+          return repos.Contains(repo);
+        });
+  }
 }

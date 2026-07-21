@@ -1,52 +1,52 @@
-﻿using Ktt.Validation.Api.Config.Examples;
+﻿using System.Reflection;
+using Ktt.Validation.Api.Config.Examples;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
-using System.Reflection;
 
 namespace Ktt.Validation.Api.Config;
 
 public static class SwaggerConfig
 {
-    private static readonly string ApiName = "Platform Provisioning";
+  private const string ApiName = "Platform Provisioning";
 
-    private static string XmlCommentsFilePath
+  private static string XmlCommentsFilePath
+  {
+    get
     {
-        get
-        {
-            var basePath = AppContext.BaseDirectory;
-            var fileName = typeof(SwaggerConfig).GetTypeInfo().Assembly.GetName().Name + ".xml";
-            return Path.Combine(basePath, fileName);
-        }
+      var basePath = AppContext.BaseDirectory;
+      var fileName = typeof(SwaggerConfig).GetTypeInfo().Assembly.GetName().Name + ".xml";
+      return Path.Combine(basePath, fileName);
     }
+  }
 
-    public static void AddSwagger(this IServiceCollection services)
+  public static void AddSwagger(this IServiceCollection services)
+  {
+    services.AddEndpointsApiExplorer();
+    services.AddSwaggerGen(options =>
     {
-        services.AddEndpointsApiExplorer();
-        services.AddSwaggerGen(options =>
-        {
-            options.SwaggerDoc("v1", new OpenApiInfo
-            {
-                Title = ApiName,
-                Version = "v1",
-            });
+      options.SwaggerDoc("v1", new OpenApiInfo
+      {
+        Title = ApiName,
+        Version = "v1",
+      });
 
-            // Add XML comments for documentation
-            options.IncludeXmlComments(XmlCommentsFilePath);
+      // Add XML comments for documentation
+      options.IncludeXmlComments(XmlCommentsFilePath);
 
-            // Non nullable types render as required
-            options.SupportNonNullableReferenceTypes();
+      // Non nullable types render as required
+      options.SupportNonNullableReferenceTypes();
 
-            // Tip 1: Turn config values into enums in the schema
-            options.SchemaFilter<ConfigValuesSchemaFilter>();
+      // Tip 1: Turn config values into enums in the schema
+      options.SchemaFilter<ConfigValuesSchemaFilter>();
 
-            // Tip 2: Automatically discover examples
-            options.ExampleFilters();
+      // Tip 2: Automatically discover examples
+      options.ExampleFilters();
 
-            // Tip 3: Add examples for parameters
-            options.OperationFilter<ParameterExamplesOperationFilter>();
+      // Tip 3: Add examples for parameters
+      options.OperationFilter<ParameterExamplesOperationFilter>();
 
-        });
+    });
 
-        services.AddSwaggerExamplesFromAssemblyOf<Startup>();
-    }
+    services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+  }
 }

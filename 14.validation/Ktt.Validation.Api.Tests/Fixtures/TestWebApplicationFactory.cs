@@ -1,58 +1,56 @@
-﻿using Ktt.Validation.Api;
-using Ktt.Validation.Api.Tests.Fixtures;
-using Microsoft.AspNetCore.Hosting;
+﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
-namespace Provisioner.Api.UnitTests;
+namespace Ktt.Validation.Api.Tests.Fixtures;
 
 public class TestWebApplicationFactory : WebApplicationFactory<Program>
 {
-    private readonly Action<IServiceCollection>? _overrides;
+  private readonly Action<IServiceCollection>? _overrides;
 
-    public TestServiceOverrides Mocks { get; } = new();
+  public TestServiceOverrides Mocks { get; } = new();
 
-    public TestWebApplicationFactory(Action<IServiceCollection>? overrides = null)
+  public TestWebApplicationFactory(Action<IServiceCollection>? overrides = null)
+  {
+    _overrides = overrides;
+  }
+
+  protected override void ConfigureWebHost(IWebHostBuilder builder)
+  {
+    builder.ConfigureAppConfiguration((context, config) =>
     {
-        _overrides = overrides;
-    }
+      config.AddJsonFile("appsettings.json", optional: false);
+    });
 
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    builder.ConfigureServices(services =>
     {
-        builder.ConfigureAppConfiguration((context, config) =>
+      // Remove all background services
+      foreach (var serviceDescriptor in services.ToArray())
+      {
+        if (serviceDescriptor.ServiceType.IsGenericType &&
+                serviceDescriptor.ServiceType.GetGenericTypeDefinition() == typeof(IHostedService))
         {
-            config.AddJsonFile("appsettings.json", optional: false);
-        });
+          services.Remove(serviceDescriptor);
+        }
+      }
 
-        builder.ConfigureServices(services =>
-        {
-            // Remove all background services
-            foreach (var serviceDescriptor in services.ToArray())
-            {
-                if (serviceDescriptor.ServiceType.IsGenericType &&
-                    serviceDescriptor.ServiceType.GetGenericTypeDefinition() == typeof(IHostedService))
-                {
-                    services.Remove(serviceDescriptor);
-                }
-            }
+      // remove console logger
+      services.RemoveAll<Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider>();
 
-            // remove console logger
-            services.RemoveAll<Microsoft.Extensions.Logging.Console.ConsoleLoggerProvider>();
+      // replace all loggers with NullLogger
+      services.RemoveAll(typeof(Microsoft.Extensions.Logging.ILogger<>));
+      services.AddSingleton(typeof(Microsoft.Extensions.Logging.ILogger<>), typeof(Microsoft.Extensions.Logging.Abstractions.NullLogger<>));
 
-            // replace all loggers with NullLogger
-            services.RemoveAll(typeof(Microsoft.Extensions.Logging.ILogger<>));
-            services.AddSingleton(typeof(Microsoft.Extensions.Logging.ILogger<>), typeof(Microsoft.Extensions.Logging.Abstractions.NullLogger<>));
+      Mocks.Apply(services);
 
-            Mocks.Apply(services);
-
-            // Apply the additional overrides if provided
-            if (_overrides != null)
-            {
-                _overrides(services);
-            }
-        });
-    }
+      // Apply the additional overrides if provided
+      if (_overrides != null)
+      {
+        _overrides(services);
+      }
+    });
+  }
 }

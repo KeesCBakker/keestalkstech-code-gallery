@@ -5,35 +5,35 @@ namespace Ktt.Validation.Api.Config.Examples;
 
 public static class ProvisioningExamples
 {
-    public static string ApplicationName => "Example Application";
+  public static string ApplicationName => "Example Application";
 
-    public static string Environment => "server-one";
+  public static string Environment => "server-one";
 
-    public static string Team => "Red Herrings";
+  public static string Team => "Red Herrings";
 
-    public class SimpleApplicationExample : IExamplesProvider<SimpleApplication>
+  public class SimpleApplicationExample : IExamplesProvider<SimpleApplication>
+  {
+    public SimpleApplication GetExamples() => new()
     {
-        public SimpleApplication GetExamples() => new()
-        {
-            Name = ApplicationName,
-            Label = "development",
-            MagicNumber = 42,
-            Type = ApplicationType.Application
-        };
-    }
+      Name = ApplicationName,
+      Label = "development",
+      MagicNumber = 42,
+      Type = ApplicationType.Application
+    };
+  }
 
-    public class ComplexApplicationExample : IExamplesProvider<ComplexApplication>
+  public class ComplexApplicationExample : IExamplesProvider<ComplexApplication>
+  {
+    public ComplexApplication GetExamples() => new()
     {
-        public ComplexApplication GetExamples() => new()
-        {
-            Name = ApplicationName,
-            Type = ComplexApplicationType.Application,
-            DockerHubRepo = "ktt/example-application",
-            Cpu = "250m",
-            Ram = "128Mi",
-            ImageTag = "latest",
-            Environment = Environment,
-            Team = Team
-        };
-    }
+      Name = ApplicationName,
+      Type = ComplexApplicationType.Application,
+      DockerHubRepo = "ktt/example-application",
+      Cpu = "250m",
+      Ram = "128Mi",
+      ImageTag = "latest",
+      Environment = Environment,
+      Team = Team
+    };
+  }
 }
