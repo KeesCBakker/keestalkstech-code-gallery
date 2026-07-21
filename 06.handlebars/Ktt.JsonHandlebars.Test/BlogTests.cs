@@ -1,35 +1,36 @@
-namespace Ktt.JsonHandlebars.Test;
+﻿namespace Ktt.JsonHandlebars.Test;
+
 public class BlogTests
 {
-    [Fact]
-    public void BlogExampleOne()
-    {
-        string source = @"{
+  [Fact]
+  public void BlogExampleOne()
+  {
+    var source = @"{
   ""title"": ""{{title}}"",
   ""body"": ""{{body}}""
 }";
 
-        var template = JsonHandlebarsDotNet.Compile(source);
+    var template = JsonHandlebarsDotNet.Compile(source);
 
-        var data = new
-        {
-            title = "My new post",
-            body = "This\nis\nmy \"first post\"!"
-        };
+    var data = new
+    {
+      title = "My new post",
+      body = "This\nis\nmy \"first post\"!"
+    };
 
-        var result = template(data);
-        var expected = @"{
+    var result = template(data);
+    var expected = @"{
   ""title"": ""My new post"",
   ""body"": ""This\nis\nmy \""first post\""!""
 }";
 
-        Assert.Equivalent(expected, result);
-    }
+    Assert.Equivalent(expected, result);
+  }
 
-    [Fact]
-    public void BlogExampleTwo()
-    {
-        string source =
+  [Fact]
+  public void BlogExampleTwo()
+  {
+    var source =
 @"
 { 
   ""title"": ""{{title}}"",
@@ -41,15 +42,15 @@ public class BlogTests
   ""body"": ""{{body}}""
 }".Replace("\r", "");
 
-        var data = new
-        {
-            title = "My new post",
-            body = "First!"
-        };
+    var data = new
+    {
+      title = "My new post",
+      body = "First!"
+    };
 
-        var exception = Assert.Throws<InvalidJsonException>(() => JsonHandlebarsDotNet.Parse(source, data));
+    var exception = Assert.Throws<InvalidJsonException>(() => JsonHandlebarsDotNet.Parse(source, data));
 
-        var expects = @"After parsing a value an unexpected character was encountered: "". Path 'tags[0]', line 8, position 19.
+    var expects = @"After parsing a value an unexpected character was encountered: "". Path 'tags[0]', line 8, position 19.
 
 06 |   ""created"": ""2202-09-17 11:52"",
 07 |   ""categories"": [ ""programming"" ],
@@ -58,6 +59,6 @@ public class BlogTests
 09 |   ""body"": ""First!""
 10 | }".Replace("\r", "");
 
-        Assert.Equivalent(expects, exception.Message);
-    }
+    Assert.Equivalent(expects, exception.Message);
+  }
 }

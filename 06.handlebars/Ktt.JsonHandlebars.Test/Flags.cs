@@ -2,28 +2,28 @@
 
 public class Flags
 {
-    [Flags]
-    enum MenuItems
+  [Flags]
+  enum MenuItems
+  {
+    None = 0,
+    Pizza = 1,
+    Fries = 2,
+    Pancakes = 4,
+    Meatballs = 8,
+    Pasta = 16,
+    StuffWithP = Pizza | Pancakes | Pasta,
+    All = Pizza | Fries | Pancakes | Meatballs | Pasta | StuffWithP
+  };
+
+  [Fact]
+  public void Test()
+  {
+    var order = new
     {
-        None = 0,
-        Pizza = 1,
-        Fries = 2,
-        Pancakes = 4,
-        Meatballs = 8,
-        Pasta = 16,
-        StuffWithP = Pizza | Pancakes | Pasta,
-        All = Pizza | Fries | Pancakes | Meatballs | Pasta | StuffWithP
+      items = MenuItems.Pizza | MenuItems.Pancakes
     };
 
-    [Fact]
-    public void Test()
-    {
-        var order = new
-        {
-            items = MenuItems.Pizza | MenuItems.Pancakes
-        };
-
-        string source = @"{ 
+    var source = @"{ 
     ""order"": [
         {{#each items}}""{{this}}""{{#unless @last}},
         {{/unless}}{{/each}}
@@ -31,10 +31,10 @@ public class Flags
     ""orders"": ""{{items}}""
 }".Replace("\r", "");
 
-        var gen = new JsonTemplateGenerator();
-        var json = gen.Parse(source, order);
+    var gen = new JsonTemplateGenerator();
+    var json = gen.Parse(source, order);
 
-        var expected = @"{ 
+    var expected = @"{ 
     ""order"": [
         ""Pizza"",
         ""Pancakes""
@@ -42,7 +42,7 @@ public class Flags
     ""orders"": ""Pizza, Pancakes""
 }".Replace("\r", "");
 
-        Assert.Equivalent(expected, json);
-    }
+    Assert.Equivalent(expected, json);
+  }
 
 }
