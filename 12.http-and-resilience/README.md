@@ -6,6 +6,7 @@ any client generation, with a Kiota client.
 
 - <a href="https://keestalkstech.com/implementing-http-resilience-by-microsoft/">Implementing HTTP Resilience by Microsoft</a>
 - <a href="https://keestalkstech.com/kiota-dependency-injection-and-resilience/">Kiota, dependency injection and resilience</a>
+- <a href="https://keestalkstech.com/kiota-client-unit-testing-mocking-data/">Kiota Client Unit Testing: mocking data</a>
 
 
 ## Checkout only this project
