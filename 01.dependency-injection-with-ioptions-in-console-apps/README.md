@@ -10,11 +10,10 @@ want the same features in your Console app.
 ## Features
 
 - Support for .NET 10
-- Support for <a href="https://learn.microsoft.com/en-us/dotnet/api/system.commandline.rootcommand">System.CommandLine.RootCommand</a>
 - Support for appsettings.json configuration with environment-specific overrides (``appsettings.{ENVIRONMENT}.json``)
 - Support for environment variables configuration
-- Support for IOption injection
-- Support for IOption data validation on startup
+- Support for IOptions injection
+- Support for IOptions data validation on startup
 
 ## Configuration
 
