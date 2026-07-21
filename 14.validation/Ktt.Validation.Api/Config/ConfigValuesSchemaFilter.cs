@@ -1,5 +1,4 @@
 ﻿using System.Text.Json.Nodes;
-using Ktt.Validation.Api.Config;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation.Attributes;
 using Microsoft.OpenApi;

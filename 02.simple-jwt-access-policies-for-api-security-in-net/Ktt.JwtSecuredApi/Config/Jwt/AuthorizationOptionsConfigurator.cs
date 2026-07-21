@@ -28,11 +28,11 @@ public class AuthorizationOptionsConfigurator(JwtOptions jwtOptions) : IPostConf
                     policy.RequireAssertion(context =>
                     {
                         // Validate issuer (iss claim)
-                              var issuerClaim = context.User.Claims.FirstOrDefault(c => c.Type == "iss")?.Value;
+                        var issuerClaim = context.User.Claims.FirstOrDefault(c => c.Type == "iss")?.Value;
 
                         // Ensure the issuer is allowed for this policy
-                              return accessPolicies[policyName].Contains(issuerClaim);
-                          });
+                        return accessPolicies[policyName].Contains(issuerClaim);
+                    });
                 });
             }
         }

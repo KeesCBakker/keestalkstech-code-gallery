@@ -17,13 +17,13 @@ public class Program
                 builder
                     .ConfigureKestrel(options =>
                     {
-                          options.AddServerHeader = false;
-                      })
+                        options.AddServerHeader = false;
+                    })
                     .ConfigureAppConfiguration((builderContext, config) =>
                     {
-                          config.AddJsonFile("appsettings.json", false, true);
-                          config.AddEnvironmentVariables();
-                      })
+                        config.AddJsonFile("appsettings.json", false, true);
+                        config.AddEnvironmentVariables();
+                    })
                     .UseStartup<Startup>();
             });
     }
