@@ -3,18 +3,18 @@ using Microsoft.Extensions.Logging;
 
 public class App(ILogger<App> _logger, AppOptions _options)
 {
-  public async Task Execute(string[] args)
-  {
-    var name = args.Length == 0 ? "World" : args[0];
+    public async Task Execute(string[] args)
+    {
+        var name = args.Length == 0 ? "World" : args[0];
 
-    _logger.LogInformation("Starting...");
-    var greeting = string.Format(CultureInfo.CurrentCulture, _options.Greeting, name);
-    _logger.LogDebug("Greeting: {Greeting}", greeting);
+        _logger.LogInformation("Starting...");
+        var greeting = string.Format(CultureInfo.CurrentCulture, _options.Greeting, name);
+        _logger.LogDebug("Greeting: {Greeting}", greeting);
 
-    Console.WriteLine(greeting);
+        Console.WriteLine(greeting);
 
-    _logger.LogInformation("Finished!");
+        _logger.LogInformation("Finished!");
 
-    await Task.CompletedTask;
-  }
+        await Task.CompletedTask;
+    }
 }

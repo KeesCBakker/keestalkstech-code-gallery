@@ -5,9 +5,9 @@ namespace Ktt.Docker.Todo.Api.Tests.Controllers;
 [Trait("Category", "Integration")]
 public class ValkeyTodoControllerTests : TodoControllerTestsBase, IClassFixture<IntegrationTestApplicationFactory>
 {
-  public ValkeyTodoControllerTests(IntegrationTestApplicationFactory factory) :
-      base(factory)
-  {
+    public ValkeyTodoControllerTests(IntegrationTestApplicationFactory factory) :
+        base(factory)
+    {
 
-  }
+    }
 }

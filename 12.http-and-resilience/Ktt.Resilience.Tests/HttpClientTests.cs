@@ -15,13 +15,13 @@ namespace Ktt.Resilience.Tests;
 
 public class HttpClientTests
 {
-  [Fact]
-  public async Task KiotaPetStoreClientWithMockedObjects()
-  {
-    // arrange
-    var tag = new Tag { Id = 1, Name = "cartoon" };
-    var category = new Category { Id = 1, Name = "Dogs" };
-    var pets = new Pet[] {
+    [Fact]
+    public async Task KiotaPetStoreClientWithMockedObjects()
+    {
+        // arrange
+        var tag = new Tag { Id = 1, Name = "cartoon" };
+        var category = new Category { Id = 1, Name = "Dogs" };
+        var pets = new Pet[] {
             new Pet
             {
                 Id = 42,
@@ -42,45 +42,45 @@ public class HttpClientTests
             }
         };
 
-    var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
+        var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
 
-    var jsonData = JsonSerializer.Serialize(pets, serializerOptions);
+        var jsonData = JsonSerializer.Serialize(pets, serializerOptions);
 
-    var mockHttp = new MockHttpMessageHandler();
-    mockHttp
-        .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
-        .Respond(HttpStatusCode.OK, "application/json", jsonData);
+        var mockHttp = new MockHttpMessageHandler();
+        mockHttp
+            .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
+            .Respond(HttpStatusCode.OK, "application/json", jsonData);
 
-    var client = new PetStoreClient(
-        new DefaultRequestAdapter(
-            new AnonymousAuthenticationProvider(),
-            httpClient: mockHttp.ToHttpClient()
-        )
-    );
+        var client = new PetStoreClient(
+            new DefaultRequestAdapter(
+                new AnonymousAuthenticationProvider(),
+                httpClient: mockHttp.ToHttpClient()
+            )
+        );
 
-    // act
-    var result = await client.Pet.FindByStatus.GetAsync(x =>
+        // act
+        var result = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
+        });
+
+        // assert
+        result.Should().NotBeNull();
+        result.Count.Should().Be(2);
+
+        result[0].Id.Should().Be(42);
+        result[0].Name.Should().Be("Bandit Heeler");
+
+        result[1].Id.Should().Be(1337);
+        result[1].Name.Should().Be("Scooby-Doo");
+    }
+
+    [Fact]
+    public async Task KiotaPetStoreClientWithString()
     {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
-    });
-
-    // assert
-    result.Should().NotBeNull();
-    result.Count.Should().Be(2);
-
-    result[0].Id.Should().Be(42);
-    result[0].Name.Should().Be("Bandit Heeler");
-
-    result[1].Id.Should().Be(1337);
-    result[1].Name.Should().Be("Scooby-Doo");
-  }
-
-  [Fact]
-  public async Task KiotaPetStoreClientWithString()
-  {
-    // arrange
-    var json = @"
+        // arrange
+        var json = @"
         [
           {
             ""id"": 42,
@@ -100,42 +100,42 @@ public class HttpClientTests
           }
         ]";
 
-    var mockHttp = new MockHttpMessageHandler();
-    mockHttp
-        .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
-        .Respond(HttpStatusCode.OK, "application/json", json);
+        var mockHttp = new MockHttpMessageHandler();
+        mockHttp
+            .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
+            .Respond(HttpStatusCode.OK, "application/json", json);
 
-    var client = new PetStoreClient(
-        new DefaultRequestAdapter(
-            new AnonymousAuthenticationProvider(),
-            httpClient: mockHttp.ToHttpClient()
-        )
-    );
+        var client = new PetStoreClient(
+            new DefaultRequestAdapter(
+                new AnonymousAuthenticationProvider(),
+                httpClient: mockHttp.ToHttpClient()
+            )
+        );
 
-    // act
-    var result = await client.Pet.FindByStatus.GetAsync(x =>
+        // act
+        var result = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
+        });
+
+        // assert
+        result.Should().NotBeNull();
+        result.Count.Should().Be(2);
+
+        result[0].Id.Should().Be(42);
+        result[0].Name.Should().Be("Bandit Heeler");
+
+        result[1].Id.Should().Be(1337);
+        result[1].Name.Should().Be("Scooby-Doo");
+    }
+
+    [Fact]
+    public async Task KiotaPetStoreMockedClient()
     {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
-    });
-
-    // assert
-    result.Should().NotBeNull();
-    result.Count.Should().Be(2);
-
-    result[0].Id.Should().Be(42);
-    result[0].Name.Should().Be("Bandit Heeler");
-
-    result[1].Id.Should().Be(1337);
-    result[1].Name.Should().Be("Scooby-Doo");
-  }
-
-  [Fact]
-  public async Task KiotaPetStoreMockedClient()
-  {
-    // arrange
-    var tag = new Tag { Id = 1, Name = "cartoon" };
-    var category = new Category { Id = 1, Name = "Dogs" };
-    var pets = new Pet[] {
+        // arrange
+        var tag = new Tag { Id = 1, Name = "cartoon" };
+        var category = new Category { Id = 1, Name = "Dogs" };
+        var pets = new Pet[] {
             new Pet
             {
                 Id = 42,
@@ -165,45 +165,45 @@ public class HttpClientTests
             }
         };
 
-    var mock = new MockedPetStoreClientFactory
+        var mock = new MockedPetStoreClientFactory
+        {
+            Pets = [.. pets]
+        };
+
+        var client = mock.CreateClient();
+
+        // act
+        var availablePets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
+        });
+        var pendingPets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Pending];
+        });
+        var soldPets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Sold];
+        });
+
+        // assert
+        availablePets.Should().HaveCount(1);
+        availablePets[0].Id.Should().Be(42);
+
+        pendingPets.Should().HaveCount(1);
+        pendingPets[0].Id.Should().Be(1337);
+
+        soldPets.Should().HaveCount(1);
+        soldPets[0].Id.Should().Be(1950);
+    }
+
+    [Fact]
+    public async Task KiotaPetStoreDependencyInjection()
     {
-      Pets = [.. pets]
-    };
-
-    var client = mock.CreateClient();
-
-    // act
-    var availablePets = await client.Pet.FindByStatus.GetAsync(x =>
-    {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
-    });
-    var pendingPets = await client.Pet.FindByStatus.GetAsync(x =>
-    {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Pending];
-    });
-    var soldPets = await client.Pet.FindByStatus.GetAsync(x =>
-    {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Sold];
-    });
-
-    // assert
-    availablePets.Should().HaveCount(1);
-    availablePets[0].Id.Should().Be(42);
-
-    pendingPets.Should().HaveCount(1);
-    pendingPets[0].Id.Should().Be(1337);
-
-    soldPets.Should().HaveCount(1);
-    soldPets[0].Id.Should().Be(1950);
-  }
-
-  [Fact]
-  public async Task KiotaPetStoreDependencyInjection()
-  {
-    // arrange
-    var factory = new MockedPetStoreClientFactory
-    {
-      Pets = {
+        // arrange
+        var factory = new MockedPetStoreClientFactory
+        {
+            Pets = {
                 new Pet
                 {
                     Id = 42,
@@ -214,22 +214,22 @@ public class HttpClientTests
                     Status = Pet_status.Available
                 }
             }
-    };
+        };
 
-    var services = new ServiceCollection();
-    services.AddSingleton(x => factory.CreateClient());
+        var services = new ServiceCollection();
+        services.AddSingleton(x => factory.CreateClient());
 
-    using var provider = services.BuildServiceProvider();
-    var client = provider.GetRequiredService<PetStoreClient>();
+        using var provider = services.BuildServiceProvider();
+        var client = provider.GetRequiredService<PetStoreClient>();
 
-    // act
-    var availablePets = await client.Pet.FindByStatus.GetAsync(x =>
-    {
-      x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
-    });
+        // act
+        var availablePets = await client.Pet.FindByStatus.GetAsync(x =>
+        {
+            x.QueryParameters.Status = [GetStatusQueryParameterType.Available];
+        });
 
-    // assert
-    availablePets.Should().HaveCount(1);
-    availablePets[0].Id.Should().Be(42);
-  }
+        // assert
+        availablePets.Should().HaveCount(1);
+        availablePets[0].Id.Should().Be(42);
+    }
 }

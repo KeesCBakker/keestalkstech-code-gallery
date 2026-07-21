@@ -11,46 +11,46 @@ namespace Ktt.Resilience.Tests.Mocks;
 
 public class MockedPetStoreClientFactory
 {
-  private readonly JsonSerializerOptions _serializerOptions;
+    private readonly JsonSerializerOptions _serializerOptions;
 
-  public List<Pet> Pets { get; set; } = [];
+    public List<Pet> Pets { get; set; } = [];
 
-  public MockedPetStoreClientFactory()
-  {
-    _serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-    _serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-  }
-
-  public PetStoreClient CreateClient()
-  {
-    string SerializePets(Pet_status status)
+    public MockedPetStoreClientFactory()
     {
-      var pets = Pets.Where(x => x.Status == status);
-      return JsonSerializer.Serialize(pets, _serializerOptions);
+        _serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
+        _serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
     }
 
-    var mockHttp = new MockHttpMessageHandler();
+    public PetStoreClient CreateClient()
+    {
+        string SerializePets(Pet_status status)
+        {
+            var pets = Pets.Where(x => x.Status == status);
+            return JsonSerializer.Serialize(pets, _serializerOptions);
+        }
 
-    mockHttp
-        .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
-        .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Available));
+        var mockHttp = new MockHttpMessageHandler();
 
-    mockHttp
-        .When(HttpMethod.Get, "/v2/pet/findByStatus?status=pending")
-        .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Pending));
+        mockHttp
+            .When(HttpMethod.Get, "/v2/pet/findByStatus?status=available")
+            .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Available));
 
-    mockHttp
-        .When(HttpMethod.Get, "/v2/pet/findByStatus?status=sold")
-        .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Sold));
+        mockHttp
+            .When(HttpMethod.Get, "/v2/pet/findByStatus?status=pending")
+            .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Pending));
 
-    var client = new PetStoreClient(
-        new DefaultRequestAdapter(
-            new AnonymousAuthenticationProvider(),
-            httpClient: mockHttp.ToHttpClient()
-        )
-    );
+        mockHttp
+            .When(HttpMethod.Get, "/v2/pet/findByStatus?status=sold")
+            .Respond(HttpStatusCode.OK, "application/json", SerializePets(Pet_status.Sold));
 
-    return client;
+        var client = new PetStoreClient(
+            new DefaultRequestAdapter(
+                new AnonymousAuthenticationProvider(),
+                httpClient: mockHttp.ToHttpClient()
+            )
+        );
 
-  }
+        return client;
+
+    }
 }

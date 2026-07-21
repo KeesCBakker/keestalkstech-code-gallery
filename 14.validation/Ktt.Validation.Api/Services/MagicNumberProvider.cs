@@ -2,8 +2,8 @@
 
 public class MagicNumberProvider : IMagicNumberProvider
 {
-  public Task<int> GetMagicNumber()
-  {
-    return Task.FromResult(42);
-  }
+    public Task<int> GetMagicNumber()
+    {
+        return Task.FromResult(42);
+    }
 }

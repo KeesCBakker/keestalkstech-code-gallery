@@ -2,72 +2,72 @@
 
 public partial class RomanNumeral
 {
-  //subtractive notation uses these numerals
-  public static readonly string[] SUBTRACTIVE_NOTATION =
-  {
+    //subtractive notation uses these numerals
+    public static readonly string[] SUBTRACTIVE_NOTATION =
+    {
         "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
     };
 
-  //the addative notation uses these numerals
-  public static readonly string[] ADDITIVE_NOTATION =
-  {
+    //the addative notation uses these numerals
+    public static readonly string[] ADDITIVE_NOTATION =
+    {
         "M", "D", "C", "L", "X", "V", "I"
     };
 
-  public override string ToString()
-  {
-    return ToString(Notation);
-  }
-
-  public string ToString(RomanNumeralNotation notation)
-  {
-    if (Number == 0)
+    public override string ToString()
     {
-      return NULLA;
+        return ToString(Notation);
     }
 
-    //check notation for right set of characters
-    var numerals =
-        notation == RomanNumeralNotation.Additive
-        ? ADDITIVE_NOTATION
-        : SUBTRACTIVE_NOTATION;
-
-    var resultRomanNumeral = "";
-
-    //start with the M and iterate back
-    var position = 0;
-
-    //substract till the number is 0
-    var value = Number;
-
-    do
+    public string ToString(RomanNumeralNotation notation)
     {
-      var numeral = numerals[position];
-      var numeralValue = VALUES[numeral];
-
-      //check if the value is in the number
-      if (value >= numeralValue)
-      {
-        //substract from the value
-        value -= numeralValue;
-
-        //add the numeral to the string
-        resultRomanNumeral += numeral;
-
-        //multiple numeral? advance position because things like 'IVIV' does not exist
-        var isMultipleNumeral = numeral.Length > 1;
-        if (isMultipleNumeral)
+        if (Number == 0)
         {
-          position++;
+            return NULLA;
         }
 
-        continue;
-      }
+        //check notation for right set of characters
+        var numerals =
+            notation == RomanNumeralNotation.Additive
+            ? ADDITIVE_NOTATION
+            : SUBTRACTIVE_NOTATION;
 
-      position++;
+        var resultRomanNumeral = "";
+
+        //start with the M and iterate back
+        var position = 0;
+
+        //substract till the number is 0
+        var value = Number;
+
+        do
+        {
+            var numeral = numerals[position];
+            var numeralValue = VALUES[numeral];
+
+            //check if the value is in the number
+            if (value >= numeralValue)
+            {
+                //substract from the value
+                value -= numeralValue;
+
+                //add the numeral to the string
+                resultRomanNumeral += numeral;
+
+                //multiple numeral? advance position because things like 'IVIV' does not exist
+                var isMultipleNumeral = numeral.Length > 1;
+                if (isMultipleNumeral)
+                {
+                    position++;
+                }
+
+                continue;
+            }
+
+            position++;
+        }
+        while (value != 0);
+
+        return resultRomanNumeral;
     }
-    while (value != 0);
-
-    return resultRomanNumeral;
-  }
 }

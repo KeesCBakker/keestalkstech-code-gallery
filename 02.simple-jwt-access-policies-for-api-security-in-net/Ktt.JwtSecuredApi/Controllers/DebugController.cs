@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/whoami")]
 public class DebugController(IUserNameAccessor userNameAccessor) : ControllerBase
 {
-  [HttpGet]
-  public WhoAmIModel WhoAmI()
-  {
-    return new WhoAmIModel
+    [HttpGet]
+    public WhoAmIModel WhoAmI()
     {
-      UserName = userNameAccessor.UserName,
-      Issuer = userNameAccessor.Issuer
-    };
-  }
+        return new WhoAmIModel
+        {
+            UserName = userNameAccessor.UserName,
+            Issuer = userNameAccessor.Issuer
+        };
+    }
 }

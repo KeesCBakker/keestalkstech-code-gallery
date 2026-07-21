@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/orders")]
 public class OrdersController : ControllerBase
 {
-  [HttpGet]
-  [Authorize(Policy = "orders")]
-  [ProducesResponseType<string>(200)]
-  public IActionResult GetOrders()
-  {
-    return Ok("Access granted to orders.");
-  }
+    [HttpGet]
+    [Authorize(Policy = "orders")]
+    [ProducesResponseType<string>(200)]
+    public IActionResult GetOrders()
+    {
+        return Ok("Access granted to orders.");
+    }
 }

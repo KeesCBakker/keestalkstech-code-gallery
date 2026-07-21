@@ -5,11 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 [Route("api/users")]
 public class UsersController : ControllerBase
 {
-  [HttpGet]
-  [Authorize(Policy = "users")]
-  [ProducesResponseType<string>(200)]
-  public IActionResult GetUsers()
-  {
-    return Ok("Access granted to users.");
-  }
+    [HttpGet]
+    [Authorize(Policy = "users")]
+    [ProducesResponseType<string>(200)]
+    public IActionResult GetUsers()
+    {
+        return Ok("Access granted to users.");
+    }
 }

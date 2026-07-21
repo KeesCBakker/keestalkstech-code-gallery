@@ -7,20 +7,20 @@ public class DebugController(
     SupportedLanguageOptions supportedLanguageOptions
 ) : ControllerBase
 {
-  [HttpGet]
-  public DebugModel Get()
-  {
-    return new DebugModel
+    [HttpGet]
+    public DebugModel Get()
     {
-      SourceOptions = sourceOptions,
-      SupportedLanguageOptions = supportedLanguageOptions
-    };
-  }
+        return new DebugModel
+        {
+            SourceOptions = sourceOptions,
+            SupportedLanguageOptions = supportedLanguageOptions
+        };
+    }
 }
 
 public class DebugModel
 {
-  public SourceOptions? SourceOptions { get; set; }
+    public SourceOptions? SourceOptions { get; set; }
 
-  public SupportedLanguageOptions? SupportedLanguageOptions { get; set; }
+    public SupportedLanguageOptions? SupportedLanguageOptions { get; set; }
 }

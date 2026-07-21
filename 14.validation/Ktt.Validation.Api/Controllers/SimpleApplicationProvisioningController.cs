@@ -12,27 +12,27 @@ namespace Ktt.Validation.Api.Controllers;
 [Route("provision/simple-application")]
 public class SimpleApplicationProvisioningController(ProvisionerService service) : ControllerBase
 {
-  /// <summary>
-  /// Provisions a simple application
-  /// </summary>
-  [HttpPost]
-  [ProducesResponseType(200)]
-  [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-  public void Provision(SimpleApplication request)
-  {
-    service.ProvisionApplication(request);
-  }
+    /// <summary>
+    /// Provisions a simple application
+    /// </summary>
+    [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    public void Provision(SimpleApplication request)
+    {
+        service.ProvisionApplication(request);
+    }
 
-  /// <summary>
-  /// Validates a simple application.
-  /// </summary>
-  [HttpPost("validate")]
-  [ProducesResponseType(200)]
-  [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
-  [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Needed for the validation pipeline.")]
-  public void Validate(SimpleApplication request)
-  {
-    // validation is one by attribute validation
-  }
+    /// <summary>
+    /// Validates a simple application.
+    /// </summary>
+    [HttpPost("validate")]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), 400)]
+    [SuppressMessage("Style", "IDE0060:Remove unused parameter", Justification = "Needed for the validation pipeline.")]
+    public void Validate(SimpleApplication request)
+    {
+        // validation is one by attribute validation
+    }
 
 }

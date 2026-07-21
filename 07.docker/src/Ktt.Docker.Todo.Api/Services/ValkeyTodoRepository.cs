@@ -6,44 +6,44 @@ namespace Ktt.Docker.Todo.Api.Services;
 
 public class ValkeyTodoRepository : ITodoRepository
 {
-  private readonly IDatabase _db;
-  private const string KeyPrefix = "todo:";
+    private readonly IDatabase _db;
+    private const string KeyPrefix = "todo:";
 
-  public ValkeyTodoRepository(IConnectionMultiplexer redis)
-  {
-    _db = redis.GetDatabase();
-  }
-
-  public async Task<IEnumerable<TodoItem>> ListAsync()
-  {
-    var server = _db.Multiplexer.GetServer(_db.Multiplexer.GetEndPoints().First());
-    var keys = server.Keys(pattern: $"{KeyPrefix}*").ToArray();
-    var items = new List<TodoItem>();
-
-    foreach (var key in keys)
+    public ValkeyTodoRepository(IConnectionMultiplexer redis)
     {
-      var json = (string?)await _db.StringGetAsync(key);
-      if (!string.IsNullOrEmpty(json))
-      {
-        items.Add(JsonSerializer.Deserialize<TodoItem>(json)!);
-      }
+        _db = redis.GetDatabase();
     }
 
-    return items;
-  }
+    public async Task<IEnumerable<TodoItem>> ListAsync()
+    {
+        var server = _db.Multiplexer.GetServer(_db.Multiplexer.GetEndPoints().First());
+        var keys = server.Keys(pattern: $"{KeyPrefix}*").ToArray();
+        var items = new List<TodoItem>();
 
-  public async Task<TodoItem?> GetAsync(string id)
-  {
-    var json = (string?)await _db.StringGetAsync($"{KeyPrefix}{id}");
-    return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<TodoItem>(json);
-  }
+        foreach (var key in keys)
+        {
+            var json = (string?)await _db.StringGetAsync(key);
+            if (!string.IsNullOrEmpty(json))
+            {
+                items.Add(JsonSerializer.Deserialize<TodoItem>(json)!);
+            }
+        }
 
-  public async Task SaveAsync(TodoItem item)
-  {
-    var json = JsonSerializer.Serialize(item);
-    await _db.StringSetAsync($"{KeyPrefix}{item.Id}", json);
-  }
+        return items;
+    }
 
-  public Task DeleteAsync(string id) =>
-      _db.KeyDeleteAsync($"{KeyPrefix}{id}");
+    public async Task<TodoItem?> GetAsync(string id)
+    {
+        var json = (string?)await _db.StringGetAsync($"{KeyPrefix}{id}");
+        return string.IsNullOrEmpty(json) ? null : JsonSerializer.Deserialize<TodoItem>(json);
+    }
+
+    public async Task SaveAsync(TodoItem item)
+    {
+        var json = JsonSerializer.Serialize(item);
+        await _db.StringSetAsync($"{KeyPrefix}{item.Id}", json);
+    }
+
+    public Task DeleteAsync(string id) =>
+        _db.KeyDeleteAsync($"{KeyPrefix}{id}");
 }

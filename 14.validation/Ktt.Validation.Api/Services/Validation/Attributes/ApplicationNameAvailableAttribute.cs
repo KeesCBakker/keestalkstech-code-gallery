@@ -5,18 +5,18 @@ namespace Ktt.Validation.Api.Services.Validation.Attributes;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Field | AttributeTargets.Parameter, Inherited = true)]
 public class ApplicationNameAvailableAttribute : SimpleValidationAttributeBase
 {
-  protected override bool IsValidValue(object? value, ValidationContext validationContext)
-  {
-    if (value is not string name || string.IsNullOrWhiteSpace(name))
+    protected override bool IsValidValue(object? value, ValidationContext validationContext)
     {
-      return false;
+        if (value is not string name || string.IsNullOrWhiteSpace(name))
+        {
+            return false;
+        }
+
+        var exists = validationContext
+            .GetRequiredService<ProvisionerService>()
+            .Exists(name)
+            .Result;
+
+        return !exists;
     }
-
-    var exists = validationContext
-        .GetRequiredService<ProvisionerService>()
-        .Exists(name)
-        .Result;
-
-    return !exists;
-  }
 }

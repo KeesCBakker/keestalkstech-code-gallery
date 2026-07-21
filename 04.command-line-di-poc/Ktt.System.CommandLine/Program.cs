@@ -6,20 +6,20 @@ using Microsoft.Extensions.DependencyInjection;
 
 static void ConfigureServices(IServiceCollection services)
 {
-  // build configuration from environment variables
-  var configuration = new ConfigurationBuilder()
-      .AddEnvironmentVariables()
-      .Build();
+    // build configuration from environment variables
+    var configuration = new ConfigurationBuilder()
+        .AddEnvironmentVariables()
+        .Build();
 
-  // configure WeatherServiceOptions from environment variables
-  services.Configure<WeatherServiceOptions>(configuration);
+    // configure WeatherServiceOptions from environment variables
+    services.Configure<WeatherServiceOptions>(configuration);
 
-  // add commands:
-  services.AddTransient<Command, CurrentCommand>();
-  services.AddTransient<Command, ForecastCommand>();
+    // add commands:
+    services.AddTransient<Command, CurrentCommand>();
+    services.AddTransient<Command, ForecastCommand>();
 
-  // add services:
-  services.AddTransient<WeatherService>();
+    // add services:
+    services.AddTransient<WeatherService>();
 }
 
 // create service collection
@@ -34,7 +34,7 @@ var rootCommand = new RootCommand("Weather information using a very unreliable w
 
 foreach (var command in serviceProvider.GetServices<Command>())
 {
-  rootCommand.Subcommands.Add(command);
+    rootCommand.Subcommands.Add(command);
 }
 
 return rootCommand.Parse(args).Invoke();

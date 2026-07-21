@@ -2,6 +2,6 @@
 
 public enum ApplicationType
 {
-  Application,
-  ApplicationWithEntryPoint
+    Application,
+    ApplicationWithEntryPoint
 }

@@ -2,20 +2,20 @@
 
 public partial class RomanNumeral
 {
-  private readonly int _number;
+    private readonly int _number;
 
-  public int Number => _number;
+    public int Number => _number;
 
-  public RomanNumeralNotation Notation { get; set; }
+    public RomanNumeralNotation Notation { get; set; }
 
-  public RomanNumeral(int number, RomanNumeralNotation notation = RomanNumeralNotation.Subtractive)
-  {
-    if (number < 0)
+    public RomanNumeral(int number, RomanNumeralNotation notation = RomanNumeralNotation.Subtractive)
     {
-      throw new ArgumentOutOfRangeException(nameof(number), "Number should be positive.");
-    }
+        if (number < 0)
+        {
+            throw new ArgumentOutOfRangeException(nameof(number), "Number should be positive.");
+        }
 
-    _number = number;
-    Notation = notation;
-  }
+        _number = number;
+        Notation = notation;
+    }
 }

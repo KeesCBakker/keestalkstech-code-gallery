@@ -5,35 +5,35 @@ namespace Ktt.System.CommandLine.Commands;
 
 sealed class ForecastCommand : Command
 {
-  private readonly WeatherService _weather;
+    private readonly WeatherService _weather;
 
-  public ForecastCommand(WeatherService weather) : base("forecast", "Get the forecast. Almost always wrong.")
-  {
-    _weather = weather;
-
-    var cityOption = new Option<string>("--city")
+    public ForecastCommand(WeatherService weather) : base("forecast", "Get the forecast. Almost always wrong.")
     {
-      Description = "The city.",
-      DefaultValueFactory = _ => _weather.Options.DefaultCity
-    };
-    var daysOption = new Option<int>("--days")
-    {
-      Description = "Number of days.",
-      DefaultValueFactory = _ => _weather.Options.DefaultForecastDays
-    };
+        _weather = weather;
 
-    Options.Add(cityOption);
-    Options.Add(daysOption);
+        var cityOption = new Option<string>("--city")
+        {
+            Description = "The city.",
+            DefaultValueFactory = _ => _weather.Options.DefaultCity
+        };
+        var daysOption = new Option<int>("--days")
+        {
+            Description = "Number of days.",
+            DefaultValueFactory = _ => _weather.Options.DefaultForecastDays
+        };
 
-    this.SetAction(async (parseResult, cancellationToken) =>
-    {
-      var city = parseResult.GetValue(cityOption);
-      var days = parseResult.GetValue(daysOption);
-      var report = await _weather.Forecast(days, city);
-      foreach (var item in report)
-      {
-        Console.WriteLine(item);
-      }
-    });
-  }
+        Options.Add(cityOption);
+        Options.Add(daysOption);
+
+        this.SetAction(async (parseResult, cancellationToken) =>
+        {
+            var city = parseResult.GetValue(cityOption);
+            var days = parseResult.GetValue(daysOption);
+            var report = await _weather.Forecast(days, city);
+            foreach (var item in report)
+            {
+                Console.WriteLine(item);
+            }
+        });
+    }
 }

@@ -9,43 +9,43 @@ namespace Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 
 public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncLifetime
 {
-  private IContainer _valkeyContainer = null!;
-  private IConnectionMultiplexer _redis = null!;
+    private IContainer _valkeyContainer = null!;
+    private IConnectionMultiplexer _redis = null!;
 
-  public async Task InitializeAsync()
-  {
-    _valkeyContainer = new ContainerBuilder("valkey/valkey:latest")
-        .WithName("valkey-test")
-        .WithPortBinding(6379, assignRandomHostPort: true)
-        .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
-        .Build();
+    public async Task InitializeAsync()
+    {
+        _valkeyContainer = new ContainerBuilder("valkey/valkey:latest")
+            .WithName("valkey-test")
+            .WithPortBinding(6379, assignRandomHostPort: true)
+            .WithWaitStrategy(Wait.ForUnixContainer().UntilInternalTcpPortIsAvailable(6379))
+            .Build();
 
-    await _valkeyContainer.StartAsync();
+        await _valkeyContainer.StartAsync();
 
-    var host = _valkeyContainer.Hostname;
-    var port = _valkeyContainer.GetMappedPublicPort(6379);
+        var host = _valkeyContainer.Hostname;
+        var port = _valkeyContainer.GetMappedPublicPort(6379);
 
-    _redis = await ConnectionMultiplexer.ConnectAsync($"{host}:{port}");
-  }
+        _redis = await ConnectionMultiplexer.ConnectAsync($"{host}:{port}");
+    }
 
-  protected override void ConfigureServices(IServiceCollection services)
-  {
-    RemoveService<ITodoRepository>(services);
+    protected override void ConfigureServices(IServiceCollection services)
+    {
+        RemoveService<ITodoRepository>(services);
 
-    services.AddSingleton(_ => _redis);
-    services.AddSingleton<ITodoRepository, ValkeyTodoRepository>();
-  }
+        services.AddSingleton(_ => _redis);
+        services.AddSingleton<ITodoRepository, ValkeyTodoRepository>();
+    }
 
-  public override async ValueTask DisposeAsync()
-  {
-    await _redis.CloseAsync();
-    await _valkeyContainer.DisposeAsync();
+    public override async ValueTask DisposeAsync()
+    {
+        await _redis.CloseAsync();
+        await _valkeyContainer.DisposeAsync();
 
-    await base.DisposeAsync();
-  }
+        await base.DisposeAsync();
+    }
 
-  async Task IAsyncLifetime.DisposeAsync()
-  {
-    await DisposeAsync();
-  }
+    async Task IAsyncLifetime.DisposeAsync()
+    {
+        await DisposeAsync();
+    }
 }

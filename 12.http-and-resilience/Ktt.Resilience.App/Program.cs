@@ -5,21 +5,21 @@ using Microsoft.Extensions.DependencyInjection;
 
 static void ConfigureServices(IServiceCollection services)
 {
-  // build config
-  services.AddSingleton<IConfiguration>(_ =>
-      new ConfigurationBuilder()
-          .SetBasePath(Directory.GetCurrentDirectory())
-          .AddJsonFile("appsettings.json", optional: false)
-          .AddEnvironmentVariables()
-          .Build());
+    // build config
+    services.AddSingleton<IConfiguration>(_ =>
+        new ConfigurationBuilder()
+            .SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.json", optional: false)
+            .AddEnvironmentVariables()
+            .Build());
 
-  // add services:
-  services.AddClients();
-  services.AddKiotaClients();
+    // add services:
+    services.AddClients();
+    services.AddKiotaClients();
 
-  // add app
-  services.AddTransient<DemoPetStore>();
-  services.AddTransient<DemoRetry>();
+    // add app
+    services.AddTransient<DemoPetStore>();
+    services.AddTransient<DemoRetry>();
 
 }
 

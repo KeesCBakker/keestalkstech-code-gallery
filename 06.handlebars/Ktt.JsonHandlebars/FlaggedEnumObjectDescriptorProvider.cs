@@ -12,122 +12,122 @@ namespace Ktt.JsonHandlebars;
 
 public class FlaggedEnumObjectDescriptorProvider : IObjectDescriptorProvider
 {
-  public bool TryGetDescriptor(Type type, out ObjectDescriptor value)
-  {
-    if (!type.IsEnum || type.GetCustomAttribute<FlagsAttribute>() == null)
+    public bool TryGetDescriptor(Type type, out ObjectDescriptor value)
     {
-      value = ObjectDescriptor.Empty;
-      return false;
-    }
-
-    value = new ObjectDescriptor(
-        type,
-        null,
-        null,
-        self => new FlagEnumIterator()
-    );
-
-    return true;
-  }
-
-  public static string[] DeconstructFlags(Enum items)
-  {
-    if (items.GetType().GetCustomAttribute<FlagsAttribute>() == null)
-    {
-      throw new ArgumentException("Enum has no [Flags] attribute.", nameof(items));
-    }
-
-    // no value, no list
-    var itemsValue = (int)(object)items;
-    if (itemsValue == 0)
-    {
-      return [];
-    }
-
-    var result = new List<string>();
-
-    foreach (var item in Enum.GetValues(items.GetType()))
-    {
-      if (item == null)
-      {
-        continue;
-      }
-
-      var value = (int)item;
-
-      // skip combined flags
-      if (!BitOperations.IsPow2(value))
-      {
-        continue;
-      }
-
-      if (item is Enum @enum && items.HasFlag(@enum))
-      {
-        result.Add(item.ToString() ?? "");
-      }
-    }
-
-    return [.. result];
-
-  }
-
-  internal sealed class FlagEnumIterator : IIterator
-  {
-    public void Iterate(in EncodedTextWriter writer, BindingContext context, ChainSegment[] blockParamsVariables, object input, TemplateDelegate template, TemplateDelegate ifEmpty)
-    {
-      using var innerContext = context.CreateFrame();
-      var iterator = new IteratorValues(innerContext);
-      var blockParamsValues = new BlockParamsValues(innerContext, blockParamsVariables);
-
-      blockParamsValues.CreateProperty(0, out var _0);
-      blockParamsValues.CreateProperty(1, out var _1);
-
-      iterator.First = BoxedValues.True;
-      iterator.Last = BoxedValues.False;
-
-      var target = DeconstructFlags((Enum)input);
-
-      var count = target.Length;
-      var enumerator = target.GetEnumerator();
-
-      var index = 0;
-      var lastIndex = count - 1;
-      while (enumerator.MoveNext())
-      {
-        var value = enumerator.Current;
-        var objectIndex = BoxedValues.Int(index);
-
-        if (index == 1)
+        if (!type.IsEnum || type.GetCustomAttribute<FlagsAttribute>() == null)
         {
-          iterator.First = BoxedValues.False;
+            value = ObjectDescriptor.Empty;
+            return false;
         }
 
-        if (index == lastIndex)
+        value = new ObjectDescriptor(
+            type,
+            null,
+            null,
+            self => new FlagEnumIterator()
+        );
+
+        return true;
+    }
+
+    public static string[] DeconstructFlags(Enum items)
+    {
+        if (items.GetType().GetCustomAttribute<FlagsAttribute>() == null)
         {
-          iterator.Last = BoxedValues.True;
+            throw new ArgumentException("Enum has no [Flags] attribute.", nameof(items));
         }
 
-        iterator.Index = objectIndex;
+        // no value, no list
+        var itemsValue = (int)(object)items;
+        if (itemsValue == 0)
+        {
+            return [];
+        }
 
-        var resolvedValue = value;
+        var result = new List<string>();
 
-        blockParamsValues[_0] = resolvedValue;
-        blockParamsValues[_1] = objectIndex;
+        foreach (var item in Enum.GetValues(items.GetType()))
+        {
+            if (item == null)
+            {
+                continue;
+            }
 
-        iterator.Value = resolvedValue;
-        innerContext.Value = resolvedValue;
+            var value = (int)item;
 
-        template(writer, innerContext);
+            // skip combined flags
+            if (!BitOperations.IsPow2(value))
+            {
+                continue;
+            }
 
-        ++index;
-      }
+            if (item is Enum @enum && items.HasFlag(@enum))
+            {
+                result.Add(item.ToString() ?? "");
+            }
+        }
 
-      if (index == 0)
-      {
-        innerContext.Value = context.Value;
-        ifEmpty(writer, innerContext);
-      }
+        return [.. result];
 
     }
-  }
+
+    internal sealed class FlagEnumIterator : IIterator
+    {
+        public void Iterate(in EncodedTextWriter writer, BindingContext context, ChainSegment[] blockParamsVariables, object input, TemplateDelegate template, TemplateDelegate ifEmpty)
+        {
+            using var innerContext = context.CreateFrame();
+            var iterator = new IteratorValues(innerContext);
+            var blockParamsValues = new BlockParamsValues(innerContext, blockParamsVariables);
+
+            blockParamsValues.CreateProperty(0, out var _0);
+            blockParamsValues.CreateProperty(1, out var _1);
+
+            iterator.First = BoxedValues.True;
+            iterator.Last = BoxedValues.False;
+
+            var target = DeconstructFlags((Enum)input);
+
+            var count = target.Length;
+            var enumerator = target.GetEnumerator();
+
+            var index = 0;
+            var lastIndex = count - 1;
+            while (enumerator.MoveNext())
+            {
+                var value = enumerator.Current;
+                var objectIndex = BoxedValues.Int(index);
+
+                if (index == 1)
+                {
+                    iterator.First = BoxedValues.False;
+                }
+
+                if (index == lastIndex)
+                {
+                    iterator.Last = BoxedValues.True;
+                }
+
+                iterator.Index = objectIndex;
+
+                var resolvedValue = value;
+
+                blockParamsValues[_0] = resolvedValue;
+                blockParamsValues[_1] = objectIndex;
+
+                iterator.Value = resolvedValue;
+                innerContext.Value = resolvedValue;
+
+                template(writer, innerContext);
+
+                ++index;
+            }
+
+            if (index == 0)
+            {
+                innerContext.Value = context.Value;
+                ifEmpty(writer, innerContext);
+            }
+
+        }
+    }
 }

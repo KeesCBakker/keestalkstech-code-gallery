@@ -2,13 +2,13 @@
 
 public class ValidationErrorResponse
 {
-  public Dictionary<string, string[]> Errors { get; set; } = new();
+    public Dictionary<string, string[]> Errors { get; set; } = new();
 
-  public string Type { get; set; } = string.Empty;
+    public string Type { get; set; } = string.Empty;
 
-  public string Title { get; set; } = string.Empty;
+    public string Title { get; set; } = string.Empty;
 
-  public int Status { get; set; }
+    public int Status { get; set; }
 
-  public string TraceId { get; set; } = string.Empty;
+    public string TraceId { get; set; } = string.Empty;
 }

@@ -2,8 +2,8 @@
 
 public class AppOptions
 {
-  public const string SectionName = "App";
+    public const string SectionName = "App";
 
-  [Required(AllowEmptyStrings = false)]
-  public string Greeting { get; set; } = String.Empty;
+    [Required(AllowEmptyStrings = false)]
+    public string Greeting { get; set; } = String.Empty;
 }

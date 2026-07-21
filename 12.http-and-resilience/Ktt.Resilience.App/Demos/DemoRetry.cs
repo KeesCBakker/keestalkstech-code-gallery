@@ -6,32 +6,32 @@ public class DemoRetry(
     KiotaHttpStatusClient kiotaHttpStatusClient
 )
 {
-  public async Task RunAsync()
-  {
-    await Execute("CustomHttpStatusApiClient", customHttpStatusApiClient.Get);
-    await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync());
-
-    Console.WriteLine("");
-  }
-
-  private static async Task Execute(string name, Func<Task<string?>> execute)
-  {
-    Console.WriteLine($"Retry Demo for {name}...");
-
-    for (var i = 0; i < 4; i++)
+    public async Task RunAsync()
     {
-      Console.WriteLine("");
-      Console.WriteLine($"Calling {name} iteration {i}");
+        await Execute("CustomHttpStatusApiClient", customHttpStatusApiClient.Get);
+        await Execute("KiotaHttpStatusClient", async () => await kiotaHttpStatusClient.Random.TwoZeroZeroFiveZeroZeroFiveZeroTwoFiveZeroThree.GetAsync());
 
-      try
-      {
-        var str = await execute();
-        Console.WriteLine($"Result: {str}");
-      }
-      catch (Exception ex)
-      {
-        Console.WriteLine($"Error: {ex.Message}");
-      }
+        Console.WriteLine("");
     }
-  }
+
+    private static async Task Execute(string name, Func<Task<string?>> execute)
+    {
+        Console.WriteLine($"Retry Demo for {name}...");
+
+        for (var i = 0; i < 4; i++)
+        {
+            Console.WriteLine("");
+            Console.WriteLine($"Calling {name} iteration {i}");
+
+            try
+            {
+                var str = await execute();
+                Console.WriteLine($"Result: {str}");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+        }
+    }
 }

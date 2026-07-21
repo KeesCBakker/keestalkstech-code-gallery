@@ -7,46 +7,46 @@ namespace Ktt.Validation.Api.Config;
 
 public static class SwaggerConfig
 {
-  private const string ApiName = "Platform Provisioning";
+    private const string ApiName = "Platform Provisioning";
 
-  private static string XmlCommentsFilePath
-  {
-    get
+    private static string XmlCommentsFilePath
     {
-      var basePath = AppContext.BaseDirectory;
-      var fileName = typeof(SwaggerConfig).GetTypeInfo().Assembly.GetName().Name + ".xml";
-      return Path.Combine(basePath, fileName);
+        get
+        {
+            var basePath = AppContext.BaseDirectory;
+            var fileName = typeof(SwaggerConfig).GetTypeInfo().Assembly.GetName().Name + ".xml";
+            return Path.Combine(basePath, fileName);
+        }
     }
-  }
 
-  public static void AddSwagger(this IServiceCollection services)
-  {
-    services.AddEndpointsApiExplorer();
-    services.AddSwaggerGen(options =>
+    public static void AddSwagger(this IServiceCollection services)
     {
-      options.SwaggerDoc("v1", new OpenApiInfo
-      {
-        Title = ApiName,
-        Version = "v1",
-      });
+        services.AddEndpointsApiExplorer();
+        services.AddSwaggerGen(options =>
+        {
+            options.SwaggerDoc("v1", new OpenApiInfo
+            {
+                Title = ApiName,
+                Version = "v1",
+            });
 
-      // Add XML comments for documentation
-      options.IncludeXmlComments(XmlCommentsFilePath);
+            // Add XML comments for documentation
+            options.IncludeXmlComments(XmlCommentsFilePath);
 
-      // Non nullable types render as required
-      options.SupportNonNullableReferenceTypes();
+            // Non nullable types render as required
+            options.SupportNonNullableReferenceTypes();
 
-      // Tip 1: Turn config values into enums in the schema
-      options.SchemaFilter<ConfigValuesSchemaFilter>();
+            // Tip 1: Turn config values into enums in the schema
+            options.SchemaFilter<ConfigValuesSchemaFilter>();
 
-      // Tip 2: Automatically discover examples
-      options.ExampleFilters();
+            // Tip 2: Automatically discover examples
+            options.ExampleFilters();
 
-      // Tip 3: Add examples for parameters
-      options.OperationFilter<ParameterExamplesOperationFilter>();
+            // Tip 3: Add examples for parameters
+            options.OperationFilter<ParameterExamplesOperationFilter>();
 
-    });
+        });
 
-    services.AddSwaggerExamplesFromAssemblyOf<Startup>();
-  }
+        services.AddSwaggerExamplesFromAssemblyOf<Startup>();
+    }
 }

@@ -1,14 +1,14 @@
 ﻿public interface IUserNameAccessor
 {
-  string? UserName { get; }
-  string? Issuer { get; }
+    string? UserName { get; }
+    string? Issuer { get; }
 }
 
 public class UserNameAccessor(IHttpContextAccessor contextAccessor) : IUserNameAccessor
 {
-  // Retrieve the username claim
-  public string? UserName => contextAccessor.HttpContext?.User.FindFirst("username")?.Value;
+    // Retrieve the username claim
+    public string? UserName => contextAccessor.HttpContext?.User.FindFirst("username")?.Value;
 
-  // Retrieve the issuer claim
-  public string? Issuer => contextAccessor.HttpContext?.User.FindFirst("iss")?.Value;
+    // Retrieve the issuer claim
+    public string? Issuer => contextAccessor.HttpContext?.User.FindFirst("iss")?.Value;
 }

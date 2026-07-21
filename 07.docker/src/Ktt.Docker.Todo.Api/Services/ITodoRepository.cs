@@ -4,11 +4,11 @@ namespace Ktt.Docker.Todo.Api.Services;
 
 public interface ITodoRepository
 {
-  Task<IEnumerable<TodoItem>> ListAsync();
+    Task<IEnumerable<TodoItem>> ListAsync();
 
-  Task<TodoItem?> GetAsync(string id);
+    Task<TodoItem?> GetAsync(string id);
 
-  Task SaveAsync(TodoItem item);
+    Task SaveAsync(TodoItem item);
 
-  Task DeleteAsync(string id);
+    Task DeleteAsync(string id);
 }
