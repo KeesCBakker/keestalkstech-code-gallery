@@ -15,7 +15,6 @@ Run("dotnet add package Microsoft.Extensions.DependencyInjection");
 Run("dotnet add package Microsoft.Extensions.DependencyInjection.Abstractions");
 Run("dotnet add package Microsoft.Extensions.Options");
 Run("dotnet add package Microsoft.Extensions.Http.Resilience");
-Run("dotnet add package Microsoft.Extensions.Resilience");
 Run("dotnet add package Microsoft.Kiota.Bundle");
 
 // 4. Generate Kiota clients
