@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ktt.ConsoleAppDependencyInjection;
 
 namespace Ktt.ConsoleAppDependencyInjection.Tests;
 

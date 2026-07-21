@@ -1,4 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ktt.JwtSecuredApi.Config;
+using Ktt.JwtSecuredApi.Config.Jwt;
+using Ktt.JwtSecuredApi.Services;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);

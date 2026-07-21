@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Ktt.ApiOptionInjection.Config;
+using Microsoft.AspNetCore.Mvc;
+
+namespace Ktt.ApiOptionInjection.Controllers;
 
 [ApiController]
 [Route("api/debug")]
 public class DebugController(
     SourceOptions sourceOptions,
-    SupportedLanguageOptions supportedLanguageOptions
+    SupportedLanguagesOptions supportedLanguageOptions
 ) : ControllerBase
 {
     [HttpGet]
@@ -13,7 +16,7 @@ public class DebugController(
         return new DebugModel
         {
             SourceOptions = sourceOptions,
-            SupportedLanguageOptions = supportedLanguageOptions
+            SupportedLanguagesOptions = supportedLanguageOptions
         };
     }
 }
@@ -22,5 +25,5 @@ public class DebugModel
 {
     public SourceOptions? SourceOptions { get; set; }
 
-    public SupportedLanguageOptions? SupportedLanguageOptions { get; set; }
+    public SupportedLanguagesOptions? SupportedLanguagesOptions { get; set; }
 }

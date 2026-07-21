@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using Ktt.ConsoleAppDependencyInjection;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 
 namespace Ktt.ConsoleAppDependencyInjection.Tests;

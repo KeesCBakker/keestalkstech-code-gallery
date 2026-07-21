@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
+namespace Ktt.JwtSecuredApi.Config.Jwt;
+
 public class AuthorizationOptionsConfigurator(JwtOptions jwtOptions) : IPostConfigureOptions<AuthorizationOptions>
 {
     public void PostConfigure(string? name, AuthorizationOptions options)

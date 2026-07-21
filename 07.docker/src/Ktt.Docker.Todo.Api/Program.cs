@@ -1,6 +1,8 @@
 ﻿using Ktt.Docker.Todo.Api.Services;
 using Microsoft.OpenApi.Models;
 
+namespace Ktt.Docker.Todo.Api;
+
 public class Program
 {
     public static void Main(string[] args)

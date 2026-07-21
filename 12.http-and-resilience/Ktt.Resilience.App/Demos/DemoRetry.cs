@@ -1,6 +1,8 @@
 ﻿using ICustomHttpStatusApiClient = Ktt.Resilience.Clients.HttpClients.HttpStatusApiService;
 using KiotaHttpStatusClient = Ktt.Resilience.Clients.Kiota.HttpClients.HttpStatus.HttpStatusClient;
 
+namespace Ktt.Resilience.App.Demos;
+
 public class DemoRetry(
     ICustomHttpStatusApiClient customHttpStatusApiClient,
     KiotaHttpStatusClient kiotaHttpStatusClient

@@ -1,4 +1,6 @@
-﻿public interface IUserNameAccessor
+﻿namespace Ktt.JwtSecuredApi.Services;
+
+public interface IUserNameAccessor
 {
     string? UserName { get; }
     string? Issuer { get; }

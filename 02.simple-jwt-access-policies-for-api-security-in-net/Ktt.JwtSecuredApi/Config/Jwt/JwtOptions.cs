@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+namespace Ktt.JwtSecuredApi.Config.Jwt;
+
 public class JwtOptions
 {
     public const string SectionName = "JwtSettings";

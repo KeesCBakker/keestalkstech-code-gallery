@@ -2,6 +2,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Security.Cryptography;
 
+namespace Ktt.JwtSecuredApi.Config.Jwt;
+
 public sealed class RsaFactory : IDisposable
 {
     private readonly ConcurrentDictionary<string, RSA> _keys = new ConcurrentDictionary<string, RSA>();

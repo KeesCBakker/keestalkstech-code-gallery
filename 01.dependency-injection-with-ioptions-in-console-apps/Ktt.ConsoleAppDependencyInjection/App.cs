@@ -1,6 +1,8 @@
 ﻿using System.Globalization;
 using Microsoft.Extensions.Logging;
 
+namespace Ktt.ConsoleAppDependencyInjection;
+
 public class App(ILogger<App> _logger, AppOptions _options)
 {
     public async Task Execute(string[] args)

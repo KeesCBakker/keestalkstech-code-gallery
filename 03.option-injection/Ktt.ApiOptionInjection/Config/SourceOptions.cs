@@ -1,4 +1,6 @@
-﻿public class SourceOptions : Dictionary<string, string>
+﻿namespace Ktt.ApiOptionInjection.Config;
+
+public class SourceOptions : Dictionary<string, string>
 {
     public const string SectionName = "Sources";
 }

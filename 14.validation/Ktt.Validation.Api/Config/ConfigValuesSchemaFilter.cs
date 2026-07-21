@@ -1,8 +1,11 @@
 ﻿using System.Text.Json.Nodes;
+using Ktt.Validation.Api.Config;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation.Attributes;
 using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+
+namespace Ktt.Validation.Api.Config;
 
 /// <summary>
 /// Some fields are decorated with validation attributes. We can use configuration

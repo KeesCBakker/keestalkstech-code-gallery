@@ -2,6 +2,8 @@
 using Markdig;
 using Microsoft.OpenApi.Models;
 
+namespace Ktt.JwtSecuredApi.Config;
+
 public static class SwaggerExtensions
 {
     public static void AddSwagger(this IServiceCollection services)

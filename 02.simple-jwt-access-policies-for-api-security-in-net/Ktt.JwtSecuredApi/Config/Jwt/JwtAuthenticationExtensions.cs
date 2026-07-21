@@ -2,6 +2,8 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Options;
 
+namespace Ktt.JwtSecuredApi.Config.Jwt;
+
 public static class JwtAuthenticationExtensions
 {
     public static void AddJwtAndAccessPolicies(this IServiceCollection services)

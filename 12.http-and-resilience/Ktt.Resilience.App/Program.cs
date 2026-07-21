@@ -1,4 +1,5 @@
-﻿using Ktt.Resilience.Clients;
+﻿using Ktt.Resilience.App.Demos;
+using Ktt.Resilience.Clients;
 using Ktt.Resilience.Clients.Kiota;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;

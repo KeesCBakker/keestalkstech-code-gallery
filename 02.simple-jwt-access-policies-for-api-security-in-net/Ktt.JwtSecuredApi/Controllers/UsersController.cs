@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
+namespace Ktt.JwtSecuredApi.Controllers;
+
 [ApiController]
 [Route("api/users")]
 public class UsersController : ControllerBase

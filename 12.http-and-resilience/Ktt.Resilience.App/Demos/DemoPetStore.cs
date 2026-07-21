@@ -2,6 +2,8 @@
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
 using KiotaPetStoreClient = Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.PetStoreClient;
 
+namespace Ktt.Resilience.App.Demos;
+
 public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient)
 {
     public async Task RunAsync()

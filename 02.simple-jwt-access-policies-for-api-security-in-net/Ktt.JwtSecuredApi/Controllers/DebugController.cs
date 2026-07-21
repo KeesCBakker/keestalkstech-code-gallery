@@ -1,5 +1,8 @@
 ﻿using Ktt.JwtSecuredApi.Models;
+using Ktt.JwtSecuredApi.Services;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Ktt.JwtSecuredApi.Controllers;
 
 [ApiController]
 [Route("api/whoami")]

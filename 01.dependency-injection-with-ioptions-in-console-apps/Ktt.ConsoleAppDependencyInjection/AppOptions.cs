@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
+namespace Ktt.ConsoleAppDependencyInjection;
+
 public class AppOptions
 {
     public const string SectionName = "App";

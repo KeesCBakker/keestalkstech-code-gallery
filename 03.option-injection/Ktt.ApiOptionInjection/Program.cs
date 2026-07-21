@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Ktt.ApiOptionInjection.Config;
 using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,7 +28,7 @@ void Configure<TConfig>(string sectionName) where TConfig : class, new()
 
 // Add config to the container.
 Configure<SourceOptions>(SourceOptions.SectionName);
-Configure<SupportedLanguageOptions>(SupportedLanguageOptions.SectionName);
+Configure<SupportedLanguagesOptions>(SupportedLanguagesOptions.SectionName);
 
 // Add services to the container.
 builder.Services.AddControllers();

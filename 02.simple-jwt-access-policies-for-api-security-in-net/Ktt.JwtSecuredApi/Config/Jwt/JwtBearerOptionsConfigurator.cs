@@ -2,6 +2,8 @@
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
+namespace Ktt.JwtSecuredApi.Config.Jwt;
+
 public class JwtBearerOptionsConfigurator(JwtOptions jwtOptions, RsaFactory rsaFactory) : IPostConfigureOptions<JwtBearerOptions>
 {
     public void PostConfigure(string? name, JwtBearerOptions options)
