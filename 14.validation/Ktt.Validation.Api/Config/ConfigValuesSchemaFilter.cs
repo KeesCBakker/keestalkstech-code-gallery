@@ -1,8 +1,8 @@
 ﻿using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation.Attributes;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Nodes;
 
 /// <summary>
 /// Some fields are decorated with validation attributes. We can use configuration
@@ -18,7 +18,7 @@ public class ConfigValuesSchemaFilter(
         [typeof(EnvironmentAttribute)] = () => config.Environments,
     };
 
-    public void Apply(OpenApiSchema schema, SchemaFilterContext context)
+    public void Apply(IOpenApiSchema schema, SchemaFilterContext context)
     {
         var member = context.MemberInfo;
         if (member == null)
@@ -36,28 +36,23 @@ public class ConfigValuesSchemaFilter(
             }
 
             var schemaName = ToEnumSchemaName(attrType);
+            var enumValues = getValues().Select(v => (JsonNode)JsonValue.Create(v)).ToList();
 
             if (!context.SchemaRepository.Schemas.ContainsKey(schemaName))
             {
-                var enumValues = getValues().Select(v => new OpenApiString(v)).Cast<IOpenApiAny>().ToList();
-
                 context.SchemaRepository.Schemas[schemaName] = new OpenApiSchema
                 {
-                    Type = "string",
+                    Type = JsonSchemaType.String,
                     Enum = enumValues,
                     Title = schemaName
                 };
             }
 
-            schema.Reference = new OpenApiReference
+            if (schema is OpenApiSchema concreteSchema)
             {
-                Type = ReferenceType.Schema,
-                Id = schemaName
-            };
-
-            schema.Type = null;
-            schema.Enum = null;
-            schema.Title = null;
+                concreteSchema.Enum = enumValues;
+                concreteSchema.Type = JsonSchemaType.String;
+            }
 
             break;
         }

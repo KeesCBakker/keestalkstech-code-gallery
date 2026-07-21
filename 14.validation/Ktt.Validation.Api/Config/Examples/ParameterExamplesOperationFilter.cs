@@ -1,6 +1,6 @@
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.SwaggerGen;
+using System.Text.Json.Nodes;
 
 namespace Ktt.Validation.Api.Config.Examples;
 
@@ -15,16 +15,21 @@ public class ParameterExamplesOperationFilter : IOperationFilter
 
         foreach (var param in operation.Parameters)
         {
+            if (param.Schema is not OpenApiSchema schema)
+            {
+                continue;
+            }
+
             switch (param.Name)
             {
                 case "team":
-                    param.Schema.Example = new OpenApiString(ProvisioningExamples.Team);
+                    schema.Example = JsonValue.Create(ProvisioningExamples.Team);
                     break;
                 case "environment":
-                    param.Schema.Example = new OpenApiString(ProvisioningExamples.Environment);
+                    schema.Example = JsonValue.Create(ProvisioningExamples.Environment);
                     break;
                 case "applicationName":
-                    param.Schema.Example = new OpenApiString(ProvisioningExamples.ApplicationName);
+                    schema.Example = JsonValue.Create(ProvisioningExamples.ApplicationName);
                     break;
             }
         }

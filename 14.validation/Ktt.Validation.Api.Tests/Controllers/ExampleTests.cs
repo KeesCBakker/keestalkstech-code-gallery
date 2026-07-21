@@ -1,10 +1,9 @@
 ﻿using FluentAssertions;
-using Microsoft.OpenApi;
-using Microsoft.OpenApi.Readers;
-using Microsoft.OpenApi.Writers;
 using Provisioner.Api.UnitTests;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace Ktt.Validation.Api.Tests.Controllers;
 
@@ -16,48 +15,35 @@ public class SwaggerExampleTest
 
     static SwaggerExampleTest()
     {
-        using var stream = _client.GetStreamAsync("/swagger/v1/swagger.json").Result;
-        var openApiDoc = new OpenApiStreamReader().Read(stream, out var diagnostic);
+        var json = _client.GetStringAsync("/swagger/v1/swagger.json").Result;
+        var doc = JsonNode.Parse(json)!;
 
-        if (diagnostic.Errors.Any())
+        foreach (var (path, pathItem) in doc["paths"]!.AsObject())
         {
-            throw new Exception("Failed to parse OpenAPI: " + string.Join(", ", diagnostic.Errors.Select(e => e.Message)));
-        }
-
-        foreach (var (path, pathItem) in openApiDoc.Paths)
-        {
-            foreach (var (method, operation) in pathItem.Operations)
+            if (pathItem is not JsonObject pathObj)
             {
-                if (operation.RequestBody?.Content == null)
-                {
-                    continue;
-                }
+                continue;
+            }
 
-                if (!operation.RequestBody.Content.TryGetValue("application/json", out var jsonContent))
-                {
-                    continue;
-                }
+            foreach (var (method, operation) in pathObj)
+            {
+                var requestBody = operation?["requestBody"];
+                var content = requestBody?["content"];
+                var jsonContent = content?["application/json"];
 
                 var example =
-                    jsonContent.Example ??
-                    jsonContent.Examples?.FirstOrDefault().Value?.Value;
+                    jsonContent?["example"] ??
+                    jsonContent?["examples"]?.AsObject().FirstOrDefault().Value?["value"];
 
                 if (example == null)
                 {
                     continue;
                 }
 
-                string exampleJson;
-                using (var sw = new StringWriter())
-                {
-                    var jsonWriter = new OpenApiJsonWriter(sw);
-                    example.Write(jsonWriter, OpenApiSpecVersion.OpenApi3_0);
-                    exampleJson = sw.ToString();
-                }
+                var exampleJson = example.ToJsonString(JsonSerializerOptions.Default);
+                var key = $"{method.ToUpperInvariant()} {path}";
 
-                var key = $"{method.ToString().ToUpperInvariant()} {path}";
-
-                _exampleMap[key] = (method.ToString().ToUpperInvariant(), path, exampleJson);
+                _exampleMap[key] = (method.ToUpperInvariant(), path, exampleJson);
             }
         }
     }

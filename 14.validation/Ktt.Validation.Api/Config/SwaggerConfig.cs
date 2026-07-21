@@ -1,5 +1,5 @@
 ﻿using Ktt.Validation.Api.Config.Examples;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Swashbuckle.AspNetCore.Filters;
 using System.Reflection;
 
