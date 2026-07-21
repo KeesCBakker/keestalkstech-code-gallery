@@ -1,6 +1,6 @@
 # Dependency injection (with IOptions) in Console Apps in .NET
 
-When you are used to building web applications, you kind of get hooked to the 
+When you are used to building web applications, you kind of get hooked on the 
 ease of Dependency Injection (DI) and the way settings can be specified in a 
 JSON file and accessed through DI (``IOptions<T>``). It's only logical to 
 want the same features in your Console app.
