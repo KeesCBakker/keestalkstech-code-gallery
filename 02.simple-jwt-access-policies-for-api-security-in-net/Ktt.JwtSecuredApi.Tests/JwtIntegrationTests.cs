@@ -4,10 +4,12 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
+using System.Threading.Tasks;
 
 namespace Ktt.JwtSecuredApi.Tests;
 
-public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
+[ClassDataSource<WebApplicationFactory<Program>>(Shared = SharedType.PerClass)]
+public class JwtIntegrationTests
 {
     private readonly HttpClient _client;
 
@@ -16,40 +18,40 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
         _client = factory.CreateClient();
     }
 
-    public static TheoryData<string, string, int> TokenEndpointExpectedStatusData => new()
+    public static IEnumerable<(string Token, string Endpoint, int ExpectedStatus)> TokenEndpointExpectedStatusData()
     {
-        { Token.Service1, "/api/orders", StatusCodes.Status200OK },
-        { Token.Service2, "/api/orders", StatusCodes.Status200OK },
-        { Token.Service1, "/api/users", StatusCodes.Status403Forbidden },
-        { Token.Service2, "/api/users", StatusCodes.Status200OK },
-    };
+        yield return (Token.Service1, "/api/orders", StatusCodes.Status200OK);
+        yield return (Token.Service2, "/api/orders", StatusCodes.Status200OK);
+        yield return (Token.Service1, "/api/users", StatusCodes.Status403Forbidden);
+        yield return (Token.Service2, "/api/users", StatusCodes.Status200OK);
+    }
 
-    [Fact]
+    [Test]
     public async Task Get_Products_WithoutToken_Returns200()
     {
         var response = await _client.GetAsync("/api/products");
 
-        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
     }
 
-    [Fact]
+    [Test]
     public async Task Get_Orders_WithoutToken_Returns401()
     {
         var response = await _client.GetAsync("/api/orders");
 
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
 
-    [Fact]
+    [Test]
     public async Task Get_Users_WithoutToken_Returns401()
     {
         var response = await _client.GetAsync("/api/users");
 
-        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.Unauthorized);
     }
 
-    [Theory]
-    [MemberData(nameof(TokenEndpointExpectedStatusData))]
+    [Test]
+    [MethodDataSource(nameof(TokenEndpointExpectedStatusData))]
     public async Task Get_Endpoint_WithToken_ReturnsExpectedStatus(string token, string endpoint, int expectedStatus)
     {
         var request = new HttpRequestMessage(HttpMethod.Get, endpoint);
@@ -57,10 +59,10 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
         var response = await _client.SendAsync(request);
 
-        Assert.Equal(expectedStatus, (int)response.StatusCode);
+        await Assert.That((int)response.StatusCode).IsEqualTo(expectedStatus);
     }
 
-    [Fact]
+    [Test]
     public async Task Get_WhoAmI_WithService1Token_ReturnsUserInfo()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/api/whoami");
@@ -71,12 +73,12 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
         var body = await response.Content.ReadFromJsonAsync<WhoAmIResponse>();
 
-        Assert.NotNull(body);
-        Assert.Equal("tstusr", body.UserName);
-        Assert.Equal("service-1", body.Issuer);
+        await Assert.That(body).IsNotNull();
+        await Assert.That(body.UserName).IsEqualTo("tstusr");
+        await Assert.That(body.Issuer).IsEqualTo("service-1");
     }
 
-    [Fact]
+    [Test]
     public async Task Get_WhoAmI_WithService2Token_ReturnsUserInfo()
     {
         var request = new HttpRequestMessage(HttpMethod.Get, "/api/whoami");
@@ -87,9 +89,9 @@ public class JwtIntegrationTests : IClassFixture<WebApplicationFactory<Program>>
 
         var body = await response.Content.ReadFromJsonAsync<WhoAmIResponse>();
 
-        Assert.NotNull(body);
-        Assert.Equal("tstusr", body.UserName);
-        Assert.Equal("service-2", body.Issuer);
+        await Assert.That(body).IsNotNull();
+        await Assert.That(body.UserName).IsEqualTo("tstusr");
+        await Assert.That(body.Issuer).IsEqualTo("service-2");
     }
 
     private record WhoAmIResponse(string? UserName, string? Issuer);
