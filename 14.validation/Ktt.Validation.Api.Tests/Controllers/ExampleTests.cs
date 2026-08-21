@@ -2,20 +2,21 @@
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Nodes;
-using FluentAssertions;
 using Ktt.Validation.Api.Tests.Fixtures;
 
 namespace Ktt.Validation.Api.Tests.Controllers;
 
+[NotInParallel]
 public class SwaggerExampleTest
 {
-    private static readonly TestWebApplicationFactory _fixture = new TestWebApplicationFactory();
-    private static readonly HttpClient _client = _fixture.CreateClient();
-    private static readonly Dictionary<string, (string Method, string Path, string Json)> _exampleMap = new();
+    private static readonly Dictionary<string, (string Method, string Path, string Json)> _exampleMap = LoadExamples();
 
-    static SwaggerExampleTest()
+    private static Dictionary<string, (string Method, string Path, string Json)> LoadExamples()
     {
-        var json = _client.GetStringAsync("/swagger/v1/swagger.json").Result;
+        using var fixture = new TestWebApplicationFactory();
+        using var client = fixture.CreateClient();
+        var exampleMap = new Dictionary<string, (string Method, string Path, string Json)>();
+        var json = client.GetStringAsync("/swagger/v1/swagger.json").GetAwaiter().GetResult();
         var doc = JsonNode.Parse(json)!;
 
         foreach (var (path, pathItem) in doc["paths"]!.AsObject())
@@ -43,36 +44,38 @@ public class SwaggerExampleTest
                 var exampleJson = example.ToJsonString(JsonSerializerOptions.Default);
                 var key = $"{method.ToUpperInvariant()} {path}";
 
-                _exampleMap[key] = (method.ToUpperInvariant(), path, exampleJson);
+                exampleMap[key] = (method.ToUpperInvariant(), path, exampleJson);
             }
         }
+
+        return exampleMap;
     }
 
-    public static TheoryData<string> GetValidationEndpoints() =>
-        [.. _exampleMap.Keys
-            .Where(k => k.EndsWith("/validate"))];
+    public static IEnumerable<Func<string>> GetValidationEndpoints() =>
+        _exampleMap.Keys
+            .Where(k => k.EndsWith("/validate"))
+            .Select(name => new Func<string>(() => name));
 
-    public static TheoryData<string> GetProvisioningEndpoints() =>
-        [.. _exampleMap.Keys
-            .Where(k => k.StartsWith("POST ") && !k.EndsWith("/validate"))];
+    public static IEnumerable<Func<string>> GetProvisioningEndpoints() =>
+        _exampleMap.Keys
+            .Where(k => k.StartsWith("POST ") && !k.EndsWith("/validate"))
+            .Select(name => new Func<string>(() => name));
 
-    [Theory]
-    [MemberData(nameof(GetValidationEndpoints))]
+    [Test]
+    [MethodDataSource(nameof(GetValidationEndpoints))]
     public async Task Validate(string name)
     {
-        var response = await SendExampleRequest(name);
-        response.EnsureSuccessStatusCode();
+        await SendExampleRequest(name);
     }
 
-    [Theory]
-    [MemberData(nameof(GetProvisioningEndpoints))]
+    [Test]
+    [MethodDataSource(nameof(GetProvisioningEndpoints))]
     public async Task Provision(string name)
     {
-        var response = await SendExampleRequest(name);
-        response.EnsureSuccessStatusCode();
+        await SendExampleRequest(name);
     }
 
-    private static async Task<HttpResponseMessage> SendExampleRequest(string name)
+    private static async Task SendExampleRequest(string name)
     {
         if (!_exampleMap.TryGetValue(name, out var data))
         {
@@ -81,14 +84,16 @@ public class SwaggerExampleTest
 
         var (method, path, json) = data;
 
-        var request = new HttpRequestMessage
+        using var fixture = new TestWebApplicationFactory();
+        using var client = fixture.CreateClient();
+        using var request = new HttpRequestMessage
         {
             Method = new HttpMethod(method),
-            RequestUri = new Uri(_client.BaseAddress!, path),
+            RequestUri = new Uri(client.BaseAddress!, path),
             Content = new StringContent(json, Encoding.UTF8, new MediaTypeHeaderValue("application/json"))
         };
 
-        var response = await _client.SendAsync(request);
+        using var response = await client.SendAsync(request);
 
         if (!response.IsSuccessStatusCode)
         {
@@ -96,6 +101,6 @@ public class SwaggerExampleTest
             throw new InvalidOperationException($"Failed {method} {path}: {response.StatusCode}\n{content}");
         }
 
-        return response;
+        response.EnsureSuccessStatusCode();
     }
 }

@@ -5,11 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationByTrait;
 
-public class GenericTests
+[NotInParallel]
+[ClassDataSource<TestWebApplicationFactory>(Shared = SharedType.PerClass)]
+public class GenericTests(TestWebApplicationFactory fixture)
 {
     private readonly IDataAnnotationsValidator _validator =
-        new TestWebApplicationFactory()
-            .Services
+        fixture.Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     private static ComplexApplication CreateBaseRequest(ComplexApplicationType type) => new()
@@ -17,32 +18,32 @@ public class GenericTests
         Type = type
     };
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Require_Required_Fields(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Require_Required_Fields(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Name", "The Name field is required.");
-        errors.ShouldContain("Team", "The Team field is required.");
-        errors.ShouldContain("Cpu", "The Cpu field is required.");
-        errors.ShouldContain("Environment", "The Environment field is required.");
-        errors.ShouldContain("DockerHubRepo", "The DockerHubRepo field is required.");
-        errors.ShouldContain("ImageTag", "The ImageTag field is required.");
-        errors.ShouldContain("Ram", "The Ram field is required.");
+        await errors.ShouldContain("Name", "The Name field is required.");
+        await errors.ShouldContain("Team", "The Team field is required.");
+        await errors.ShouldContain("Cpu", "The Cpu field is required.");
+        await errors.ShouldContain("Environment", "The Environment field is required.");
+        await errors.ShouldContain("DockerHubRepo", "The DockerHubRepo field is required.");
+        await errors.ShouldContain("ImageTag", "The ImageTag field is required.");
+        await errors.ShouldContain("Ram", "The Ram field is required.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_Cpu_Format(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Reject_Invalid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -55,15 +56,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Cpu", "The field Cpu must match the regular expression '^\\d+m$'.");
+        await errors.ShouldContain("Cpu", "The field Cpu must match the regular expression '^\\d+m$'.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_Cpu_Format(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Accept_Valid_Cpu_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -76,15 +77,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Cpu");
+        await errors.ShouldNotContain("Cpu");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_DockerHubRepo(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Reject_Invalid_DockerHubRepo(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -97,15 +98,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("DockerHubRepo", "The DockerHub repository does not exist.");
+        await errors.ShouldContain("DockerHubRepo", "The DockerHub repository does not exist.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_DockerHubRepo(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Accept_Valid_DockerHubRepo(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -118,15 +119,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("DockerHubRepo");
+        await errors.ShouldNotContain("DockerHubRepo");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_Environment(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Reject_Invalid_Environment(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -138,15 +139,15 @@ public class GenericTests
         request.Environment = "blah";
 
         _validator.TryValidate(request, out var errors);
-        errors.ShouldContain("Environment", "blah is not valid or allowed. Options are: [server-one, server-two, server-three]");
+        await errors.ShouldContain("Environment", "blah is not valid or allowed. Options are: [server-one, server-two, server-three]");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_Environment(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Accept_Valid_Environment(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -159,15 +160,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Environment");
+        await errors.ShouldNotContain("Environment");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Reject_Invalid_Ram_Format(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Reject_Invalid_Ram_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -180,15 +181,15 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Ram", "The field Ram must match the regular expression '^\\d+Mi$'.");
+        await errors.ShouldContain("Ram", "The field Ram must match the regular expression '^\\d+Mi$'.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Accept_Valid_Ram_Format(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Accept_Valid_Ram_Format(ComplexApplicationType type)
     {
         var request = CreateBaseRequest(type);
         request.Name = "test";
@@ -201,6 +202,6 @@ public class GenericTests
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Ram");
+        await errors.ShouldNotContain("Ram");
     }
 }

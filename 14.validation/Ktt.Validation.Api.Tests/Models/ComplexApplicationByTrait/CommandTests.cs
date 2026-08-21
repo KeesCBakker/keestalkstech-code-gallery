@@ -5,11 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationByTrait;
 
-public class CommandTests
+[NotInParallel]
+[ClassDataSource<TestWebApplicationFactory>(Shared = SharedType.PerClass)]
+public class CommandTests(TestWebApplicationFactory fixture)
 {
     private readonly IDataAnnotationsValidator _validator =
-        new TestWebApplicationFactory()
-            .Services
+        fixture.Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     private static ComplexApplication CreateDefaultRequestForType(ComplexApplicationType type)
@@ -29,55 +30,55 @@ public class CommandTests
         };
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Disallow_Script_Command_Without_Tini(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Disallow_Script_Command_Without_Tini(ComplexApplicationType type)
     {
         var request = CreateDefaultRequestForType(type);
         request.Command = "/app/start.sh";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Command", "Script files (.sh) may only be executed when tini is used.");
+        await errors.ShouldContain("Command", "Script files (.sh) may only be executed when tini is used.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Allow_Script_Command_With_Tini(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Allow_Script_Command_With_Tini(ComplexApplicationType type)
     {
         var request = CreateDefaultRequestForType(type);
         request.Command = "tini /app/start.sh";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Command");
+        await errors.ShouldNotContain("Command");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Allow_NonScript_Command_For_CommandTypes(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Allow_NonScript_Command_For_CommandTypes(ComplexApplicationType type)
     {
         var request = CreateDefaultRequestForType(type);
         request.Command = "dotnet run /app/main.dll";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Command");
+        await errors.ShouldNotContain("Command");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.CronJob)]
-    public void Should_Not_Allow_Command_For_Types_Without_Command(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.CronJob)]
+    public async Task Should_Not_Allow_Command_For_Types_Without_Command(ComplexApplicationType type)
     {
         var request = CreateDefaultRequestForType(type);
         request.Command = "dotnet run /app/service.dll";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Command", "Command must be empty.");
+        await errors.ShouldContain("Command", "Command must be empty.");
     }
 }

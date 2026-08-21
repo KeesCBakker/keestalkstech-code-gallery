@@ -13,7 +13,11 @@ public class TestWebApplicationFactory : WebApplicationFactory<Program>
 
     public TestServiceOverrides Mocks { get; } = new();
 
-    public TestWebApplicationFactory(Action<IServiceCollection>? overrides = null)
+    public TestWebApplicationFactory()
+    {
+    }
+
+    public TestWebApplicationFactory(Action<IServiceCollection> overrides)
     {
         _overrides = overrides;
     }

@@ -5,11 +5,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Ktt.Validation.Api.Tests.Models.ComplexApplicationByTrait;
 
-public class ScheduleTests
+[NotInParallel]
+[ClassDataSource<TestWebApplicationFactory>(Shared = SharedType.PerClass)]
+public class ScheduleTests(TestWebApplicationFactory fixture)
 {
     private readonly IDataAnnotationsValidator _validator =
-        new TestWebApplicationFactory()
-            .Services
+        fixture.Services
             .GetRequiredService<IDataAnnotationsValidator>();
 
     private static ComplexApplication CreateRequest(ComplexApplicationType type)
@@ -29,55 +30,55 @@ public class ScheduleTests
         };
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Fail_When_Schedule_Is_Empty(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Fail_When_Schedule_Is_Empty(ComplexApplicationType type)
     {
         var request = CreateRequest(type);
         request.Schedule = string.Empty;
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Schedule", "Schedule must not be empty.");
+        await errors.ShouldContain("Schedule", "Schedule must not be empty.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Fail_When_Schedule_Is_Invalid(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Fail_When_Schedule_Is_Invalid(ComplexApplicationType type)
     {
         var request = CreateRequest(type);
         request.Schedule = "this is not a cron";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Schedule", "Schedule must be a valid cron expression.");
+        await errors.ShouldContain("Schedule", "Schedule must be a valid cron expression.");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.CronJob)]
-    [InlineData(ComplexApplicationType.CronJobWithCommand)]
-    public void Should_Pass_When_Schedule_Is_Valid(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.CronJob)]
+    [Arguments(ComplexApplicationType.CronJobWithCommand)]
+    public async Task Should_Pass_When_Schedule_Is_Valid(ComplexApplicationType type)
     {
         var request = CreateRequest(type);
         request.Schedule = "*/5 * * * *";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldNotContain("Schedule");
+        await errors.ShouldNotContain("Schedule");
     }
 
-    [Theory]
-    [InlineData(ComplexApplicationType.Application)]
-    [InlineData(ComplexApplicationType.ApplicationWithCommand)]
-    public void Should_Fail_When_Schedule_Is_Provided(ComplexApplicationType type)
+    [Test]
+    [Arguments(ComplexApplicationType.Application)]
+    [Arguments(ComplexApplicationType.ApplicationWithCommand)]
+    public async Task Should_Fail_When_Schedule_Is_Provided(ComplexApplicationType type)
     {
         var request = CreateRequest(type);
         request.Schedule = "*/5 * * * *";
 
         _validator.TryValidate(request, out var errors);
 
-        errors.ShouldContain("Schedule");
+        await errors.ShouldContain("Schedule");
     }
 }

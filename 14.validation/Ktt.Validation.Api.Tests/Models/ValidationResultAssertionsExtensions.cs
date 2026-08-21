@@ -4,40 +4,35 @@ namespace Ktt.Validation.Api.Tests.Models;
 
 public static class ValidationResultAssertionsExtensions
 {
-    public static void ShouldBeValid(this IEnumerable<ValidationResult> errors)
+    public static async Task ShouldBeValid(this IEnumerable<ValidationResult> errors)
     {
         var length = errors.Count();
 
         var formatted = string.Join("\n", errors.Select(e =>
             $" - {string.Join(", ", e.MemberNames)}: {e.ErrorMessage}"));
 
-        Assert.True(length == 0, "There should be no validation errors, but found:\n" + formatted);
+        await Assert.That(length).IsEqualTo(0)
+            .Because("There should be no validation errors, but found:\n" + formatted);
     }
 
-    public static void ShouldContain(
+    public static async Task ShouldContain(
         this IEnumerable<ValidationResult> errors,
         string memberName,
         string? expectedMessage = null)
     {
         var matchFound = Matches(errors, memberName, expectedMessage);
-        Assert.True(matchFound, BuildFailureMessage(
-            memberName,
-            expectedMessage,
-            isContainCheck: true,
-            errors));
+        await Assert.That(matchFound).IsTrue().Because(BuildFailureMessage(
+            memberName, expectedMessage, isContainCheck: true, errors));
     }
 
-    public static void ShouldNotContain(
+    public static async Task ShouldNotContain(
         this IEnumerable<ValidationResult> errors,
         string memberName,
         string? expectedMessage = null)
     {
         var matchFound = Matches(errors, memberName, expectedMessage);
-        Assert.False(matchFound, BuildFailureMessage(
-            memberName,
-            expectedMessage,
-            isContainCheck: false,
-            errors));
+        await Assert.That(matchFound).IsFalse().Because(BuildFailureMessage(
+            memberName, expectedMessage, isContainCheck: false, errors));
     }
 
     private static bool Matches(
