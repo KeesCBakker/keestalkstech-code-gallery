@@ -14,6 +14,11 @@ namespace Ktt.Resilience.Tests;
 
 public class HttpClientTests
 {
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
     [Test]
     public async Task KiotaPetStoreClientWithMockedObjects()
     {
@@ -41,10 +46,7 @@ public class HttpClientTests
             }
         };
 
-        var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-        serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-
-        var jsonData = JsonSerializer.Serialize(pets, serializerOptions);
+        var jsonData = JsonSerializer.Serialize(pets, SerializerOptions);
 
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
