@@ -359,4 +359,4 @@ appsettings.Local.json
 
 # Local test artifacts
 /tmp/
-
+/TestResults/
