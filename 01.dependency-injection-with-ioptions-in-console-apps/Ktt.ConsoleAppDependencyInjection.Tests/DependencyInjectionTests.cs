@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using System.ComponentModel.DataAnnotations;
+using System.Threading.Tasks;
 
 namespace Ktt.ConsoleAppDependencyInjection.Tests;
 
@@ -58,29 +59,29 @@ public class DependencyInjectionTests
         return services.BuildServiceProvider();
     }
 
-    [Fact]
-    public void Services_ResolveApp()
+    [Test]
+    public async Task Services_ResolveApp()
     {
         using var provider = BuildServiceProvider("Hello {0}!");
 
         var app = provider.GetRequiredService<App>();
 
-        Assert.NotNull(app);
+        await Assert.That(app).IsNotNull();
     }
 
-    [Fact]
-    public void Services_ResolveAppOptions()
+    [Test]
+    public async Task Services_ResolveAppOptions()
     {
         using var provider = BuildServiceProvider("Hi {0}!");
 
         var options = provider.GetRequiredService<AppOptions>();
 
-        Assert.NotNull(options);
-        Assert.Equal("Hi {0}!", options.Greeting);
+        await Assert.That(options).IsNotNull();
+        await Assert.That(options.Greeting).IsEqualTo("Hi {0}!");
     }
 
-    [Fact]
-    public void Services_WithValidConfig_ResolvesCorrectly()
+    [Test]
+    public async Task Services_WithValidConfig_ResolvesCorrectly()
     {
         using var provider = BuildServiceProvider("Test {0}!");
 
@@ -88,31 +89,29 @@ public class DependencyInjectionTests
         var options = provider.GetRequiredService<AppOptions>();
         var logger = provider.GetRequiredService<ILogger<App>>();
 
-        Assert.NotNull(app);
-        Assert.NotNull(options);
-        Assert.NotNull(logger);
-        Assert.Equal("Test {0}!", options.Greeting);
+        await Assert.That(app).IsNotNull();
+        await Assert.That(options).IsNotNull();
+        await Assert.That(logger).IsNotNull();
+        await Assert.That(options.Greeting).IsEqualTo("Test {0}!");
     }
 
-    [Fact]
-    public void Services_WithMissingGreeting_ThrowsValidationException()
+    [Test]
+    public async Task Services_WithMissingGreeting_ThrowsValidationException()
     {
         using var provider = BuildServiceProvider(greeting: null);
 
-        var ex = Assert.Throws<OptionsValidationException>(() =>
-            provider.GetRequiredService<AppOptions>()
-        );
+        var ex = await Assert.That(() =>
+            provider.GetRequiredService<AppOptions>()).Throws<OptionsValidationException>();
 
-        Assert.Contains(nameof(AppOptions.Greeting), ex.Message);
+        await Assert.That(ex!.Message).Contains(nameof(AppOptions.Greeting));
     }
 
-    [Fact]
-    public void Services_WithMissingGreeting_AppResolutionThrows()
+    [Test]
+    public async Task Services_WithMissingGreeting_AppResolutionThrows()
     {
         using var provider = BuildServiceProvider(greeting: null);
 
-        Assert.Throws<OptionsValidationException>(() =>
-            provider.GetRequiredService<App>()
-        );
+        await Assert.That(() =>
+            provider.GetRequiredService<App>()).Throws<OptionsValidationException>();
     }
 }

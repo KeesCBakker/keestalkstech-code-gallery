@@ -1,12 +1,13 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Ktt.ConsoleAppDependencyInjection;
+using System.Threading.Tasks;
 
 namespace Ktt.ConsoleAppDependencyInjection.Tests;
 
 public class AppOptionsTests
 {
-    [Fact]
-    public void AppOptions_WithValidGreeting_PassesValidation()
+    [Test]
+    public async Task AppOptions_WithValidGreeting_PassesValidation()
     {
         var options = new AppOptions { Greeting = "Hello {0}!" };
         var context = new ValidationContext(options);
@@ -14,12 +15,12 @@ public class AppOptionsTests
 
         var isValid = Validator.TryValidateObject(options, context, results, validateAllProperties: true);
 
-        Assert.True(isValid);
-        Assert.Empty(results);
+        await Assert.That(isValid).IsTrue();
+        await Assert.That(results).IsEmpty();
     }
 
-    [Fact]
-    public void AppOptions_WithEmptyGreeting_FailsValidation()
+    [Test]
+    public async Task AppOptions_WithEmptyGreeting_FailsValidation()
     {
         var options = new AppOptions { Greeting = string.Empty };
         var context = new ValidationContext(options);
@@ -27,12 +28,12 @@ public class AppOptionsTests
 
         var isValid = Validator.TryValidateObject(options, context, results, validateAllProperties: true);
 
-        Assert.False(isValid);
-        Assert.Contains(results, r => r.MemberNames.Contains(nameof(AppOptions.Greeting)));
+        await Assert.That(isValid).IsFalse();
+        await Assert.That(results).Contains(r => r.MemberNames.Contains(nameof(AppOptions.Greeting)));
     }
 
-    [Fact]
-    public void AppOptions_WithWhitespaceGreeting_FailsValidation()
+    [Test]
+    public async Task AppOptions_WithWhitespaceGreeting_FailsValidation()
     {
         var options = new AppOptions { Greeting = "   " };
         var context = new ValidationContext(options);
@@ -40,12 +41,12 @@ public class AppOptionsTests
 
         var isValid = Validator.TryValidateObject(options, context, results, validateAllProperties: true);
 
-        Assert.False(isValid);
+        await Assert.That(isValid).IsFalse();
     }
 
-    [Fact]
-    public void AppOptions_HasCorrectSectionName()
+    [Test]
+    public async Task AppOptions_HasCorrectSectionName()
     {
-        Assert.Equal("App", AppOptions.SectionName);
+        await Assert.That(AppOptions.SectionName).IsEqualTo("App");
     }
 }
