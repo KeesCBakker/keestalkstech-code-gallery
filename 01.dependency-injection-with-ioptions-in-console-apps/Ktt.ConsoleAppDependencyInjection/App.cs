@@ -3,19 +3,19 @@ using Microsoft.Extensions.Logging;
 
 namespace Ktt.ConsoleAppDependencyInjection;
 
-public class App(ILogger<App> _logger, AppOptions _options)
+public class App(ILogger<App> logger, AppOptions options)
 {
     public async Task Execute(string[] args)
     {
         var name = args.Length == 0 ? "World" : args[0];
 
-        _logger.LogInformation("Starting...");
-        var greeting = string.Format(CultureInfo.CurrentCulture, _options.Greeting, name);
-        _logger.LogDebug("Greeting: {Greeting}", greeting);
+        logger.LogInformation("Starting...");
+        var greeting = string.Format(CultureInfo.CurrentCulture, options.Greeting, name);
+        logger.LogDebug("Greeting: {Greeting}", greeting);
 
         Console.WriteLine(greeting);
 
-        _logger.LogInformation("Finished!");
+        logger.LogInformation("Finished!");
 
         await Task.CompletedTask;
     }
