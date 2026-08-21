@@ -14,19 +14,19 @@ public class JsonTemplateGenerator : IJsonTemplateGenerator
         Handlebars.Configuration.ObjectDescriptorProviders.Add(new FlaggedEnumObjectDescriptorProvider());
     }
 
-    public HandlebarsTemplate<object, object> Compile(string template) => Handlebars.Compile(template);
+    public HandlebarsTemplate<object, object> Compile(string templateSource) => Handlebars.Compile(templateSource);
 
-    public string Parse(string template, object input)
+    public string Parse(string templateSource, object input)
     {
-        var t = Compile(template);
+        var t = Compile(templateSource);
         var json = t(input);
         Deserialize(json);
         return json;
     }
 
-    public dynamic? ParseToObject(string template, object input)
+    public dynamic? ParseToObject(string templateSource, object input)
     {
-        var t = Compile(template);
+        var t = Compile(templateSource);
         var json = t(input);
         return Deserialize(json);
     }

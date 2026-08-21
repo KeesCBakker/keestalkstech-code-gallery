@@ -6,9 +6,9 @@ public interface IJsonTemplateGenerator
 {
     IHandlebars Handlebars { get; }
 
-    HandlebarsTemplate<object, object> Compile(string template);
+    HandlebarsTemplate<object, object> Compile(string templateSource);
 
-    string Parse(string template, object input);
+    string Parse(string templateSource, object input);
 
-    dynamic? ParseToObject(string template, object input);
+    dynamic? ParseToObject(string templateSource, object input);
 }
