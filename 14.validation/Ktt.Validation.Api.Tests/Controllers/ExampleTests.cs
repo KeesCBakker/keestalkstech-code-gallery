@@ -53,12 +53,12 @@ public class SwaggerExampleTest
 
     public static IEnumerable<Func<string>> GetValidationEndpoints() =>
         _exampleMap.Keys
-            .Where(k => k.EndsWith("/validate"))
+            .Where(k => k.EndsWith("/validate", StringComparison.Ordinal))
             .Select(name => new Func<string>(() => name));
 
     public static IEnumerable<Func<string>> GetProvisioningEndpoints() =>
         _exampleMap.Keys
-            .Where(k => k.StartsWith("POST ") && !k.EndsWith("/validate"))
+            .Where(k => k.StartsWith("POST ", StringComparison.Ordinal) && !k.EndsWith("/validate", StringComparison.Ordinal))
             .Select(name => new Func<string>(() => name));
 
     [Test]

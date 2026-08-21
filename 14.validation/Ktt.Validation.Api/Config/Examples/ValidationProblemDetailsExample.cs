@@ -5,10 +5,13 @@ namespace Ktt.Validation.Api.Config.Examples;
 
 public class ValidationProblemDetailsExample : IExamplesProvider<ValidationProblemDetails>
 {
+    private static readonly string[] Field1Errors = ["Field1 must be empty."];
+    private static readonly string[] Field2Errors = ["Field2 must exist."];
+
     public ValidationProblemDetails GetExamples() => new(new Dictionary<string, string[]>
     {
-        { "Field1", new[] { "Field1 must be empty." } },
-        { "Field2", new[] { "Field2 must exist." } }
+        { "Field1", Field1Errors },
+        { "Field2", Field2Errors }
     })
     {
         Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
