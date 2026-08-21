@@ -64,7 +64,7 @@ public class ConfigValuesSchemaFilter(
     {
         const string suffix = "Attribute";
         var name = attributeType.Name;
-        return name.EndsWith(suffix)
+        return name.EndsWith(suffix, StringComparison.Ordinal)
             ? name[..^suffix.Length] + "Enum"
             : name + "Enum";
     }

@@ -2,6 +2,7 @@
 using System.Net.Http.Json;
 using Ktt.Docker.Todo.Api.Models;
 using Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
+using System.Threading.Tasks;
 
 namespace Ktt.Docker.Todo.Api.Tests.Controllers;
 
@@ -9,19 +10,19 @@ public abstract class TodoControllerTestsBase(TestApplicationFactory factory)
 {
     protected HttpClient Client { get; } = factory.CreateClient();
 
-    [Fact]
+    [Test]
     public async Task Can_Create_Todo()
     {
         var response = await Client.PostAsJsonAsync("/api/todos", "Buy milk");
         response.EnsureSuccessStatusCode();
 
         var created = await response.Content.ReadFromJsonAsync<TodoItem>();
-        Assert.NotNull(created);
-        Assert.Equal("Buy milk", created!.Title);
-        Assert.False(created.Completed);
+        await Assert.That(created).IsNotNull();
+        await Assert.That(created!.Title).IsEqualTo("Buy milk");
+        await Assert.That(created.Completed).IsFalse();
     }
 
-    [Fact]
+    [Test]
     public async Task Can_Get_Todo()
     {
         var created = await CreateTodoAsync("Buy milk");
@@ -30,51 +31,51 @@ public abstract class TodoControllerTestsBase(TestApplicationFactory factory)
         response.EnsureSuccessStatusCode();
 
         var fetched = await response.Content.ReadFromJsonAsync<TodoItem>();
-        Assert.Equal(created.Id, fetched!.Id);
-        Assert.Equal(created.Title, fetched.Title);
+        await Assert.That(fetched!.Id).IsEqualTo(created.Id);
+        await Assert.That(fetched.Title).IsEqualTo(created.Title);
     }
 
-    [Fact]
+    [Test]
     public async Task Can_Update_Text()
     {
         var created = await CreateTodoAsync("Buy milk");
 
         var newText = "Buy oat milk";
         var updateResponse = await Client.PutAsJsonAsync($"/api/todos/{created.Id}/text", newText);
-        Assert.Equal(HttpStatusCode.NoContent, updateResponse.StatusCode);
+        await Assert.That(updateResponse.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
 
         var updated = await Client.GetFromJsonAsync<TodoItem>($"/api/todos/{created.Id}");
-        Assert.Equal(newText, updated!.Title);
+        await Assert.That(updated!.Title).IsEqualTo(newText);
     }
 
-    [Fact]
+    [Test]
     public async Task Can_Check_And_Uncheck_Todo()
     {
         var created = await CreateTodoAsync("Buy milk");
 
         var checkResponse = await Client.PutAsJsonAsync($"/api/todos/{created.Id}/check", true);
-        Assert.Equal(HttpStatusCode.NoContent, checkResponse.StatusCode);
+        await Assert.That(checkResponse.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
 
         var checkedItem = await Client.GetFromJsonAsync<TodoItem>($"/api/todos/{created.Id}");
-        Assert.True(checkedItem!.Completed);
+        await Assert.That(checkedItem!.Completed).IsTrue();
 
         var uncheckResponse = await Client.PutAsJsonAsync($"/api/todos/{created.Id}/check", false);
-        Assert.Equal(HttpStatusCode.NoContent, uncheckResponse.StatusCode);
+        await Assert.That(uncheckResponse.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
 
         var uncheckedItem = await Client.GetFromJsonAsync<TodoItem>($"/api/todos/{created.Id}");
-        Assert.False(uncheckedItem!.Completed);
+        await Assert.That(uncheckedItem!.Completed).IsFalse();
     }
 
-    [Fact]
+    [Test]
     public async Task Can_Delete_Todo()
     {
         var created = await CreateTodoAsync("Buy milk");
 
         var deleteResponse = await Client.DeleteAsync($"/api/todos/{created.Id}");
-        Assert.Equal(HttpStatusCode.NoContent, deleteResponse.StatusCode);
+        await Assert.That(deleteResponse.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
 
         var finalGet = await Client.GetAsync($"/api/todos/{created.Id}");
-        Assert.Equal(HttpStatusCode.NotFound, finalGet.StatusCode);
+        await Assert.That(finalGet.StatusCode).IsEqualTo(HttpStatusCode.NotFound);
     }
 
     private async Task<TodoItem> CreateTodoAsync(string title)

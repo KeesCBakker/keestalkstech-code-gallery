@@ -2,15 +2,17 @@
 using Ktt.Docker.Todo.Api.Services;
 using Microsoft.Extensions.DependencyInjection;
 using StackExchange.Redis;
+using TUnit.Core.Interfaces;
 
 using IContainer = DotNet.Testcontainers.Containers.IContainer;
+using System.Threading.Tasks;
 
 namespace Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 
-public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncLifetime
+public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncInitializer, IAsyncDisposable
 {
-    private IContainer _valkeyContainer = null!;
-    private IConnectionMultiplexer _redis = null!;
+    private IContainer? _valkeyContainer;
+    private ConnectionMultiplexer? _redis;
 
     public async Task InitializeAsync()
     {
@@ -32,20 +34,30 @@ public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncL
     {
         RemoveService<ITodoRepository>(services);
 
-        services.AddSingleton(_ => _redis);
+        services.AddSingleton<IConnectionMultiplexer>(_ => _redis!);
         services.AddSingleton<ITodoRepository, ValkeyTodoRepository>();
     }
 
     public override async ValueTask DisposeAsync()
     {
-        await _redis.CloseAsync();
-        await _valkeyContainer.DisposeAsync();
+        try
+        {
+            if (_redis is not null)
+            {
+                await _redis.CloseAsync();
+                _redis.Dispose();
+            }
+        }
+        finally
+        {
+            if (_valkeyContainer is not null)
+            {
+                await _valkeyContainer.DisposeAsync();
+            }
 
-        await base.DisposeAsync();
+            await base.DisposeAsync();
+            GC.SuppressFinalize(this);
+        }
     }
 
-    async Task IAsyncLifetime.DisposeAsync()
-    {
-        await DisposeAsync();
-    }
 }

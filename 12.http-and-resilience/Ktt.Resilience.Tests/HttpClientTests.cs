@@ -1,7 +1,6 @@
 ﻿using System.Net;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using FluentAssertions;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Models;
 using Ktt.Resilience.Clients.Kiota.HttpClients.PetStore.Pet.FindByStatus;
@@ -15,7 +14,12 @@ namespace Ktt.Resilience.Tests;
 
 public class HttpClientTests
 {
-    [Fact]
+    private static readonly JsonSerializerOptions SerializerOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter(JsonNamingPolicy.CamelCase) }
+    };
+
+    [Test]
     public async Task KiotaPetStoreClientWithMockedObjects()
     {
         // arrange
@@ -42,10 +46,7 @@ public class HttpClientTests
             }
         };
 
-        var serializerOptions = new JsonSerializerOptions(JsonSerializerDefaults.Web);
-        serializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.CamelCase));
-
-        var jsonData = JsonSerializer.Serialize(pets, serializerOptions);
+        var jsonData = JsonSerializer.Serialize(pets, SerializerOptions);
 
         var mockHttp = new MockHttpMessageHandler();
         mockHttp
@@ -66,17 +67,17 @@ public class HttpClientTests
         });
 
         // assert
-        result.Should().NotBeNull();
-        result.Count.Should().Be(2);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result).Count().IsEqualTo(2);
 
-        result[0].Id.Should().Be(42);
-        result[0].Name.Should().Be("Bandit Heeler");
+        await Assert.That(result[0].Id).IsEqualTo(42);
+        await Assert.That(result[0].Name).IsEqualTo("Bandit Heeler");
 
-        result[1].Id.Should().Be(1337);
-        result[1].Name.Should().Be("Scooby-Doo");
+        await Assert.That(result[1].Id).IsEqualTo(1337);
+        await Assert.That(result[1].Name).IsEqualTo("Scooby-Doo");
     }
 
-    [Fact]
+    [Test]
     public async Task KiotaPetStoreClientWithString()
     {
         // arrange
@@ -119,17 +120,17 @@ public class HttpClientTests
         });
 
         // assert
-        result.Should().NotBeNull();
-        result.Count.Should().Be(2);
+        await Assert.That(result).IsNotNull();
+        await Assert.That(result).Count().IsEqualTo(2);
 
-        result[0].Id.Should().Be(42);
-        result[0].Name.Should().Be("Bandit Heeler");
+        await Assert.That(result[0].Id).IsEqualTo(42);
+        await Assert.That(result[0].Name).IsEqualTo("Bandit Heeler");
 
-        result[1].Id.Should().Be(1337);
-        result[1].Name.Should().Be("Scooby-Doo");
+        await Assert.That(result[1].Id).IsEqualTo(1337);
+        await Assert.That(result[1].Name).IsEqualTo("Scooby-Doo");
     }
 
-    [Fact]
+    [Test]
     public async Task KiotaPetStoreMockedClient()
     {
         // arrange
@@ -187,17 +188,20 @@ public class HttpClientTests
         });
 
         // assert
-        availablePets.Should().HaveCount(1);
-        availablePets[0].Id.Should().Be(42);
+        await Assert.That(availablePets).IsNotNull();
+        await Assert.That(availablePets!).Count().IsEqualTo(1);
+        await Assert.That(availablePets[0].Id).IsEqualTo(42);
 
-        pendingPets.Should().HaveCount(1);
-        pendingPets[0].Id.Should().Be(1337);
+        await Assert.That(pendingPets).IsNotNull();
+        await Assert.That(pendingPets!).Count().IsEqualTo(1);
+        await Assert.That(pendingPets[0].Id).IsEqualTo(1337);
 
-        soldPets.Should().HaveCount(1);
-        soldPets[0].Id.Should().Be(1950);
+        await Assert.That(soldPets).IsNotNull();
+        await Assert.That(soldPets!).Count().IsEqualTo(1);
+        await Assert.That(soldPets[0].Id).IsEqualTo(1950);
     }
 
-    [Fact]
+    [Test]
     public async Task KiotaPetStoreDependencyInjection()
     {
         // arrange
@@ -229,7 +233,8 @@ public class HttpClientTests
         });
 
         // assert
-        availablePets.Should().HaveCount(1);
-        availablePets[0].Id.Should().Be(42);
+        await Assert.That(availablePets).IsNotNull();
+        await Assert.That(availablePets!).Count().IsEqualTo(1);
+        await Assert.That(availablePets[0].Id).IsEqualTo(42);
     }
 }

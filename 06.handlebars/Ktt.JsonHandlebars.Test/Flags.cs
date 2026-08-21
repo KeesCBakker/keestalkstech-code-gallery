@@ -1,4 +1,6 @@
-﻿namespace Ktt.JsonHandlebars.Test;
+﻿using System.Threading.Tasks;
+
+namespace Ktt.JsonHandlebars.Test;
 
 public class Flags
 {
@@ -15,8 +17,8 @@ public class Flags
         All = Pizza | Fries | Pancakes | Meatballs | Pasta | StuffWithP
     };
 
-    [Fact]
-    public void Test()
+    [Test]
+    public async Task Test()
     {
         var order = new
         {
@@ -42,7 +44,7 @@ public class Flags
     ""orders"": ""Pizza, Pancakes""
 }".Replace("\r", "");
 
-        Assert.Equivalent(expected, json);
+        await Assert.That(json).IsEqualTo(expected);
     }
 
 }

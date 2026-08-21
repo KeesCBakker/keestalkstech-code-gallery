@@ -1,94 +1,96 @@
-﻿namespace Ktt.RomanNumerals.Test;
+﻿using System.Threading.Tasks;
+
+namespace Ktt.RomanNumerals.Test;
 
 public class ClassicRomanNumeralTests
 {
-    [Fact]
-    public void RomanNumeral_ToString_FullNotation()
+    [Test]
+    public async Task RomanNumeral_ToString_FullNotation()
     {
-        Assert.Equivalent("I", new RomanNumeral(1).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("II", new RomanNumeral(2).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("III", new RomanNumeral(3).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("IIII", new RomanNumeral(4).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("V", new RomanNumeral(5).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("VI", new RomanNumeral(6).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("VII", new RomanNumeral(7).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("VIII", new RomanNumeral(8).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("VIIII", new RomanNumeral(9).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("X", new RomanNumeral(10).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("XI", new RomanNumeral(11).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("XVIII", new RomanNumeral(18).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("XVIIII", new RomanNumeral(19).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("CXVIII", new RomanNumeral(118).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("CXVIIII", new RomanNumeral(119).ToString(RomanNumeralNotation.Additive));
+        await Assert.That(new RomanNumeral(1).ToString(RomanNumeralNotation.Additive)).IsEqualTo("I");
+        await Assert.That(new RomanNumeral(2).ToString(RomanNumeralNotation.Additive)).IsEqualTo("II");
+        await Assert.That(new RomanNumeral(3).ToString(RomanNumeralNotation.Additive)).IsEqualTo("III");
+        await Assert.That(new RomanNumeral(4).ToString(RomanNumeralNotation.Additive)).IsEqualTo("IIII");
+        await Assert.That(new RomanNumeral(5).ToString(RomanNumeralNotation.Additive)).IsEqualTo("V");
+        await Assert.That(new RomanNumeral(6).ToString(RomanNumeralNotation.Additive)).IsEqualTo("VI");
+        await Assert.That(new RomanNumeral(7).ToString(RomanNumeralNotation.Additive)).IsEqualTo("VII");
+        await Assert.That(new RomanNumeral(8).ToString(RomanNumeralNotation.Additive)).IsEqualTo("VIII");
+        await Assert.That(new RomanNumeral(9).ToString(RomanNumeralNotation.Additive)).IsEqualTo("VIIII");
+        await Assert.That(new RomanNumeral(10).ToString(RomanNumeralNotation.Additive)).IsEqualTo("X");
+        await Assert.That(new RomanNumeral(11).ToString(RomanNumeralNotation.Additive)).IsEqualTo("XI");
+        await Assert.That(new RomanNumeral(18).ToString(RomanNumeralNotation.Additive)).IsEqualTo("XVIII");
+        await Assert.That(new RomanNumeral(19).ToString(RomanNumeralNotation.Additive)).IsEqualTo("XVIIII");
+        await Assert.That(new RomanNumeral(118).ToString(RomanNumeralNotation.Additive)).IsEqualTo("CXVIII");
+        await Assert.That(new RomanNumeral(119).ToString(RomanNumeralNotation.Additive)).IsEqualTo("CXVIIII");
 
-        Assert.Equivalent("NULLA", new RomanNumeral(0).ToString(RomanNumeralNotation.Additive));
+        await Assert.That(new RomanNumeral(0).ToString(RomanNumeralNotation.Additive)).IsEqualTo("NULLA");
     }
 
-    [Fact]
-    public void RomanNumeral_ToString_SubtractiveNotation()
+    [Test]
+    public async Task RomanNumeral_ToString_SubtractiveNotation()
     {
-        Assert.Equivalent("I", new RomanNumeral(1).ToString());
-        Assert.Equivalent("II", new RomanNumeral(2).ToString());
-        Assert.Equivalent("III", new RomanNumeral(3).ToString());
-        Assert.Equivalent("IV", new RomanNumeral(4).ToString());
-        Assert.Equivalent("V", new RomanNumeral(5).ToString());
-        Assert.Equivalent("VI", new RomanNumeral(6).ToString());
-        Assert.Equivalent("VII", new RomanNumeral(7).ToString());
-        Assert.Equivalent("VIII", new RomanNumeral(8).ToString());
-        Assert.Equivalent("IX", new RomanNumeral(9).ToString());
-        Assert.Equivalent("X", new RomanNumeral(10).ToString());
-        Assert.Equivalent("XI", new RomanNumeral(11).ToString());
-        Assert.Equivalent("XVIII", new RomanNumeral(18).ToString());
-        Assert.Equivalent("XIX", new RomanNumeral(19).ToString());
-        Assert.Equivalent("CXVIII", new RomanNumeral(118).ToString());
-        Assert.Equivalent("CXIX", new RomanNumeral(119).ToString());
+        await Assert.That(new RomanNumeral(1).ToString()).IsEqualTo("I");
+        await Assert.That(new RomanNumeral(2).ToString()).IsEqualTo("II");
+        await Assert.That(new RomanNumeral(3).ToString()).IsEqualTo("III");
+        await Assert.That(new RomanNumeral(4).ToString()).IsEqualTo("IV");
+        await Assert.That(new RomanNumeral(5).ToString()).IsEqualTo("V");
+        await Assert.That(new RomanNumeral(6).ToString()).IsEqualTo("VI");
+        await Assert.That(new RomanNumeral(7).ToString()).IsEqualTo("VII");
+        await Assert.That(new RomanNumeral(8).ToString()).IsEqualTo("VIII");
+        await Assert.That(new RomanNumeral(9).ToString()).IsEqualTo("IX");
+        await Assert.That(new RomanNumeral(10).ToString()).IsEqualTo("X");
+        await Assert.That(new RomanNumeral(11).ToString()).IsEqualTo("XI");
+        await Assert.That(new RomanNumeral(18).ToString()).IsEqualTo("XVIII");
+        await Assert.That(new RomanNumeral(19).ToString()).IsEqualTo("XIX");
+        await Assert.That(new RomanNumeral(118).ToString()).IsEqualTo("CXVIII");
+        await Assert.That(new RomanNumeral(119).ToString()).IsEqualTo("CXIX");
 
-        Assert.Equivalent("NULLA", new RomanNumeral(0).ToString());
+        await Assert.That(new RomanNumeral(0).ToString()).IsEqualTo("NULLA");
     }
 
-    [Fact]
-    public void RomanNumeral_Parse_ClassicNotation()
+    [Test]
+    public async Task RomanNumeral_Parse_ClassicNotation()
     {
-        Assert.Equivalent(1, RomanNumeral.Parse("I").Number);
-        Assert.Equivalent(2, RomanNumeral.Parse("II").Number);
-        Assert.Equivalent(3, RomanNumeral.Parse("III").Number);
-        Assert.Equivalent(4, RomanNumeral.Parse("IIII").Number);
-        Assert.Equivalent(5, RomanNumeral.Parse("V").Number);
-        Assert.Equivalent(6, RomanNumeral.Parse("VI").Number);
-        Assert.Equivalent(7, RomanNumeral.Parse("VII").Number);
-        Assert.Equivalent(8, RomanNumeral.Parse("VIII").Number);
-        Assert.Equivalent(9, RomanNumeral.Parse("VIIII").Number);
-        Assert.Equivalent(10, RomanNumeral.Parse("X").Number);
-        Assert.Equivalent(11, RomanNumeral.Parse("XI").Number);
+        await Assert.That(RomanNumeral.Parse("I").Number).IsEqualTo(1);
+        await Assert.That(RomanNumeral.Parse("II").Number).IsEqualTo(2);
+        await Assert.That(RomanNumeral.Parse("III").Number).IsEqualTo(3);
+        await Assert.That(RomanNumeral.Parse("IIII").Number).IsEqualTo(4);
+        await Assert.That(RomanNumeral.Parse("V").Number).IsEqualTo(5);
+        await Assert.That(RomanNumeral.Parse("VI").Number).IsEqualTo(6);
+        await Assert.That(RomanNumeral.Parse("VII").Number).IsEqualTo(7);
+        await Assert.That(RomanNumeral.Parse("VIII").Number).IsEqualTo(8);
+        await Assert.That(RomanNumeral.Parse("VIIII").Number).IsEqualTo(9);
+        await Assert.That(RomanNumeral.Parse("X").Number).IsEqualTo(10);
+        await Assert.That(RomanNumeral.Parse("XI").Number).IsEqualTo(11);
 
-        Assert.Equivalent(1910, RomanNumeral.Parse("MDCCCCX").Number);
-        Assert.Equivalent(1910, RomanNumeral.Parse("MCMX").Number);
+        await Assert.That(RomanNumeral.Parse("MDCCCCX").Number).IsEqualTo(1910);
+        await Assert.That(RomanNumeral.Parse("MCMX").Number).IsEqualTo(1910);
 
-        Assert.Equivalent(118, RomanNumeral.Parse("CXVIII").Number);
-        Assert.Equivalent(118, RomanNumeral.Parse("CIIXX").Number);
-        Assert.Equivalent(118, RomanNumeral.Parse("CXIIX").Number);
+        await Assert.That(RomanNumeral.Parse("CXVIII").Number).IsEqualTo(118);
+        await Assert.That(RomanNumeral.Parse("CIIXX").Number).IsEqualTo(118);
+        await Assert.That(RomanNumeral.Parse("CXIIX").Number).IsEqualTo(118);
 
-        Assert.Equivalent(119, RomanNumeral.Parse("CXVIIII").Number);
-        Assert.Equivalent(119, RomanNumeral.Parse("CXIX").Number);
+        await Assert.That(RomanNumeral.Parse("CXVIIII").Number).IsEqualTo(119);
+        await Assert.That(RomanNumeral.Parse("CXIX").Number).IsEqualTo(119);
 
-        Assert.Equivalent(0, RomanNumeral.Parse("NULLA").Number);
+        await Assert.That(RomanNumeral.Parse("NULLA").Number).IsEqualTo(0);
     }
 
-    [Fact]
-    public void RomanNumeral_Parse_SubtractiveNotation()
+    [Test]
+    public async Task RomanNumeral_Parse_SubtractiveNotation()
     {
-        Assert.Equivalent(14, RomanNumeral.Parse("XIV").Number);
-        Assert.Equivalent(19, RomanNumeral.Parse("XIX").Number);
+        await Assert.That(RomanNumeral.Parse("XIV").Number).IsEqualTo(14);
+        await Assert.That(RomanNumeral.Parse("XIX").Number).IsEqualTo(19);
     }
 
-    [Theory]
-    [InlineData("IVL")] //invalid order
-    public void RomanNumeral_Parse_InvalidClassicNotation(string name)
+    [Test]
+    [Arguments("IVL")] //invalid order
+    public async Task RomanNumeral_Parse_InvalidClassicNotation(string name)
     {
         var act = () => RomanNumeral.Parse(name);
-        var exception = Assert.Throws<InvalidCastException>(act);
+        var exception = await Assert.That(act).Throws<InvalidCastException>();
 
         //The thrown exception can be used for even more detailed assertions.
-        Assert.Equal("The string is not a valid Roman numeral.", exception.Message);
+        await Assert.That(exception!.Message).IsEqualTo("The string is not a valid Roman numeral.");
     }
 }

@@ -2,8 +2,9 @@
 
 namespace Ktt.Docker.Todo.Api.Tests.Controllers;
 
-public class MemoryTodoControllerTests : TodoControllerTestsBase, IClassFixture<TestApplicationFactory>
-{
+[ClassDataSource<TestApplicationFactory>(Shared = SharedType.PerClass)]
+[InheritsTests]
+public class MemoryTodoControllerTests : TodoControllerTestsBase{
     public MemoryTodoControllerTests(TestApplicationFactory factory) : base(factory)
     {
     }

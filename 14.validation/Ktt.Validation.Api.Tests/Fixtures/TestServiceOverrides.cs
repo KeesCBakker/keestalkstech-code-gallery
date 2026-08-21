@@ -38,7 +38,7 @@ public class TestServiceOverrides
                 It.IsAny<CancellationToken>())
             ).ReturnsAsync((string repo, CancellationToken _) =>
             {
-                if (repo.StartsWith("ktt/"))
+                if (repo.StartsWith("ktt/", StringComparison.Ordinal))
                 {
                     return true;
                 }

@@ -24,7 +24,7 @@ public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient)
         var array = names.ToArray();
 
         var list = array
-            .Where(x => x != null && Regex.IsMatch(x, "^[a-zA-Z]{1,5}$"))
+            .Where(x => x != null && PetNameRegex().IsMatch(x))
             .OrderBy(x => x)
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
@@ -34,4 +34,7 @@ public partial class DemoPetStore(KiotaPetStoreClient kiotaPetStoreClient)
         Console.WriteLine("Query returned " + array.Length + " results, of which " + list.Count + " have a valid name.");
         Console.WriteLine();
     }
+
+    [GeneratedRegex("^[a-zA-Z]{1,5}$")]
+    private static partial Regex PetNameRegex();
 }

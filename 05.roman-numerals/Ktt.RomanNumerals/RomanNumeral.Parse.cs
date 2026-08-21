@@ -3,7 +3,7 @@
 public partial class RomanNumeral
 {
     //all the options that are used for parsing, in their order of value
-    public static readonly string[] NUMERAL_OPTIONS =
+    public static readonly string[] NumeralOptions =
     {
         "M", "CM", "D", "Q", "CD", "P", "G", "C", "XC", "L", "F", "XL", "IIXX", "XIIX", "O", "X", "IX", "V", "IV", "I"
     };
@@ -18,7 +18,7 @@ public partial class RomanNumeral
         }
 
         //upper case the string
-        var strToRead = str.ToUpper();
+        var strToRead = str.ToUpperInvariant();
 
         //nulla? means nothing 0 wasn't invented yet ;-)
         if (strToRead == NULLA)
@@ -47,13 +47,13 @@ public partial class RomanNumeral
         var numeralOptionPointer = 0;
 
         //continue to read until the string is empty or the numeral options pointer has exceeded all options
-        while (!string.IsNullOrEmpty(strToRead) && numeralOptionPointer < NUMERAL_OPTIONS.Length)
+        while (!string.IsNullOrEmpty(strToRead) && numeralOptionPointer < NumeralOptions.Length)
         {
             //select the current numeral
-            var numeral = NUMERAL_OPTIONS[numeralOptionPointer];
+            var numeral = NumeralOptions[numeralOptionPointer];
 
             //read numeral -> check if the numeral is used, otherwise move on to the next one
-            if (!strToRead.StartsWith(numeral))
+            if (!strToRead.StartsWith(numeral, StringComparison.Ordinal))
             {
                 numeralOptionPointer++;
                 continue;

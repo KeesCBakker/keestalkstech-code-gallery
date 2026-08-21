@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
-using FluentAssertions;
 using Ktt.Validation.Api.Models;
 using Ktt.Validation.Api.Services;
 using Ktt.Validation.Api.Services.Validation;
@@ -10,14 +9,15 @@ using Microsoft.Extensions.Options;
 
 namespace Ktt.Validation.Api.Tests.Models;
 
+[NotInParallel]
 public class ApplicationProvisioningRequestTests
 {
-    [Fact]
+    [Test]
     public async Task ValidateByHttpValidation()
     {
         // arrange
-        var fixture = new TestWebApplicationFactory();
-        var client = fixture.CreateClient();
+        using var fixture = new TestWebApplicationFactory();
+        using var client = fixture.CreateClient();
 
         // act
         var request = await client.PostAsJsonAsync("/provision/simple-application", new
@@ -29,21 +29,24 @@ public class ApplicationProvisioningRequestTests
             label = "development"
         });
 
-        request.StatusCode.Should().Be(System.Net.HttpStatusCode.BadRequest);
+        await Assert.That(request.StatusCode).IsEqualTo(System.Net.HttpStatusCode.BadRequest);
 
         var error = await request.Content.ReadFromJsonAsync<ValidationErrorResponse>();
 
         // assert
-        error.Should().NotBeNull();
+        await Assert.That(error).IsNotNull();
 
         var expectedKeys = new string[] { "EntryPoint", "MagicNumber" };
-        expectedKeys.ToList().ForEach(key => error.Errors.Should().ContainKey(key));
+        foreach (var key in expectedKeys)
+        {
+            await Assert.That(error.Errors).ContainsKey(key);
+        }
     }
 
-    [Fact]
-    public void ValidateByService()
+    [Test]
+    public async Task ValidateByService()
     {
-        var fixture = new TestWebApplicationFactory();
+        using var fixture = new TestWebApplicationFactory();
         var service = fixture.Services.GetRequiredService<ProvisionerService>();
 
         // arrange
@@ -57,23 +60,21 @@ public class ApplicationProvisioningRequestTests
         };
 
         // act
-        var act = () => service.ProvisionApplication(request);
+        var exception = Assert.Throws<ArgumentException>(() => service.ProvisionApplication(request));
 
         // assert
-        act
-            .Should()
-            .Throw<ArgumentException>()
-            .WithParameterName("request")
-            .WithInnerException<System.ComponentModel.DataAnnotations.ValidationException>()
-            .WithMessage(
-                "Input invalid for '" + nameof(SimpleApplication) + "':\n" +
-                "EntryPoint: EntryPoint must be empty.\n" +
-                "MagicNumber: Magic number is invalid."
-            );
+        await Assert.That(exception).IsNotNull();
+        await Assert.That(exception).IsTypeOf<ArgumentException>();
+        await Assert.That(exception!.ParamName).IsEqualTo("request");
+        await Assert.That(exception.InnerException).IsTypeOf<System.ComponentModel.DataAnnotations.ValidationException>();
+        await Assert.That(exception.InnerException!.Message).IsEqualTo(
+            "Input invalid for '" + nameof(SimpleApplication) + "':\n" +
+            "EntryPoint: EntryPoint must be empty.\n" +
+            "MagicNumber: Magic number is invalid.");
     }
 
-    [Fact]
-    public void ValidateByValidator()
+    [Test]
+    public async Task ValidateByValidator()
     {
         // arrange
         var obj = new SimpleApplication
@@ -88,26 +89,23 @@ public class ApplicationProvisioningRequestTests
         // act
         IList<ValidationResult> validationErrors = [];
         var context = new ValidationContext(obj);
-        var act = () => Validator.TryValidateObject(
-            obj,
-            context,
-            validationErrors,
-            true);
+        var exception = Assert.Throws<InvalidOperationException>(() =>
+            Validator.TryValidateObject(obj, context, validationErrors, true));
 
         // assert
-        act
-            .Should()
-            .Throw<InvalidOperationException>()
-            .WithMessage("No service for type 'Ktt.Validation.Api.Services.ProvisionerService' has been registered.");
+        await Assert.That(exception).IsNotNull();
+        await Assert.That(exception).IsTypeOf<InvalidOperationException>();
+        await Assert.That(exception!.Message).IsEqualTo(
+            "No service for type 'Ktt.Validation.Api.Services.ProvisionerService' has been registered.");
     }
 
-    [Fact]
-    public void ValidateByValidatorWithServiceProvider()
+    [Test]
+    public async Task ValidateByValidatorWithServiceProvider()
     {
         // arrange
         FluentValidationLanguageManager.SetGlobalOptions();
 
-        var provider = new ServiceCollection()
+        using var provider = new ServiceCollection()
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
             .AddSingleton<ProvisionerService>()
@@ -134,22 +132,22 @@ public class ApplicationProvisioningRequestTests
         var valid = Validator.TryValidateObject(obj, context, validationErrors, true);
 
         // assert
-        valid.Should().BeFalse();
-        validationErrors.Should().NotBeNullOrEmpty();
-        validationErrors.Should().HaveCount(2);
+        await Assert.That(valid).IsFalse();
+        await Assert.That(validationErrors).IsNotEmpty();
+        await Assert.That(validationErrors).Count().IsEqualTo(2);
 
         var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
-        messages.Should().Contain("EntryPoint must be empty.");
-        messages.Should().Contain("Magic number is invalid.");
+        await Assert.That(messages).Contains("EntryPoint must be empty.");
+        await Assert.That(messages).Contains("Magic number is invalid.");
     }
 
-    [Fact]
-    public void ValidateByDataAnnotationsValidator()
+    [Test]
+    public async Task ValidateByDataAnnotationsValidator()
     {
         // arrange
         FluentValidationLanguageManager.SetGlobalOptions();
 
-        var provider = new ServiceCollection()
+        using var provider = new ServiceCollection()
             .AddSingleton<IMagicNumberProvider, MagicNumberProvider>()
             .AddSingleton<IDataAnnotationsValidator, DataAnnotationsValidator>()
             .AddSingleton<ProvisionerService>()
@@ -175,12 +173,12 @@ public class ApplicationProvisioningRequestTests
         var valid = validator.TryValidate(obj, out var validationErrors);
 
         // assert
-        valid.Should().BeFalse();
-        validationErrors.Should().NotBeNullOrEmpty();
-        validationErrors.Should().HaveCount(2);
+        await Assert.That(valid).IsFalse();
+        await Assert.That(validationErrors).IsNotEmpty();
+        await Assert.That(validationErrors).Count().IsEqualTo(2);
 
         var messages = validationErrors.Select(e => e.ErrorMessage).ToList();
-        messages.Should().Contain("EntryPoint must be empty.");
-        messages.Should().Contain("Magic number is invalid.");
+        await Assert.That(messages).Contains("EntryPoint must be empty.");
+        await Assert.That(messages).Contains("Magic number is invalid.");
     }
 }

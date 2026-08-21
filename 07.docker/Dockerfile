@@ -72,7 +72,9 @@ RUN echo "" \
    && echo "-------" \
    && echo ""; \
    if [ "$EXECUTE_TESTS" = "true" ]; then \
-      dotnet test --filter "Category!=Integration" --configuration Release --logger "console;verbosity=$VERBOSITY" --no-build || exit 1; \
+       for p in $(find test -name "*.csproj"); do \
+          dotnet run --project "$p" --configuration Release --no-build -- --treenode-filter "/**[Category!=Integration]" --minimum-expected-tests 5 || exit 1; \
+       done; \
    else \
       echo "Skipping unit tests"; \
    fi;
@@ -127,7 +129,9 @@ if ! docker info > /dev/null 2>&1; then \
   exit 1; \
 fi; \
 echo '✅ Docker is ready. Running integration tests...'; \
-dotnet test --filter 'Category=Integration' --nologo --logger \"console;verbosity=${VERBOSITY:-minimal}\" \
+for p in $(find test -name '*.csproj'); do \
+  dotnet run --project "$p" --configuration Release --no-build -- --treenode-filter '/**[Category=Integration]' --minimum-expected-tests 5 || exit 1; \
+done \
 "]
 
 

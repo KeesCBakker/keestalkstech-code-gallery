@@ -1,16 +1,11 @@
-#
-# Shared .editorconfig Baseline
-# Generated: June 2026
-# Teams: checkout, oms, pim, core
-#
-# Decision rationale: see editorconfig-baseline-rationale.md
+# It is allowed to lower the severity for test projects.
+# For source code projects it is allowed to raise the severity to error, but not to lower it.
 #
 # Required project settings in .csproj / Directory.Build.props:
 #   <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
 #   <Nullable>enable</Nullable>
 #   <ImplicitUsings>enable</ImplicitUsings>
 #   <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-#   <GenerateDocumentationFile>true</GenerateDocumentationFile>
 #
 root = true
 
@@ -27,7 +22,7 @@ insert_final_newline = true
 end_of_line = lf
 max_line_length = 160
 
-# Windows batch files must use crlf
+# Windows cmd/bat/PowerShell scripts must use crlf
 [*.{cmd,bat,ps1}]
 end_of_line = crlf
 
@@ -50,7 +45,13 @@ charset = utf-8-bom
 # C# and VB — Analyzer diagnostics (applies to both languages)
 # ----------------------------------------------------------------------
 [*.{cs,vb}]
-charset = utf-8-bom
+dotnet_analyzer_diagnostic.severity = error
+dotnet_diagnostic.CA1848.severity = none #For improved performance, use the LoggerMessage delegates instead of calling 'LoggerExtensions.LogInformation(ILogger, string?, params object?[])' (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1848)
+dotnet_diagnostic.CA1873.severity = none #Evaluation of this argument may be expensive and unnecessary if logging is disabled (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/quality-rules/ca1873)
+dotnet_diagnostic.IDE0022.severity = none #Use expression body for methods (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0022)
+dotnet_diagnostic.IDE0058.severity = none #Expression value is never used (https://learn.microsoft.com/dotnet/fundamentals/code-analysis/style-rules/ide0058)
+dotnet_diagnostic.IDE0061.severity = none #Use expression body for local functions (https://learn.microsoft.com/en-us/dotnet/fundamentals/code-analysis/style-rules/ide0061)
+
 
 # SYSLIB1054: Use 'LibraryImportAttribute' instead of 'DllImportAttribute'
 dotnet_diagnostic.SYSLIB1054.severity = warning
@@ -525,3 +526,25 @@ dotnet_analyzer_diagnostic.severity = none
 # ----------------------------------------------------------------------
 [*{_AssemblyInfo.cs,.g.cs,.generated.cs}]
 generated_code = true
+
+[**/*[Tt]est{,s}/**] # case-insensitive folder names ending in Test or Tests
+# Disable specific analyzer for test files
+dotnet_diagnostic.CA1707.severity = none # Disallow underscores in methods
+dotnet_diagnostic.CA1806.severity = none # Do not ignore method results
+
+
+# ----------------------------------------------------------------------
+# Resharper rules
+# ----------------------------------------------------------------------
+[*.cs]
+resharper_file_scoped_namespace_highlighting = error # file-scoped namespace
+resharper_check_namespace_highlighting = error # namespace matches folder
+resharper_member_initializer_qualifier_highlighting = suggestion # this. qualifier
+resharper_builtin_type_in_var_declaration_highlighting = suggestion # var for built-in types
+resharper_use_var_in_declaration_highlighting = suggestion # var elsewhere
+resharper_using_directives_in_namespace_highlighting = warning # usings outside namespace
+resharper_convert_to_expression_body_highlighting = suggestion # expression-bodied members
+resharper_prefer_is_null_over_comparison_with_null_highlighting = suggestion # is null check
+resharper_compare_with_null_highlighting = suggestion # null comparison
+resharper_convert_to_object_initializer_highlighting = suggestion # object initializers
+resharper_use_naming_convention_highlighting = error # naming conventions

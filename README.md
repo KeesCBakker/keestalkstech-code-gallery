@@ -3,6 +3,23 @@
 This repository contains code samples for articles on my blog.
 It is easier to keep the code up to date when all of the items are grouped.
 
+## Tests and coverage
+
+The .NET test projects use TUnit. Run all tests and generate a separate Cobertura
+report for each project with:
+
+```powershell
+./test-with-coverage.ps1
+```
+
+Docker-backed integration tests are excluded by default. Include them with:
+
+```powershell
+./test-with-coverage.ps1 -IncludeIntegrationTests
+```
+
+Coverage reports are written to `TestResults/coverage`.
+
 ## 1. Dependency injection (with IOptions) in Console Apps in .NET
 
 When you are used to building web applications, you kind of get hooked to the
