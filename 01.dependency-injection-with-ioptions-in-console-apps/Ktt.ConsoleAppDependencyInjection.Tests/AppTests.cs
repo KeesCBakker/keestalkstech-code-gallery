@@ -28,54 +28,24 @@ public class AppTests
     }
 
     [Test]
-    [NotInParallel]
     public async Task Execute_WithName_WritesGreeting()
     {
         var app = new App(_logger, _options);
-        var output = new StringWriter();
-        var originalOutput = Console.Out;
 
-        try
-        {
-#pragma warning disable TUnit0055
-            Console.SetOut(output);
-#pragma warning restore TUnit0055
-            await app.Execute(["Kees"]);
-        }
-        finally
-        {
-#pragma warning disable TUnit0055
-            Console.SetOut(originalOutput);
-#pragma warning restore TUnit0055
-        }
+        await app.Execute(["Kees"]);
 
-        var consoleOutput = output.ToString().TrimEnd();
+        var consoleOutput = TestContext.Current!.GetStandardOutput().TrimEnd();
         await Assert.That(consoleOutput).IsEqualTo("Hi Kees!");
     }
 
     [Test]
-    [NotInParallel]
     public async Task Execute_WithMultipleArgs_UsesFirstName()
     {
         var app = new App(_logger, _options);
-        var output = new StringWriter();
-        var originalOutput = Console.Out;
 
-        try
-        {
-#pragma warning disable TUnit0055
-            Console.SetOut(output);
-#pragma warning restore TUnit0055
-            await app.Execute(["Alice", "Bob"]);
-        }
-        finally
-        {
-#pragma warning disable TUnit0055
-            Console.SetOut(originalOutput);
-#pragma warning restore TUnit0055
-        }
+        await app.Execute(["Alice", "Bob"]);
 
-        var consoleOutput = output.ToString().TrimEnd();
+        var consoleOutput = TestContext.Current!.GetStandardOutput().TrimEnd();
         await Assert.That(consoleOutput).IsEqualTo("Hi Alice!");
     }
 }
