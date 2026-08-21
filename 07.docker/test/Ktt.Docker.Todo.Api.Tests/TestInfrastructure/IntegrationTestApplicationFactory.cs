@@ -12,7 +12,7 @@ namespace Ktt.Docker.Todo.Api.Tests.TestInfrastructure;
 public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncInitializer, IAsyncDisposable
 {
     private IContainer? _valkeyContainer;
-    private IConnectionMultiplexer? _redis;
+    private ConnectionMultiplexer? _redis;
 
     public async Task InitializeAsync()
     {
@@ -34,7 +34,7 @@ public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncI
     {
         RemoveService<ITodoRepository>(services);
 
-        services.AddSingleton(_ => _redis!);
+        services.AddSingleton<IConnectionMultiplexer>(_ => _redis!);
         services.AddSingleton<ITodoRepository, ValkeyTodoRepository>();
     }
 
@@ -56,6 +56,7 @@ public class IntegrationTestApplicationFactory : TestApplicationFactory, IAsyncI
             }
 
             await base.DisposeAsync();
+            GC.SuppressFinalize(this);
         }
     }
 
