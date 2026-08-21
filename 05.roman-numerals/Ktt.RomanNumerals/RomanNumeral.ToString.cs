@@ -3,13 +3,13 @@
 public partial class RomanNumeral
 {
     //subtractive notation uses these numerals
-    public static readonly string[] SUBTRACTIVE_NOTATION =
+    public static readonly string[] SubtractiveNotation =
     {
         "M", "CM", "D", "CD", "C", "XC", "L", "XL", "X", "IX", "V", "IV", "I"
     };
 
     //the addative notation uses these numerals
-    public static readonly string[] ADDITIVE_NOTATION =
+    public static readonly string[] AdditiveNotation =
     {
         "M", "D", "C", "L", "X", "V", "I"
     };
@@ -29,8 +29,8 @@ public partial class RomanNumeral
         //check notation for right set of characters
         var numerals =
             notation == RomanNumeralNotation.Additive
-            ? ADDITIVE_NOTATION
-            : SUBTRACTIVE_NOTATION;
+            ? AdditiveNotation
+            : SubtractiveNotation;
 
         var resultRomanNumeral = "";
 
