@@ -94,7 +94,7 @@ public class JwtIntegrationTests
         await Assert.That(body.Issuer).IsEqualTo("service-2");
     }
 
-    private record WhoAmIResponse(string? UserName, string? Issuer);
+    private sealed record WhoAmIResponse(string? UserName, string? Issuer);
 }
 
 file static class Token
