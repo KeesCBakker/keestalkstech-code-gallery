@@ -1,9 +1,11 @@
-﻿namespace Ktt.JsonHandlebars.Test;
+﻿using System.Threading.Tasks;
+
+namespace Ktt.JsonHandlebars.Test;
 
 public class BlogTests
 {
-    [Fact]
-    public void BlogExampleOne()
+    [Test]
+    public async Task BlogExampleOne()
     {
         var source = @"{
   ""title"": ""{{title}}"",
@@ -24,11 +26,11 @@ public class BlogTests
   ""body"": ""This\nis\nmy \""first post\""!""
 }";
 
-        Assert.Equivalent(expected, result);
+        await Assert.That(result).IsEqualTo(expected);
     }
 
-    [Fact]
-    public void BlogExampleTwo()
+    [Test]
+    public async Task BlogExampleTwo()
     {
         var source =
     @"
@@ -48,7 +50,7 @@ public class BlogTests
             body = "First!"
         };
 
-        var exception = Assert.Throws<InvalidJsonException>(() => JsonHandlebarsDotNet.Parse(source, data));
+        var exception = await Assert.That(() => JsonHandlebarsDotNet.Parse(source, data)).Throws<InvalidJsonException>();
 
         var expects = @"After parsing a value an unexpected character was encountered: "". Path 'tags[0]', line 8, position 19.
 
@@ -59,6 +61,6 @@ public class BlogTests
 09 |   ""body"": ""First!""
 10 | }".Replace("\r", "");
 
-        Assert.Equivalent(expects, exception.Message);
+        await Assert.That(exception!.Message).IsEqualTo(expects);
     }
 }
