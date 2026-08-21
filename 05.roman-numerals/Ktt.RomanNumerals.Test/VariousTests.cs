@@ -1,19 +1,21 @@
-﻿namespace Ktt.RomanNumerals.Test;
+﻿using System.Threading.Tasks;
+
+namespace Ktt.RomanNumerals.Test;
 
 public class VariousTests
 {
-    [Fact]
-    public void Blog()
+    [Test]
+    public async Task Blog()
     {
-        Assert.Equivalent(1910, RomanNumeral.Parse("MDCCCCX").Number);
-        Assert.Equivalent(1910, RomanNumeral.Parse("MCMX").Number);
+        await Assert.That(RomanNumeral.Parse("MDCCCCX").Number).IsEqualTo(1910);
+        await Assert.That(RomanNumeral.Parse("MCMX").Number).IsEqualTo(1910);
 
-        Assert.Equivalent("CXVIIII", new RomanNumeral(119).ToString(RomanNumeralNotation.Additive));
-        Assert.Equivalent("CXIX", new RomanNumeral(119).ToString());
+        await Assert.That(new RomanNumeral(119).ToString(RomanNumeralNotation.Additive)).IsEqualTo("CXVIIII");
+        await Assert.That(new RomanNumeral(119).ToString()).IsEqualTo("CXIX");
     }
 
-    [Fact]
-    public void Example()
+    [Test]
+    public async Task Example()
     {
         RomanNumeral I = "I";
         RomanNumeral IV = "IV";
@@ -24,11 +26,11 @@ public class VariousTests
         int d = "IV" - I;
         int e = IV - I;
 
-        Assert.Equivalent(3, a);
-        Assert.Equivalent(3, b);
-        Assert.Equivalent(3, c);
-        Assert.Equivalent(3, d);
-        Assert.Equivalent(3, e);
+        await Assert.That(a).IsEqualTo(3);
+        await Assert.That(b).IsEqualTo(3);
+        await Assert.That(c).IsEqualTo(3);
+        await Assert.That(d).IsEqualTo(3);
+        await Assert.That(e).IsEqualTo(3);
 
         string f = IV - 1;
         string g = 4 - I;
@@ -36,11 +38,11 @@ public class VariousTests
         string i = "IV" - I;
         string j = IV - I;
 
-        Assert.Equivalent("III", f);
-        Assert.Equivalent("III", g);
-        Assert.Equivalent("III", h);
-        Assert.Equivalent("III", i);
-        Assert.Equivalent("III", j);
+        await Assert.That(f).IsEqualTo("III");
+        await Assert.That(g).IsEqualTo("III");
+        await Assert.That(h).IsEqualTo("III");
+        await Assert.That(i).IsEqualTo("III");
+        await Assert.That(j).IsEqualTo("III");
 
         RomanNumeral k = IV - 1;
         RomanNumeral l = 4 - I;
@@ -48,10 +50,10 @@ public class VariousTests
         RomanNumeral n = "IV" - I;
         RomanNumeral o = IV - I;
 
-        Assert.Equivalent(3, k);
-        Assert.Equivalent(3, l);
-        Assert.Equivalent(3, m);
-        Assert.Equivalent(3, n);
-        Assert.Equivalent(3, o);
+        await Assert.That(k.Number).IsEqualTo(3);
+        await Assert.That(l.Number).IsEqualTo(3);
+        await Assert.That(m.Number).IsEqualTo(3);
+        await Assert.That(n.Number).IsEqualTo(3);
+        await Assert.That(o.Number).IsEqualTo(3);
     }
 }
