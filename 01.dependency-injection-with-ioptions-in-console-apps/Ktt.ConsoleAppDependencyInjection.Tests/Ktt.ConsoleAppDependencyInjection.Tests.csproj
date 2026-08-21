@@ -10,7 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="NSubstitute" Version="6.0.0" />
     <PackageReference Include="TUnit" Version="1.65.38" />
   </ItemGroup>
 
