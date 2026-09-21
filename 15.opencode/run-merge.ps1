@@ -10,6 +10,7 @@ $sourceDirectory = "15.opencode"
 $temporaryDirectory = Join-Path $env:TEMP "opencode-merge-$([guid]::NewGuid())"
 $files = @(
   "merge-config.ps1"
+  "install-skills.ps1"
   "config/opencode.jsonc"
   "config/opencode-mcps.jsonc"
   "config/opencode-ask.jsonc"

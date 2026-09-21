@@ -51,9 +51,9 @@ temporary directory, runs the merge there, and removes the directory when it
 finishes. Use a pinned branch or tag instead of `main` when reproducibility is
 important.
 
-Install the optional skills separately. The script checks global OpenCode
-skills first, skips skills that are already installed, and asks for approval
-before installing each missing skill:
+After a successful config merge, the merge script also checks the optional
+skills. It skips skills that are already installed and asks for approval before
+installing each missing skill. To run only the skill check separately, use:
 
 ```powershell
 ./install-skills.ps1

@@ -465,10 +465,26 @@ try {
 
   Move-Item -LiteralPath $temporaryPath -Destination $centralPath -Force
   Write-Host "Merged configuration written to $centralPath"
+
+  $skillInstaller = Join-Path $PSScriptRoot "install-skills.ps1"
+  if (Test-Path -LiteralPath $skillInstaller) {
+    Write-Host "Checking optional OpenCode skills."
+    try {
+      & $skillInstaller
+      if ($LASTEXITCODE) {
+        Write-Warning "The config merge succeeded, but the skill installer failed with exit code $LASTEXITCODE."
+      }
+    }
+    catch {
+      Write-Warning "The config merge succeeded, but the skill installer failed: $($_.Exception.Message)"
+    }
+  }
 }
 catch {
-  Remove-Item -LiteralPath $temporaryPath -Force -ErrorAction SilentlyContinue
-  Write-Warning "The central config was not changed. Backup remains at $backupPath"
+  if (Test-Path -LiteralPath $temporaryPath) {
+    Remove-Item -LiteralPath $temporaryPath -Force -ErrorAction SilentlyContinue
+    Write-Warning "The central config was not changed. Backup remains at $backupPath"
+  }
   throw
 }
 finally {
