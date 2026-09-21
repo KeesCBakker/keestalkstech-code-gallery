@@ -1,5 +1,14 @@
 $ErrorActionPreference = "Stop"
 
+function Write-Status {
+  param(
+    [string] $Message,
+    [ConsoleColor] $Color = [ConsoleColor]::Gray
+  )
+
+  Write-Host $Message -ForegroundColor $Color
+}
+
 $npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
 if (-not $npx) {
   throw "npx is required. Install Node.js, then run this script again."
@@ -106,14 +115,14 @@ function Show-Preflight {
     [string] $ConfigPath
   )
 
-  Write-Host "`nOpenCode merge preflight" -ForegroundColor Cyan
-  Write-Host "Central config: $ConfigPath"
+  Write-Status "`nOpenCode merge preflight" Cyan
+  Write-Status "Central config: $ConfigPath" DarkGray
 
   foreach ($fragment in $Fragments.GetEnumerator()) {
     $name = $fragment.Key
     $path = $fragment.Value.Path
     $status = if ($fragment.Value.Exists) { "found" } else { "missing" }
-    Write-Host ("  {0,-30} {1}" -f $name, $status)
+    Write-Status ("  {0,-30} {1}" -f $name, $status) $(if ($status -eq "found") { "Green" } else { "Yellow" })
   }
 
   $centralBash = if ($Central.permission -and $Central.permission.bash) { $Central.permission.bash } else { @{} }
@@ -131,19 +140,19 @@ function Show-Preflight {
   $projectWatcher = if ($watcher.watcher.ignore) { $watcher.watcher.ignore } else { @() }
   $projectMcp = if ($mcps.mcp) { $mcps.mcp } else { @{} }
 
-  Write-Host "`nSections"
-  Write-Host ("  Bash rules:       central {0,3} | project {1,3}" -f (Get-Count $centralBash.Keys), (Get-Count $projectBash.Keys))
-  Write-Host ("  Read rules:       central {0,3} | project {1,3}" -f (Get-Count $centralRead.Keys), (Get-Count $projectRead.Keys))
-  Write-Host ("  Watcher patterns: central {0,3} | project {1,3}" -f (Get-Count $centralWatcher), (Get-Count $projectWatcher))
-  Write-Host ("  MCPs:             central {0,3} | project {1,3}" -f (Get-Count $centralMcp.Keys), (Get-Count $projectMcp.Keys))
+  Write-Status "`nSections" Cyan
+  Write-Status ("  Bash rules:       central {0,3} | project {1,3}" -f (Get-Count $centralBash.Keys), (Get-Count $projectBash.Keys))
+  Write-Status ("  Read rules:       central {0,3} | project {1,3}" -f (Get-Count $centralRead.Keys), (Get-Count $projectRead.Keys))
+  Write-Status ("  Watcher patterns: central {0,3} | project {1,3}" -f (Get-Count $centralWatcher), (Get-Count $projectWatcher))
+  Write-Status ("  MCPs:             central {0,3} | project {1,3}" -f (Get-Count $centralMcp.Keys), (Get-Count $projectMcp.Keys))
 
-  Write-Host "`nMCP status"
+  Write-Status "`nMCP status" Cyan
   foreach ($mcp in $projectMcp.GetEnumerator()) {
     $state = if ($centralMcp.ContainsKey($mcp.Key)) { "configured" } else { "not configured" }
     $enabled = if ($mcp.Value.enabled -eq $true) { "enabled" } else { "disabled" }
-    Write-Host ("  {0,-20} {1,-16} project {2}" -f $mcp.Key, $state, $enabled)
+    Write-Status ("  {0,-20} {1,-16} project {2}" -f $mcp.Key, $state, $enabled) $(if ($state -eq "configured") { "Green" } else { "Yellow" })
   }
-  Write-Host ""
+  Write-Status ""
 }
 
 function Convert-ToEdiktPath {
@@ -186,9 +195,9 @@ function Confirm-Conflict {
     $Incoming
   )
 
-  Write-Host "`nConflict: $Path" -ForegroundColor Yellow
-  Write-Host "Current:  $(Get-ConflictSummary -Path $Path -Value $Current)"
-  Write-Host "Incoming: $(Get-ConflictSummary -Path $Path -Value $Incoming)"
+  Write-Status "`nConflict: $Path" Yellow
+  Write-Status "Current:  $(Get-ConflictSummary -Path $Path -Value $Current)" DarkGray
+  Write-Status "Incoming: $(Get-ConflictSummary -Path $Path -Value $Incoming)" DarkGray
 
   do {
     $answer = Read-Host "Use incoming value? [y/N]"
@@ -315,10 +324,10 @@ function Save-SecretReferences {
         finally {
           $stream.Dispose()
         }
-        Write-Host "Created secret file: $secretName"
+        Write-Status "Created secret file: $secretName" Green
       }
       catch [System.IO.IOException] {
-        Write-Host "Secret file already exists: $secretName"
+        Write-Status "Secret file already exists: $secretName" DarkGray
       }
     }
   }
@@ -336,7 +345,7 @@ if (-not $centralPath) {
 
 $backupPath = "$centralPath.backup.$(Get-Date -Format 'yyyyMMdd_HHmmss_fff')"
 Copy-Item -LiteralPath $centralPath -Destination $backupPath
-Write-Host "Backup created at $backupPath"
+Write-Status "Backup created at $backupPath" Green
 
 $merged = Read-JsoncFile -Path $centralPath
 $expressions = [System.Collections.Generic.List[string]]::new()
@@ -407,7 +416,7 @@ foreach ($fragmentName in $fragmentNames) {
 Save-SecretReferences -Config $merged -ConfigDirectory $configDirectory
 
 if ($expressions.Count -eq 0) {
-  Write-Host "No configuration changes detected; leaving the central config unchanged."
+  Write-Status "No configuration changes detected; leaving the central config unchanged." DarkGray
   exit 0
 }
 
@@ -444,7 +453,7 @@ try {
   if ($prettier) {
     $prettierCommand = $prettier.Path
     $prettierArguments = @("--write", "--parser", "jsonc", $temporaryPath)
-    Write-Host "Formatting merged config with prettier."
+    Write-Status "Formatting merged config with prettier." Cyan
   }
   else {
     $npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
@@ -453,7 +462,7 @@ try {
       # both the wrapper and target. Let PowerShell resolve the command name.
       $prettierCommand = "npx.cmd"
       $prettierArguments = @("--yes", "prettier", "--write", "--parser", "jsonc", $temporaryPath)
-      Write-Host "Formatting merged config with prettier via npx. Prettier may be downloaded if needed."
+      Write-Status "Formatting merged config with prettier via npx. Prettier may be downloaded if needed." Cyan
     }
   }
 
@@ -473,11 +482,11 @@ try {
   }
 
   Move-Item -LiteralPath $temporaryPath -Destination $centralPath -Force
-  Write-Host "Merged configuration written to $centralPath"
+  Write-Status "Merged configuration written to $centralPath" Green
 
   $skillInstaller = Join-Path $PSScriptRoot "install-skills.ps1"
   if (Test-Path -LiteralPath $skillInstaller) {
-    Write-Host "Checking optional OpenCode skills."
+    Write-Status "Checking optional OpenCode skills." Cyan
     try {
       & $skillInstaller
       if ($LASTEXITCODE) {

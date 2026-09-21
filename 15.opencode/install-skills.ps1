@@ -1,5 +1,14 @@
 $ErrorActionPreference = "Stop"
 
+function Write-Status {
+  param(
+    [string] $Message,
+    [ConsoleColor] $Color = [ConsoleColor]::Gray
+  )
+
+  Write-Host $Message -ForegroundColor $Color
+}
+
 $skillsPath = Join-Path $PSScriptRoot "config\opencode-skills.yaml"
 if (-not (Test-Path -LiteralPath $skillsPath)) {
   throw "Skills configuration not found: $skillsPath"
@@ -28,10 +37,10 @@ if (-not $npx) {
   throw "npx is required to install skills."
 }
 
-Write-Host "Checking installed global OpenCode skills..."
-Write-Host "`nConfigured skills:"
+Write-Status "Checking installed global OpenCode skills..." Cyan
+Write-Status "`nConfigured skills:" Cyan
 foreach ($skill in $skills) {
-  Write-Host ("  {0,-20} {1}" -f $skill.Name, $skill.Source)
+  Write-Status ("  {0,-20} {1}" -f $skill.Name, $skill.Source) DarkGray
 }
 
 function Get-InstalledSkills {
@@ -54,17 +63,17 @@ function Test-SkillInstalled {
 
 foreach ($skill in $skills) {
   if (Test-SkillInstalled -Name $skill.Name) {
-    Write-Host "Already installed: $($skill.Name)"
+    Write-Status "Already installed: $($skill.Name)" Green
     continue
   }
 
   $answer = Read-Host "Install '$($skill.Name)' globally for OpenCode? [y/N]"
   if ($answer -notmatch '^(y|yes)$') {
-    Write-Host "Skipped: $($skill.Name)"
+    Write-Status "Skipped: $($skill.Name)" Yellow
     continue
   }
 
-  Write-Host "Installing: $($skill.Name)"
+  Write-Status "Installing: $($skill.Name)" Cyan
   & npx.cmd skills add $skill.Source --skill $skill.Name --global --agent opencode --yes
   if ($LASTEXITCODE) {
     throw "Failed to install skill '$($skill.Name)'."
@@ -73,8 +82,8 @@ foreach ($skill in $skills) {
   if (-not (Test-SkillInstalled -Name $skill.Name)) {
     throw "Skill '$($skill.Name)' was reported as installed but is not listed for OpenCode."
   }
-  Write-Host "Verified installed: $($skill.Name)"
+  Write-Status "Verified installed: $($skill.Name)" Green
 }
 
-Write-Host "`nInstalled global OpenCode skills:"
+Write-Status "`nInstalled global OpenCode skills:" Cyan
 & npx.cmd skills list --global --agent opencode
