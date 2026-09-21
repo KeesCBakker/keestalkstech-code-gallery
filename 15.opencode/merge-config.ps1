@@ -153,7 +153,9 @@ function Show-Preflight {
     $state = if ($centralMcp.ContainsKey($mcp.Key)) { "configured" } else { "not configured" }
     $enabled = if ($mcp.Value.enabled -eq $true) { "enabled" } else { "disabled" }
     Write-Status ("  {0,-20}" -f $mcp.Key) DarkYellow -NoNewline
-    Write-Status (" {0,-16} project {1}" -f $state, $enabled) $(if ($state -eq "configured") { "Green" } else { "Red" })
+    Write-Status (" {0,-16}" -f $state) $(if ($state -eq "configured") { "Green" } else { "Red" }) -NoNewline
+    Write-Status " project " -NoNewline
+    Write-Status $enabled $(if ($enabled -eq "enabled") { "Green" } else { "Yellow" })
   }
   Write-Status ""
 }
