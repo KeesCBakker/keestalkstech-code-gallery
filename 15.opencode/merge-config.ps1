@@ -1,5 +1,10 @@
 $ErrorActionPreference = "Stop"
 
+$npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
+if (-not $npx) {
+  throw "npx is required. Install Node.js, then run this script again."
+}
+
 function Read-JsoncFile {
   param([string] $Path)
 

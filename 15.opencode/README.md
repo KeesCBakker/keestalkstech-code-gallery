@@ -30,6 +30,10 @@ configuration. The script creates a timestamped backup, asks before replacing
 conflicting values, asks before adding MCPs, and prompts for missing secret
 values.
 
+Node.js must be installed because the merge requires `npx` for Prettier and
+skill management. The script stops before reading or changing the central
+configuration when `npx` is unavailable.
+
 The merge uses Edikt for the edits and then reformats the resulting JSONC with
 Prettier. It checks for `prettier` first and then uses `npx --yes prettier`,
 which downloads Prettier when it is not installed locally. If neither command
