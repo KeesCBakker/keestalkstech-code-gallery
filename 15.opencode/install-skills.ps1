@@ -25,16 +25,24 @@ if (-not $npx) {
 }
 
 Write-Host "Checking installed global OpenCode skills..."
-$installedOutput = & npx.cmd skills list --global --agent opencode 2>&1
-if ($LASTEXITCODE) {
-  throw "Could not list installed skills: $($installedOutput -join ' ')"
+function Get-InstalledSkills {
+  $output = & npx.cmd skills list --global --agent opencode 2>&1
+  if ($LASTEXITCODE) {
+    throw "Could not list installed skills: $($output -join ' ')"
+  }
+  return $output -join "`n"
 }
 
-$installedText = $installedOutput -join "`n"
+function Test-SkillInstalled {
+  param([string] $Name)
+
+  $installedText = Get-InstalledSkills
+  $escapedName = [regex]::Escape($Name)
+  return $installedText -match "(?im)(^|\s)$escapedName(\s|$)"
+}
 
 foreach ($skill in $skills) {
-  $escapedName = [regex]::Escape($skill.Name)
-  if ($installedText -match "(?im)(^|\s)$escapedName(\s|$)") {
+  if (Test-SkillInstalled -Name $skill.Name) {
     Write-Host "Already installed: $($skill.Name)"
     continue
   }
@@ -50,6 +58,11 @@ foreach ($skill in $skills) {
   if ($LASTEXITCODE) {
     throw "Failed to install skill '$($skill.Name)'."
   }
+
+  if (-not (Test-SkillInstalled -Name $skill.Name)) {
+    throw "Skill '$($skill.Name)' was reported as installed but is not listed for OpenCode."
+  }
+  Write-Host "Verified installed: $($skill.Name)"
 }
 
 Write-Host "`nInstalled global OpenCode skills:"
