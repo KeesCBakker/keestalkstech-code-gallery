@@ -1,17 +1,43 @@
-# OpenCode
+# OpenCode Configuration
 
-Installing and configuring OpenCode on Windows.
+Scripts and configuration fragments for installing and configuring OpenCode on
+Windows.
 
-This project contains the code and configuration examples for the OpenCode
-installation and configuration guide.
+## Quick start
 
-## Contents
+Node.js must be installed because the merge requires `npx`. The script stops
+before reading or changing the central configuration when `npx` is unavailable.
 
-- OpenCode installation
-- Provider configuration
-- MCP configuration
-- Permission configuration
-- Skill installation
+Run the merge from this directory:
+
+```powershell
+./merge-config.ps1
+```
+
+The script finds the central `opencode.jsonc` or `opencode.json`, creates a
+timestamped backup, and shows a preflight summary. It then:
+
+- Adds missing configuration values.
+- Asks before replacing different values.
+- Asks before adding or replacing MCPs.
+- Creates missing MCP secret files without overwriting existing files.
+- Merges watcher ignore patterns.
+- Uses Edikt for JSONC-preserving edits.
+- Formats the result with Prettier when available.
+- Validates the result with `opencode debug config`.
+- Checks and optionally installs the configured global OpenCode skills.
+
+If there are no configuration changes, Edikt and Prettier are skipped.
+
+To run the current version without cloning the repository:
+
+```powershell
+& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ps1")))
+```
+
+The launcher downloads the scripts and configuration fragments into a unique
+temporary directory, runs the merge, and removes the directory afterwards. Use
+a pinned branch or tag instead of `main` when reproducibility is important.
 
 ## Configuration files
 
@@ -24,37 +50,8 @@ The configuration fragments are kept in the `config` directory:
 - `config/opencode-watcher.jsonc`: watcher ignore patterns
 - `config/opencode-skills.yaml`: optional skills and their repositories
 
-OpenCode does not automatically include arbitrary JSONC files. Run
-`./merge-config.ps1` to merge these fragments into the central OpenCode
-configuration. The script creates a timestamped backup, asks before replacing
-conflicting values, asks before adding MCPs, and prompts for missing secret
-values.
-
-Node.js must be installed because the merge requires `npx` for Prettier and
-skill management. The script stops before reading or changing the central
-configuration when `npx` is unavailable.
-
-The merge uses Edikt for the edits and then reformats the resulting JSONC with
-Prettier. It checks for `prettier` first and then uses `npx --yes prettier`,
-which downloads Prettier when it is not installed locally. If neither command
-is available, the merge continues without formatting. Edikt is downloaded to
-a temporary directory for each run and removed afterwards.
-
-```powershell
-./merge-config.ps1
-```
-
-To run the current merge script without cloning the repository, download the
-temporary launcher from GitHub:
-
-```powershell
-& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ps1")))
-```
-
-The launcher downloads the merge script and JSONC fragments to a unique
-temporary directory, runs the merge there, and removes the directory when it
-finishes. Use a pinned branch or tag instead of `main` when reproducibility is
-important.
+OpenCode does not automatically include arbitrary JSONC files; the merge script
+combines these fragments with the central configuration.
 
 After a successful config merge, the merge script also checks the optional
 skills. It skips skills that are already installed and asks for approval before
@@ -68,3 +65,25 @@ Configured skills:
 
 The list is maintained in `config/opencode-skills.yaml` and is read by
 `install-skills.ps1`.
+
+## Secrets
+
+MCP credentials are referenced from files under the central OpenCode secrets
+directory. Existing files are never overwritten. Missing values are requested
+interactively and written only when a value is provided.
+
+The project contains references only, never secret values:
+
+```text
+{file:./secrets/context7-api-key}
+{file:./secrets/slack-client-id}
+{file:./secrets/slack-client-secret}
+```
+
+## Notes
+
+- The central configuration is changed only after validation succeeds.
+- Existing comments and formatting are preserved during Edikt edits where possible.
+- Prettier is best-effort; a formatting failure does not block a valid merge.
+- Edikt is downloaded to a temporary directory for each run and removed afterwards.
+- The generated local config is ignored by Git.

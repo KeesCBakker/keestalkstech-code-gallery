@@ -127,11 +127,14 @@ Let's explore validation using .NET Data Annotations and FluentValidation.
 - <a href="https://keestalkstech.com/data-annotation-validation-in-a-business-service/">Data Annotation validation with dependency injection in a business service</a>
 - <a href="https://keestalkstech.com/is-one-of-and-is-not-one-of-validation-attributes/">“Is One Of” and “Is Not One Of” validation attributes</a>
 
-## 15. Workflow
+## 15. OpenCode Configuration
 
-Building a workflow system with configurable steps and dependency injection.
+Scripts and configuration fragments for installing and configuring OpenCode on
+Windows. The merge script creates a backup, interactively merges JSONC
+fragments into the central OpenCode configuration, manages MCP secrets without
+overwriting existing files, and checks optional global skills.
 
-- <a href="15.workflow">15.workflow</a>
+- <a href="15.opencode">15.opencode</a>
 
 ## 16. Jupyter TypeScript
 
