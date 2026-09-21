@@ -50,3 +50,11 @@ The launcher downloads the merge script and JSONC fragments to a unique
 temporary directory, runs the merge there, and removes the directory when it
 finishes. Use a pinned branch or tag instead of `main` when reproducibility is
 important.
+
+Install the optional skills separately. The script checks global OpenCode
+skills first, skips skills that are already installed, and asks for approval
+before installing each missing skill:
+
+```powershell
+./install-skills.ps1
+```
