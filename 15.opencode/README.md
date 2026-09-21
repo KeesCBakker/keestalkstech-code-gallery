@@ -8,7 +8,7 @@ Windows.
 Install OpenCode and its prerequisites first:
 
 ```powershell
-./install.ps1
+./install-opencode.ps1
 ```
 
 The installer uses WinGet for OpenCode, NVM for Windows, and Coreutils. It then
