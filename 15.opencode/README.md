@@ -5,8 +5,19 @@ Windows.
 
 ## Quick start
 
-Node.js must be installed because the merge requires `npx`. The script stops
-before reading or changing the central configuration when `npx` is unavailable.
+Install OpenCode and its prerequisites first:
+
+```powershell
+./install.ps1
+```
+
+The installer uses WinGet for OpenCode, NVM for Windows, and Coreutils. It then
+installs and activates the Node.js LTS release through NVM and verifies
+`opencode`, `node`, `npm`, and `npx`.
+
+Node.js must be installed because the merge requires `npx`. The merge script
+stops before reading or changing the central configuration when `npx` is
+unavailable.
 
 Run the merge from this directory:
 
