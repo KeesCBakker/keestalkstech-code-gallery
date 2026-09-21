@@ -46,8 +46,10 @@ function Test-SkillInstalled {
   param([string] $Name)
 
   $installedText = Get-InstalledSkills
+  # The skills CLI uses ANSI color codes around skill names.
+  $plainText = $installedText -replace "`e\[[0-9;]*m", ""
   $escapedName = [regex]::Escape($Name)
-  return $installedText -match "(?im)(^|\s)$escapedName(\s|$)"
+  return $plainText -match "(?im)^\s*$escapedName\s+"
 }
 
 foreach ($skill in $skills) {
