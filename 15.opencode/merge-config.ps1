@@ -403,16 +403,14 @@ foreach ($fragmentName in $fragmentNames) {
 Save-SecretReferences -Config $merged -ConfigDirectory $configDirectory
 
 $ediktVersion = "v0.5.0"
-$ediktDirectory = Join-Path $env:LOCALAPPDATA "edikt"
+$ediktDirectory = Join-Path $env:TEMP "opencode-edikt-$([guid]::NewGuid())"
 $ediktPath = Join-Path $ediktDirectory "edikt.exe"
 
-if (-not (Test-Path -LiteralPath $ediktPath)) {
-  $ediktZip = Join-Path $env:TEMP "edikt-$ediktVersion.zip"
-  New-Item -ItemType Directory -Force -Path $ediktDirectory | Out-Null
-  Invoke-WebRequest "https://github.com/jhheider/edikt/releases/download/$ediktVersion/edikt-windows-x86_64.zip" -OutFile $ediktZip
-  Expand-Archive -Force -Path $ediktZip -DestinationPath $ediktDirectory
-  Remove-Item -LiteralPath $ediktZip -Force
-}
+$ediktZip = Join-Path $ediktDirectory "edikt-$ediktVersion.zip"
+New-Item -ItemType Directory -Force -Path $ediktDirectory | Out-Null
+Invoke-WebRequest "https://github.com/jhheider/edikt/releases/download/$ediktVersion/edikt-windows-x86_64.zip" -OutFile $ediktZip
+Expand-Archive -Force -Path $ediktZip -DestinationPath $ediktDirectory
+Remove-Item -LiteralPath $ediktZip -Force
 
 $temporaryPath = "$centralPath.tmp.$([guid]::NewGuid()).jsonc"
 Copy-Item -LiteralPath $centralPath -Destination $temporaryPath
@@ -475,5 +473,6 @@ catch {
 }
 finally {
   Remove-Item -LiteralPath $ediktScript -Force -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $ediktDirectory -Recurse -Force -ErrorAction SilentlyContinue
   $env:OPENCODE_CONFIG = $previousConfig
 }

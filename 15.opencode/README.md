@@ -32,7 +32,8 @@ values.
 The merge uses Edikt for the edits and then reformats the resulting JSONC with
 Prettier. It checks for `prettier` first and then uses `npx --yes prettier`,
 which downloads Prettier when it is not installed locally. If neither command
-is available, the central config is not changed.
+is available, the merge continues without formatting. Edikt is downloaded to
+a temporary directory for each run and removed afterwards.
 
 ```powershell
 ./merge-config.ps1
