@@ -285,7 +285,6 @@ function Save-SecretReferences {
       $secretPath = Join-Path $ConfigDirectory $relativePath
 
       if (Test-Path -LiteralPath $secretPath) {
-        Write-Host "Secret file already exists; leaving it unchanged: $secretPath"
         continue
       }
 
@@ -316,10 +315,10 @@ function Save-SecretReferences {
         finally {
           $stream.Dispose()
         }
-        Write-Host "Created secret file $secretPath"
+        Write-Host "Created secret file: $secretName"
       }
       catch [System.IO.IOException] {
-        Write-Host "Secret file was created concurrently; leaving it unchanged: $secretPath"
+        Write-Host "Secret file already exists: $secretName"
       }
     }
   }
