@@ -58,3 +58,12 @@ installing each missing skill. To run only the skill check separately, use:
 ```powershell
 ./install-skills.ps1
 ```
+
+Configured skills:
+
+| Skill | Repository |
+| --- | --- |
+| `skill-creator` | `https://github.com/anthropics/skills` |
+| `htmx` | `https://github.com/mindrally/skills` |
+| `find-skills` | `https://github.com/vercel-labs/skills` |
+| `git-commit` | `https://github.com/github/awesome-copilot` |

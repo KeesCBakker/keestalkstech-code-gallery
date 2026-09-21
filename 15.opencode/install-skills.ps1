@@ -25,6 +25,11 @@ if (-not $npx) {
 }
 
 Write-Host "Checking installed global OpenCode skills..."
+Write-Host "`nConfigured skills:"
+foreach ($skill in $skills) {
+  Write-Host ("  {0,-20} {1}" -f $skill.Name, $skill.Source)
+}
+
 function Get-InstalledSkills {
   $output = & npx.cmd skills list --global --agent opencode 2>&1
   if ($LASTEXITCODE) {
