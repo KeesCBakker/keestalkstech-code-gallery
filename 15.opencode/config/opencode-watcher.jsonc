@@ -1,0 +1,35 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "watcher": {
+    "ignore": [
+      // JavaScript and frontend output.
+      "node_modules/**",
+      "dist/**",
+
+      // Repository metadata and infrastructure state.
+      ".git/**",
+      ".terraform/**",
+      "*.tfstate*",
+
+      // Java and Maven/Gradle output.
+      "target/**",
+      ".gradle/**",
+
+      // .NET output.
+      "bin/**",
+      "obj/**",
+
+      // Python caches and virtual environments.
+      "__pycache__/**",
+      ".pytest_cache/**",
+      ".mypy_cache/**",
+      ".ruff_cache/**",
+      ".venv/**",
+      "venv/**",
+      "build/**",
+
+      // Go-generated and test output.
+      "coverage.out"
+    ]
+  }
+}

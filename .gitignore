@@ -359,4 +359,5 @@ appsettings.Local.json
 
 # Local test artifacts
 /tmp/
+/15.opencode/config/opencode.generated.json
 

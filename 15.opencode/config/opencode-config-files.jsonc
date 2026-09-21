@@ -1,0 +1,72 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "permission": {
+    "read": {
+      // Environment files and common local configuration.
+      ".env*": "deny",
+      "*.env": "deny",
+      "appsettings*.json": "deny",
+      "application*.yml": "deny",
+      "application*.yaml": "deny",
+      "application*.properties": "deny",
+      "secrets/**": "deny",
+      "**/secrets/**": "deny",
+
+      // Infrastructure state and local credentials.
+      "*.tfstate*": "deny",
+      ".terraformrc": "deny",
+      "terraform.rc": "deny",
+      "kubeconfig": "deny",
+      ".kube/config": "deny",
+      "**/.kube/config": "deny",
+
+      // SSH, cloud, and package-manager credentials.
+      ".ssh/**": "deny",
+      "**/.ssh/**": "deny",
+      ".aws/credentials": "deny",
+      ".aws/config": "deny",
+      "**/.aws/credentials": "deny",
+      "**/.aws/config": "deny",
+      ".azure/**": "deny",
+      "**/.azure/**": "deny",
+      ".npmrc": "deny",
+      "**/.npmrc": "deny",
+      ".yarnrc": "deny",
+      ".yarnrc.yml": "deny",
+      "**/.yarnrc": "deny",
+      "**/.yarnrc.yml": "deny",
+
+      // .NET, Java, Python, Go, and Rust credentials.
+      "NuGet.Config": "deny",
+      "**/NuGet.Config": "deny",
+      ".m2/settings.xml": "deny",
+      "**/.m2/settings.xml": "deny",
+      "gradle.properties": "deny",
+      "**/gradle.properties": "deny",
+      ".config/pip/**": "deny",
+      "**/.config/pip/**": "deny",
+      ".pypirc": "deny",
+      "**/.pypirc": "deny",
+      ".config/gh/hosts.yml": "deny",
+      "**/.config/gh/hosts.yml": "deny",
+      ".cargo/credentials*": "deny",
+      "**/.cargo/credentials*": "deny",
+
+      // Private keys and certificate material.
+      "*.pem": "deny",
+      "*.key": "deny",
+      "*.p12": "deny",
+      "*.pfx": "deny",
+      "*.jks": "deny",
+      "*.keystore": "deny",
+
+      // Example files are intended to be shared and remain readable.
+      "*.example*": "allow",
+      "**/*.example*": "allow",
+      "*.sample*": "allow",
+      "**/*.sample*": "allow",
+      "*.template*": "allow",
+      "**/*.template*": "allow"
+    }
+  }
+}
