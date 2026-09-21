@@ -3,10 +3,11 @@ $ErrorActionPreference = "Stop"
 function Write-Status {
   param(
     [string] $Message,
-    [ConsoleColor] $Color = [ConsoleColor]::Gray
+    [ConsoleColor] $Color = [ConsoleColor]::Gray,
+    [switch] $NoNewline
   )
 
-  Write-Host $Message -ForegroundColor $Color
+  Write-Host $Message -ForegroundColor $Color -NoNewline:$NoNewline
 }
 
 $npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
@@ -122,7 +123,8 @@ function Show-Preflight {
     $name = $fragment.Key
     $path = $fragment.Value.Path
     $status = if ($fragment.Value.Exists) { "found" } else { "missing" }
-    Write-Status ("  {0,-30} {1}" -f $name, $status) $(if ($status -eq "found") { "Green" } else { "Yellow" })
+    Write-Status ("  {0,-30}" -f $name) DarkYellow -NoNewline
+    Write-Status (" {0}" -f $status) $(if ($status -eq "found") { "Green" } else { "Red" })
   }
 
   $centralBash = if ($Central.permission -and $Central.permission.bash) { $Central.permission.bash } else { @{} }
@@ -150,7 +152,8 @@ function Show-Preflight {
   foreach ($mcp in $projectMcp.GetEnumerator()) {
     $state = if ($centralMcp.ContainsKey($mcp.Key)) { "configured" } else { "not configured" }
     $enabled = if ($mcp.Value.enabled -eq $true) { "enabled" } else { "disabled" }
-    Write-Status ("  {0,-20} {1,-16} project {2}" -f $mcp.Key, $state, $enabled) $(if ($state -eq "configured") { "Green" } else { "Yellow" })
+    Write-Status ("  {0,-20}" -f $mcp.Key) DarkYellow -NoNewline
+    Write-Status (" {0,-16} project {1}" -f $state, $enabled) $(if ($state -eq "configured") { "Green" } else { "Red" })
   }
   Write-Status ""
 }
