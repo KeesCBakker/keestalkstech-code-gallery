@@ -402,6 +402,11 @@ foreach ($fragmentName in $fragmentNames) {
 
 Save-SecretReferences -Config $merged -ConfigDirectory $configDirectory
 
+if ($expressions.Count -eq 0) {
+  Write-Host "No configuration changes detected; leaving the central config unchanged."
+  exit 0
+}
+
 $ediktVersion = "v0.5.0"
 $ediktDirectory = Join-Path $env:TEMP "opencode-edikt-$([guid]::NewGuid())"
 $ediktPath = Join-Path $ediktDirectory "edikt.exe"
