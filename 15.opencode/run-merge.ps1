@@ -12,6 +12,7 @@ $files = @(
   "merge-config.ps1"
   "install-skills.ps1"
   "config/opencode.jsonc"
+  "config/opencode-skills.yaml"
   "config/opencode-mcps.jsonc"
   "config/opencode-ask.jsonc"
   "config/opencode-config-files.jsonc"

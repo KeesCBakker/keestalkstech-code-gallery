@@ -1,0 +1,9 @@
+skills:
+  - name: skill-creator
+    source: https://github.com/anthropics/skills
+  - name: htmx
+    source: https://github.com/mindrally/skills
+  - name: find-skills
+    source: https://github.com/vercel-labs/skills
+  - name: git-commit
+    source: https://github.com/github/awesome-copilot

@@ -1,23 +1,27 @@
 $ErrorActionPreference = "Stop"
 
-$skills = @(
-  @{
-    Name = "skill-creator"
-    Source = "https://github.com/anthropics/skills"
+$skillsPath = Join-Path $PSScriptRoot "config\opencode-skills.yaml"
+if (-not (Test-Path -LiteralPath $skillsPath)) {
+  throw "Skills configuration not found: $skillsPath"
+}
+
+# Parse the intentionally small, dependency-free YAML structure used here.
+$skills = @()
+$currentSkill = $null
+foreach ($line in Get-Content -LiteralPath $skillsPath) {
+  if ($line -match '^\s*-\s+name:\s*(.+?)\s*$') {
+    $currentSkill = @{ Name = $Matches[1].Trim(); Source = $null }
+    $skills += $currentSkill
+    continue
   }
-  @{
-    Name = "htmx"
-    Source = "https://github.com/mindrally/skills"
+  if ($line -match '^\s+source:\s*(.+?)\s*$' -and $null -ne $currentSkill) {
+    $currentSkill.Source = $Matches[1].Trim()
   }
-  @{
-    Name = "find-skills"
-    Source = "https://github.com/vercel-labs/skills"
-  }
-  @{
-    Name = "git-commit"
-    Source = "https://github.com/github/awesome-copilot"
-  }
-)
+}
+
+if ($skills.Count -eq 0 -or @($skills | Where-Object { [string]::IsNullOrWhiteSpace($_.Name) -or [string]::IsNullOrWhiteSpace($_.Source) }).Count -gt 0) {
+  throw "Skills configuration is empty or invalid: $skillsPath"
+}
 
 $npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
 if (-not $npx) {

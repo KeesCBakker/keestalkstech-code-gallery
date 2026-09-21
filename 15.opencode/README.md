@@ -22,6 +22,7 @@ The configuration fragments are kept in the `config` directory:
 - `config/opencode-ask.jsonc`: command permissions
 - `config/opencode-config-files.jsonc`: access to configuration files
 - `config/opencode-watcher.jsonc`: watcher ignore patterns
+- `config/opencode-skills.yaml`: optional skills and their repositories
 
 OpenCode does not automatically include arbitrary JSONC files. Run
 `./merge-config.ps1` to merge these fragments into the central OpenCode
@@ -61,9 +62,5 @@ installing each missing skill. To run only the skill check separately, use:
 
 Configured skills:
 
-| Skill | Repository |
-| --- | --- |
-| `skill-creator` | `https://github.com/anthropics/skills` |
-| `htmx` | `https://github.com/mindrally/skills` |
-| `find-skills` | `https://github.com/vercel-labs/skills` |
-| `git-commit` | `https://github.com/github/awesome-copilot` |
+The list is maintained in `config/opencode-skills.yaml` and is read by
+`install-skills.ps1`.
