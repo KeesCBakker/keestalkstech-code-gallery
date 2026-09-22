@@ -10,9 +10,9 @@ function Write-Status {
   Write-Host $Message -ForegroundColor $Color -NoNewline:$NoNewline
 }
 
-$npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
-if (-not $npx) {
-  throw "npx is required. Install Node.js, then run this script again."
+$bun = Get-Command bun -CommandType Application -ErrorAction SilentlyContinue
+if (-not $bun) {
+  throw "bun is required. Install OpenCode, then run this script again."
 }
 
 function Read-JsoncFile {
@@ -461,18 +461,16 @@ try {
     Write-Status "Formatting merged config with prettier." Cyan
   }
   else {
-    $npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
-    if ($npx) {
-      # nvm-windows can expose npx through a shim whose Path contains
-      # both the wrapper and target. Let PowerShell resolve the command name.
-      $prettierCommand = "npx.cmd"
-      $prettierArguments = @("--yes", "prettier", "--write", "--parser", "jsonc", $temporaryPath)
-      Write-Status "Formatting merged config with prettier via npx. Prettier may be downloaded if needed." Cyan
+    $bun = Get-Command bun -CommandType Application -ErrorAction SilentlyContinue
+    if ($bun) {
+      $prettierCommand = $bun.Path
+      $prettierArguments = @("x", "--yes", "prettier", "--write", "--parser", "jsonc", $temporaryPath)
+      Write-Status "Formatting merged config with prettier via bun. Prettier may be downloaded if needed." Cyan
     }
   }
 
   if (-not $prettierCommand) {
-    Write-Verbose "Neither prettier nor npx was found; continuing without formatting."
+    Write-Verbose "Neither prettier nor bun was found; continuing without formatting."
   }
   else {
     $prettierOutput = & $prettierCommand @prettierArguments 2>&1

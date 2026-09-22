@@ -11,13 +11,9 @@ Install OpenCode and its prerequisites first:
 ./install-opencode.ps1
 ```
 
-The installer uses WinGet for OpenCode, NVM for Windows, and Coreutils. It then
-installs and activates the Node.js LTS release through NVM and verifies
-`opencode`, `node`, `npm`, and `npx`.
-
-Node.js must be installed because the merge requires `npx`. The merge script
-stops before reading or changing the central configuration when `npx` is
-unavailable.
+The installer uses WinGet for OpenCode and Coreutils, then verifies `opencode`
+and `bun`. OpenCode supplies the Bun runtime used by the merge and skill
+scripts, so a separate Node.js or NVM installation is not required.
 
 Run the merge from this directory:
 

@@ -3,7 +3,7 @@
   "mcp": {
     "playwright": {
       "type": "local",
-      "command": ["npx", "@playwright/mcp@latest"],
+      "command": ["bun", "x", "@playwright/mcp@latest"],
       "enabled": false
     },
     "atlassian": {

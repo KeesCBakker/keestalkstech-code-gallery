@@ -32,9 +32,9 @@ if ($skills.Count -eq 0 -or @($skills | Where-Object { [string]::IsNullOrWhiteSp
   throw "Skills configuration is empty or invalid: $skillsPath"
 }
 
-$npx = Get-Command npx -CommandType Application -ErrorAction SilentlyContinue
-if (-not $npx) {
-  throw "npx is required to install skills."
+$bun = Get-Command bun -CommandType Application -ErrorAction SilentlyContinue
+if (-not $bun) {
+  throw "bun is required to install skills."
 }
 
 Write-Status "Checking installed global OpenCode skills..." Cyan
@@ -44,7 +44,7 @@ foreach ($skill in $skills) {
 }
 
 function Get-InstalledSkills {
-  $output = & npx.cmd skills list --global --agent opencode 2>&1
+  $output = & bun x skills list --global --agent opencode 2>&1
   if ($LASTEXITCODE) {
     throw "Could not list installed skills: $($output -join ' ')"
   }
@@ -74,7 +74,7 @@ foreach ($skill in $skills) {
   }
 
   Write-Status "Installing: $($skill.Name)" Cyan
-  & npx.cmd skills add $skill.Source --skill $skill.Name --global --agent opencode --yes
+  & bun x skills add $skill.Source --skill $skill.Name --global --agent opencode --yes
   if ($LASTEXITCODE) {
     throw "Failed to install skill '$($skill.Name)'."
   }
@@ -86,4 +86,4 @@ foreach ($skill in $skills) {
 }
 
 Write-Status "`nInstalled global OpenCode skills:" Cyan
-& npx.cmd skills list --global --agent opencode
+& bun x skills list --global --agent opencode
