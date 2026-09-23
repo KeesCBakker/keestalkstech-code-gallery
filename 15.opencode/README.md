@@ -44,12 +44,15 @@ timestamped backup, and shows a preflight summary. It then:
 
 If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
-To run the current version without cloning the repository, use this command in
-PowerShell or a Linux shell. It downloads the small launcher to a temporary
-file and starts it with the terminal attached, so interactive prompts work.
+To run the current version without cloning the repository, pipe the launcher
+into Bun. The launcher reconnects the interactive prompts to the terminal.
+
+```powershell
+curl.exe -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ts | bun run -
+```
 
 ```sh
-bun -e 'const fs=await import("node:fs/promises"),path=await import("node:path"),os=await import("node:os"),ref="main",dir=await fs.mkdtemp(path.join(os.tmpdir(),"opencode-"));try{const response=await fetch(`https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/${ref}/15.opencode/run-merge.ts`);if(!response.ok)throw Error(`Download failed: HTTP ${response.status}`);const entry=path.join(dir,"run-merge.ts");await Bun.write(entry,response);const child=Bun.spawn(["bun","run",entry,"--ref",ref],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await child.exited}finally{await fs.rm(dir,{recursive:true,force:true})}'
+curl -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ts | bun run -
 ```
 
 The small launcher downloads the pinned package metadata and hands control to
