@@ -44,20 +44,24 @@ timestamped backup, and shows a preflight summary. It then:
 
 If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
-To run the current version without cloning the repository, use this single
-command in PowerShell or a Linux shell. It downloads and starts the launcher
-with the terminal attached so the prompts accept keypresses.
+To run the current version without cloning the repository, use the bootstrap
+for your shell. Both download the package files to a temporary directory,
+install the pinned dependencies, and start the merger with the terminal
+connected for interactive prompts.
 
-```sh
-bun -e 'const fs=await import("node:fs/promises"),path=await import("node:path"),os=await import("node:os"),ref="main",dir=await fs.mkdtemp(path.join(os.tmpdir(),"opencode-"));try{const response=await fetch(`https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/${ref}/15.opencode/run-merge.ts`);if(!response.ok)throw Error(`Download failed: HTTP ${response.status}`);const entry=path.join(dir,"run-merge.ts");await Bun.write(entry,response);const child=Bun.spawn(["bun","run",entry,"--ref",ref],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await child.exited}finally{await fs.rm(dir,{recursive:true,force:true})}'
+```powershell
+& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ps1")))
 ```
 
-The small launcher downloads the pinned package metadata and hands control to
-`merge-config.ts`. The main program downloads all files in its `config`
-directory, performs the merge, and removes the temporary directory when it
-exits. Use a commit SHA instead of `main` when reproducibility is important.
-Set the SHA in `ref`; the program and configuration files are then taken from
-that revision.
+```sh
+curl -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.sh | bash
+```
+
+The merger downloads all files in its `config` directory and applies the
+configuration. The bootstraps remove their temporary files afterwards. Use a
+commit SHA instead of `main` in the URL when reproducibility is important, and
+pass the same SHA as `-Ref` (PowerShell) or the first argument (shell) to keep
+the downloaded files on that revision.
 
 The PowerShell scripts remain available as a fallback during the TypeScript
 migration:
@@ -77,7 +81,7 @@ The configuration fragments are kept in the `config` directory:
 - `config/opencode-watcher.jsonc`: watcher ignore patterns
 - `config/opencode-skills.yaml`: optional skills and their repositories
 - `merge-config.ts`: Bun-based JSONC merge
-- `run-merge.ts`: remote Bun launcher
+- `run-merge.ps1` and `run-merge.sh`: remote bootstraps
 
 OpenCode does not automatically include arbitrary JSONC files; the merge script
 combines these fragments with the central configuration.

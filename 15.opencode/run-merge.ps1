@@ -3,41 +3,29 @@ param(
 )
 
 $ErrorActionPreference = "Stop"
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+if ($Ref.StartsWith("-") -or $Ref.Contains("..") -or $Ref -notmatch '^[A-Za-z0-9._/-]+$') {
+  throw "Invalid Git ref: $Ref"
+}
 
-$repository = "KeesCBakker/keestalkstech-code-gallery"
-$sourceDirectory = "15.opencode"
-$temporaryDirectory = Join-Path $env:TEMP "opencode-merge-$([guid]::NewGuid())"
-$files = @(
-  "merge-config.ps1"
-  "install-skills.ps1"
-  "config/opencode.jsonc"
-  "config/opencode-skills.yaml"
-  "config/opencode-mcps.jsonc"
-  "config/opencode-ask.jsonc"
-  "config/opencode-config-files.jsonc"
-  "config/opencode-watcher.jsonc"
-)
+$directory = Join-Path ([IO.Path]::GetTempPath()) "opencode-bootstrap-$([guid]::NewGuid())"
+$files = @("package.json", "bun.lock", ".prettierrc", "merge-config.ts")
 
 try {
-  New-Item -ItemType Directory -Force -Path $temporaryDirectory | Out-Null
-  New-Item -ItemType Directory -Force -Path (Join-Path $temporaryDirectory "config") | Out-Null
-
+  New-Item -ItemType Directory -Path $directory | Out-Null
   foreach ($file in $files) {
-    $destination = Join-Path $temporaryDirectory $file
-    $parent = Split-Path -Parent $destination
-    New-Item -ItemType Directory -Force -Path $parent | Out-Null
-
-    $url = "https://raw.githubusercontent.com/$repository/$Ref/$sourceDirectory/$file"
-    Write-Host "Downloading $file"
-    Invoke-WebRequest -Uri $url -OutFile $destination -UseBasicParsing
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/$Ref/15.opencode/$file" -OutFile (Join-Path $directory $file)
   }
 
-  & (Join-Path $temporaryDirectory "merge-config.ps1")
-  if ($LASTEXITCODE) {
-    throw "The downloaded merge script failed with exit code $LASTEXITCODE."
+  & bun install --frozen-lockfile --production --cwd $directory
+  if ($LASTEXITCODE -ne 0) {
+    throw "Could not install the pinned merge dependencies (exit code $LASTEXITCODE)."
+  }
+
+  & bun run (Join-Path $directory "merge-config.ts") --ref $Ref
+  if ($LASTEXITCODE -ne 0) {
+    throw "The merge program failed with exit code $LASTEXITCODE."
   }
 }
 finally {
-  Remove-Item -LiteralPath $temporaryDirectory -Recurse -Force -ErrorAction SilentlyContinue
+  Remove-Item -LiteralPath $directory -Recurse -Force -ErrorAction SilentlyContinue
 }
