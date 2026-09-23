@@ -287,3 +287,16 @@ describe("OpenCode config integration", () => {
     }
   })
 })
+
+describe("launcher terminal input", () => {
+  test("rejects piped stdin before downloading or prompting", async () => {
+    const child = Bun.spawn(["bun", "run", join(import.meta.dir, "..", "run-merge.ts")], {
+      stdin: "ignore",
+      stdout: "pipe",
+      stderr: "pipe"
+    })
+    const [exitCode, stderr] = await Promise.all([child.exited, new Response(child.stderr).text()])
+    expect(exitCode).toBe(1)
+    expect(stderr).toContain("Interactive prompts need a terminal")
+  })
+})

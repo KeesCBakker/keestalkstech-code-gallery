@@ -23,6 +23,9 @@ function readRef(arguments_: string[]): string {
 
 export async function main(): Promise<void> {
   const ref = readRef(process.argv.slice(2))
+  if (!process.stdin.isTTY) {
+    throw new Error("Interactive prompts need a terminal. Run the Bun bootstrap command in the README instead of piping curl into 'bun run -'.")
+  }
   const temporaryDirectory = await mkdtemp(join(tmpdir(), "opencode-merge-"))
   try {
     for (const file of files) {
