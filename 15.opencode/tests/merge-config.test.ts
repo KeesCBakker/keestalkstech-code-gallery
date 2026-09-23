@@ -14,7 +14,7 @@ import {
   resolveSecretPath,
   runProcess,
   type Fragments
-} from "../merge-config"
+} from "../src/merge-config"
 
 function fragments(overrides: Partial<Fragments> = {}): Fragments {
   return {

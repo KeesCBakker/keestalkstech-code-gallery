@@ -15,10 +15,13 @@ fi
 directory=$(mktemp -d)
 trap 'rm -rf -- "$directory"' EXIT
 
-for file in package.json bun.lock .prettierrc merge-config.ts; do
+files=(package.json bun.lock .prettierrc src/merge-config.ts)
+for file in "${files[@]}"; do
+  mkdir -p "$directory/$(dirname "$file")"
   curl -fsSL "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/$ref/15.opencode/$file" \
     -o "$directory/$file"
 done
 
-bun install --frozen-lockfile --production --cwd "$directory"
-bun run "$directory/merge-config.ts" --ref "$ref" </dev/tty
+cd "$directory"
+bun install --frozen-lockfile --production
+bun run src/merge-config.ts --ref "$ref" </dev/tty

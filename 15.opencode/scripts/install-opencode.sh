@@ -2,7 +2,7 @@
 set -euo pipefail
 
 if [[ "$(uname -s)" != "Linux" ]]; then
-  printf 'This installer supports Linux. On Windows, run install-opencode.ps1 in PowerShell.\n' >&2
+  printf 'This installer supports Linux. On Windows, run scripts/install-opencode.ps1 in PowerShell.\n' >&2
   exit 1
 fi
 

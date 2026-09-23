@@ -79,6 +79,7 @@
       "yarn *": "ask",
       "pnpm *": "ask",
       "bun *": "ask",
+      "bunx *": "ask",
 
       // .NET and NuGet: ask by default and allow harmless diagnostics.
       "dotnet *": "ask",

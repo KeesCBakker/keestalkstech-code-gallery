@@ -7,6 +7,8 @@ import { cancel, confirm, intro, isCancel, log, note, outro, password } from "@c
 import { applyEdits, modify, parse, printParseErrorCode, type FormattingOptions, type JSONPath, type ParseError } from "jsonc-parser"
 import { parse as parseYaml } from "yaml"
 
+const projectDirectory = dirname(import.meta.dir)
+
 export type JsonObject = Record<string, unknown>
 type Decision = (path: string, current: unknown, incoming: unknown) => Promise<boolean>
 export type Skill = { name: string; source: string }
@@ -347,7 +349,7 @@ async function downloadProjectFiles(ref: string): Promise<void> {
     const response = await fetch(file.download_url)
     if (!response.ok) throw new Error(`Could not download ${file.name}: HTTP ${response.status}`)
 
-    const destination = join(import.meta.dir, "config", file.name)
+    const destination = join(projectDirectory, "config", file.name)
     await mkdir(dirname(destination), { recursive: true })
     await Bun.write(destination, response)
   }
@@ -370,14 +372,14 @@ async function validateConfig(path: string): Promise<void> {
 
 export async function formatConfig(path: string): Promise<void> {
   const { exitCode, stderr, stdout } = await runProcess(
-    ["bun", "x", "--no-install", "prettier", "--write", "--parser", "jsonc", "--config", join(import.meta.dir, ".prettierrc"), path],
-    { cwd: import.meta.dir, output: "capture" }
+    ["bun", "x", "--no-install", "prettier", "--write", "--parser", "jsonc", "--config", join(projectDirectory, ".prettierrc"), path],
+    { cwd: projectDirectory, output: "capture" }
   )
   if (exitCode !== 0) throw new Error((stderr || stdout).trim() || "Prettier could not format the merged config.")
 }
 
 async function installSkills(): Promise<void> {
-  const skills = parseSkills(await readFile(join(import.meta.dir, "config", "opencode-skills.yaml"), "utf8"))
+  const skills = parseSkills(await readFile(join(projectDirectory, "config", "opencode-skills.yaml"), "utf8"))
   note(skills.map(skill => `${skill.name.padEnd(20)} ${skill.source}`).join("\n"), "Configured skills")
   for (const skill of skills) {
     if (hasSkill(await runSkills(["list", "--global", "--agent", "opencode"]), skill.name)) {
@@ -405,7 +407,7 @@ async function main(): Promise<void> {
   const configDirectory = join(homedir(), ".config", "opencode")
   const centralPath = findCentralConfig(configDirectory)
   const centralText = await readFile(centralPath, "utf8")
-  const fragments = await readFragments(join(import.meta.dir, "config"))
+  const fragments = await readFragments(join(projectDirectory, "config"))
 
   showPreflight(parseJsonc(centralText, centralPath), fragments, centralPath)
   const result = await mergeConfiguration(centralText, fragments, decideConflict)

@@ -338,7 +338,7 @@ function Save-SecretReferences {
   }
 }
 
-$projectDirectory = Join-Path $PSScriptRoot "config"
+$projectDirectory = Join-Path (Split-Path -Parent $PSScriptRoot) "config"
 $configDirectory = Join-Path $HOME ".config\opencode"
 $jsoncPath = Join-Path $configDirectory "opencode.jsonc"
 $jsonPath = Join-Path $configDirectory "opencode.json"

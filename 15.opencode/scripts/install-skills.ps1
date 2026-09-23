@@ -9,7 +9,7 @@ function Write-Status {
   Write-Host $Message -ForegroundColor $Color
 }
 
-$skillsPath = Join-Path $PSScriptRoot "config\opencode-skills.yaml"
+$skillsPath = Join-Path (Split-Path -Parent $PSScriptRoot) "config\opencode-skills.yaml"
 if (-not (Test-Path -LiteralPath $skillsPath)) {
   throw "Skills configuration not found: $skillsPath"
 }

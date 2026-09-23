@@ -8,24 +8,30 @@ if ($Ref.StartsWith("-") -or $Ref.Contains("..") -or $Ref -notmatch '^[A-Za-z0-9
 }
 
 $directory = Join-Path ([IO.Path]::GetTempPath()) "opencode-bootstrap-$([guid]::NewGuid())"
-$files = @("package.json", "bun.lock", ".prettierrc", "merge-config.ts")
+$files = @("package.json", "bun.lock", ".prettierrc", "src/merge-config.ts")
 
 try {
   New-Item -ItemType Directory -Path $directory | Out-Null
   foreach ($file in $files) {
-    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/$Ref/15.opencode/$file" -OutFile (Join-Path $directory $file)
+    $destination = Join-Path $directory $file
+    New-Item -ItemType Directory -Force -Path (Split-Path -Parent $destination) | Out-Null
+    Invoke-WebRequest -Uri "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/$Ref/15.opencode/$file" -OutFile $destination
   }
 
-  & bun install --frozen-lockfile --production --cwd $directory
+  Push-Location $directory
+  & bun install --frozen-lockfile --production
   if ($LASTEXITCODE -ne 0) {
     throw "Could not install the pinned merge dependencies (exit code $LASTEXITCODE)."
   }
 
-  & bun run (Join-Path $directory "merge-config.ts") --ref $Ref
+  & bun run "src/merge-config.ts" --ref $Ref
   if ($LASTEXITCODE -ne 0) {
     throw "The merge program failed with exit code $LASTEXITCODE."
   }
 }
 finally {
+  if ((Get-Location).Path -eq $directory) {
+    Pop-Location
+  }
   Remove-Item -LiteralPath $directory -Recurse -Force -ErrorAction SilentlyContinue
 }
