@@ -1,0 +1,17 @@
+{
+  "name": "keestalkstech-opencode-config",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "merge": "bun run merge-config.ts",
+    "test": "bun test tests"
+  },
+  "dependencies": {
+    "@clack/prompts": "1.8.1",
+    "jsonc-parser": "3.3.1",
+    "prettier": "3.8.1",
+    "skills": "1.7.0",
+    "yaml": "2.8.3"
+  }
+}

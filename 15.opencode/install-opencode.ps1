@@ -13,7 +13,6 @@
   Update-Path
 
   # Verify the tools used by the installer and merge scripts.
-  Update-Path
   Write-Host "opencode: $(opencode --version)"
   Write-Host "bun: $(bun --version)"
 }

@@ -13,12 +13,13 @@ Install OpenCode and its prerequisites first:
 
 The installer uses WinGet for OpenCode and Coreutils, then verifies `opencode`
 and `bun`. OpenCode supplies the Bun runtime used by the merge and skill
-scripts, so a separate Node.js or NVM installation is not required.
+scripts, so a separate Bun, Node.js, or NVM installation is not required.
 
-Run the merge from this directory:
+Install the pinned JSONC parser and run the TypeScript merge from this directory:
 
 ```powershell
-./merge-config.ps1
+bun install --frozen-lockfile
+bun run merge
 ```
 
 The script finds the central `opencode.jsonc` or `opencode.json`, creates a
@@ -29,22 +30,32 @@ timestamped backup, and shows a preflight summary. It then:
 - Asks before adding or replacing MCPs.
 - Creates missing MCP secret files without overwriting existing files.
 - Merges watcher ignore patterns.
-- Uses Edikt for JSONC-preserving edits.
-- Formats the result with Prettier when available.
+- Uses Microsoft's `jsonc-parser` for targeted, comment-preserving JSONC edits.
+- Formats changed configuration with the project Prettier settings before validation.
 - Validates the result with `opencode debug config`.
 - Checks and optionally installs the configured global OpenCode skills.
 
-If there are no configuration changes, Edikt and Prettier are skipped.
+If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
 To run the current version without cloning the repository:
 
 ```powershell
-& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ps1")))
+bun -e 'const{join}=await import("node:path");const{mkdtemp,rm}=await import("node:fs/promises");const ref="main",dir=await mkdtemp(join(Bun.env.TEMP??".","opencode-bootstrap-"));try{const response=await fetch(`https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/${ref}/15.opencode/run-merge.ts`);if(!response.ok)throw new Error(`Download failed: HTTP ${response.status}`);await Bun.write(join(dir,"run-merge.ts"),response);const child=Bun.spawn(["bun","run",join(dir,"run-merge.ts"),"--ref",ref],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await child.exited}finally{await rm(dir,{recursive:true,force:true})}'
 ```
 
-The launcher downloads the scripts and configuration fragments into a unique
-temporary directory, runs the merge, and removes the directory afterwards. Use
-a pinned branch or tag instead of `main` when reproducibility is important.
+The small launcher downloads the pinned package metadata and hands control to
+`merge-config.ts`. The main program downloads all files in its `config`
+directory, performs the merge, and removes the temporary directory when it
+exits. Use a commit SHA instead of `main` when reproducibility is important.
+Set the SHA in `ref`; the program and configuration files are then taken from
+that revision.
+
+The PowerShell scripts remain available as a fallback during the TypeScript
+migration:
+
+```powershell
+./merge-config.ps1
+```
 
 ## Configuration files
 
@@ -56,22 +67,15 @@ The configuration fragments are kept in the `config` directory:
 - `config/opencode-config-files.jsonc`: access to configuration files
 - `config/opencode-watcher.jsonc`: watcher ignore patterns
 - `config/opencode-skills.yaml`: optional skills and their repositories
+- `merge-config.ts`: Bun-based JSONC merge
+- `run-merge.ts`: remote Bun launcher
 
 OpenCode does not automatically include arbitrary JSONC files; the merge script
 combines these fragments with the central configuration.
 
-After a successful config merge, the merge script also checks the optional
-skills. It skips skills that are already installed and asks for approval before
-installing each missing skill. To run only the skill check separately, use:
-
-```powershell
-./install-skills.ps1
-```
-
-Configured skills:
-
-The list is maintained in `config/opencode-skills.yaml` and is read by
-`install-skills.ps1`.
+After a successful config merge, the merge program checks the optional skills.
+It skips skills that are already installed and asks before installing each
+missing skill. The skill list lives in `config/opencode-skills.yaml`.
 
 ## Secrets
 
@@ -90,7 +94,12 @@ The project contains references only, never secret values:
 ## Notes
 
 - The central configuration is changed only after validation succeeds.
-- Existing comments and formatting are preserved during Edikt edits where possible.
-- Prettier is best-effort; a formatting failure does not block a valid merge.
-- Edikt is downloaded to a temporary directory for each run and removed afterwards.
+- Existing comments and formatting are preserved by targeted `jsonc-parser` edits.
+- `@clack/prompts`, `jsonc-parser`, `prettier`, `yaml`, and the `skills` CLI are pinned in `bun.lock`.
 - The generated local config is ignored by Git.
+
+## Tests
+
+```powershell
+bun run test
+```
