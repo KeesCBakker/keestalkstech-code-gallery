@@ -93,13 +93,6 @@ flowchart TD
     T --> U
 ```
 
-The PowerShell scripts remain available as a fallback during the TypeScript
-migration:
-
-```powershell
-./scripts/merge-config.ps1
-```
-
 ## Configuration files
 
 The configuration fragments are kept in the `config` directory:
