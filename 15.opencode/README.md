@@ -8,7 +8,7 @@ Windows and Linux.
 Run the merger without cloning the repository:
 
 ```sh
-bun -e 'const p=await import("node:path"),f=p.join(Bun.env.TEMP??Bun.env.TMPDIR??".",`run-merge-${crypto.randomUUID()}.ts`);try{const r=await fetch("https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts");if(!r.ok)throw Error(`Download failed: HTTP ${r.status}`);await Bun.write(f,r);const c=Bun.spawn(["bun",f],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await c.exited}finally{await Bun.file(f).delete()}'
+bun -e 'var f="run-merge.ts";await fetch("https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/"+f).then(r=>Bun.write(f,r)).then(()=>Bun.spawn(["bun",f],{stdio:[0,1,2]}).exited).finally(()=>Bun.file(f).delete())'
 ```
 
 The bootstrap downloads the merger to a unique temporary file, starts it with
