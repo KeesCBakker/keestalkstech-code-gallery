@@ -1,8 +1,11 @@
 import { chmod, copyFile, mkdir, open, readFile, readdir, rename, rm, writeFile } from "node:fs/promises"
 import { existsSync } from "node:fs"
+import { openSync } from "node:fs"
 import { homedir } from "node:os"
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path"
+import type { Readable } from "node:stream"
 import { parseArgs } from "node:util"
+import { ReadStream } from "node:tty"
 import { cancel, confirm, intro, isCancel, log, note, outro, password } from "@clack/prompts"
 import { applyEdits, modify, parse, printParseErrorCode, type FormattingOptions, type JSONPath, type ParseError } from "jsonc-parser"
 import { parse as parseYaml } from "yaml"
@@ -170,8 +173,24 @@ export async function mergeConfiguration(centralText: string, fragments: Fragmen
   return { text: `${document.bom}${document.text}`, data: document.data, changed: document.changed }
 }
 
+async function terminalPrompt<T>(prompt: (input: Readable) => Promise<T>): Promise<T> {
+  if (process.stdin.isTTY) return prompt(process.stdin)
+
+  let input: ReadStream
+  try {
+    input = new ReadStream(openSync(process.platform === "win32" ? "CONIN$" : "/dev/tty", "r"))
+  } catch {
+    throw new Error("An interactive terminal is required to answer the configuration prompts.")
+  }
+  try {
+    return await prompt(input)
+  } finally {
+    input.destroy()
+  }
+}
+
 async function askYesNo(message: string): Promise<boolean> {
-  const answer = await confirm({ message, initialValue: false })
+  const answer = await terminalPrompt(input => confirm({ message, initialValue: false, input }))
   if (isCancel(answer)) {
     cancel("Operation cancelled.")
     throw new CancelledError()
@@ -180,7 +199,7 @@ async function askYesNo(message: string): Promise<boolean> {
 }
 
 async function askSecret(message: string): Promise<string> {
-  const answer = await password({ message, mask: "*" })
+  const answer = await terminalPrompt(input => password({ message, mask: "*", input }))
   if (isCancel(answer)) {
     cancel("Operation cancelled.")
     throw new CancelledError()

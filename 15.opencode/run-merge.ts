@@ -1,5 +1,4 @@
 import { mkdtemp, rm } from "node:fs/promises"
-import { closeSync, openSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { parseArgs } from "node:util"
@@ -7,16 +6,6 @@ import { parseArgs } from "node:util"
 const repository = "KeesCBakker/keestalkstech-code-gallery"
 const sourceDirectory = "15.opencode"
 const files = ["package.json", "bun.lock", ".prettierrc", "merge-config.ts"]
-
-function openTerminalInput(): number | "inherit" {
-  if (process.stdin.isTTY) return "inherit"
-
-  try {
-    return openSync(process.platform === "win32" ? "CONIN$" : "/dev/tty", "r")
-  } catch {
-    throw new Error("An interactive terminal is required to answer the configuration prompts.")
-  }
-}
 
 function readRef(arguments_: string[]): string {
   const { values } = parseArgs({
@@ -51,18 +40,13 @@ export async function main(): Promise<void> {
     })
     if ((await install.exited) !== 0) throw new Error("Could not install the pinned merge dependencies.")
 
-    const terminalInput = openTerminalInput()
-    try {
-      const merge = Bun.spawn(["bun", "run", "merge-config.ts", "--ref", ref], {
-        cwd: temporaryDirectory,
-        stdin: terminalInput,
-        stdout: "inherit",
-        stderr: "inherit"
-      })
-      if ((await merge.exited) !== 0) throw new Error("The downloaded merge program failed.")
-    } finally {
-      if (typeof terminalInput === "number") closeSync(terminalInput)
-    }
+    const merge = Bun.spawn(["bun", "run", "merge-config.ts", "--ref", ref], {
+      cwd: temporaryDirectory,
+      stdin: "ignore",
+      stdout: "inherit",
+      stderr: "inherit"
+    })
+    if ((await merge.exited) !== 0) throw new Error("The downloaded merge program failed.")
   } finally {
     await rm(temporaryDirectory, { recursive: true, force: true })
   }
