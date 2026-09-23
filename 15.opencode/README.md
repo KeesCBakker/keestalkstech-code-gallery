@@ -5,17 +5,24 @@ Windows.
 
 ## Quick start
 
-Install OpenCode and its prerequisites first:
+Install OpenCode first. On Windows, run PowerShell:
 
 ```powershell
 ./install-opencode.ps1
 ```
 
-The installer uses WinGet for OpenCode and Coreutils, then verifies `opencode`
-and `bun`. OpenCode supplies the Bun runtime used by the merge and skill
-scripts, so a separate Bun, Node.js, or NVM installation is not required.
+On Linux, run the shell installer:
 
-Install the pinned JSONC parser and run the TypeScript merge from this directory:
+```sh
+bash install-opencode.sh
+```
+
+The Windows installer uses WinGet. The Linux installer uses OpenCode's official
+Linux installer. Both check that `opencode` and `bun` are available before you
+continue.
+
+From either platform, install the pinned dependencies and run the TypeScript
+merge from this directory:
 
 ```powershell
 bun install --frozen-lockfile
@@ -37,10 +44,15 @@ timestamped backup, and shows a preflight summary. It then:
 
 If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
-To run the current version without cloning the repository:
+To run the current version without cloning the repository, use the command for
+your shell.
 
 ```powershell
-bun -e 'const{join}=await import("node:path");const{mkdtemp,rm}=await import("node:fs/promises");const ref="main",dir=await mkdtemp(join(Bun.env.TEMP??".","opencode-bootstrap-"));try{const response=await fetch(`https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/${ref}/15.opencode/run-merge.ts`);if(!response.ok)throw new Error(`Download failed: HTTP ${response.status}`);await Bun.write(join(dir,"run-merge.ts"),response);const child=Bun.spawn(["bun","run",join(dir,"run-merge.ts"),"--ref",ref],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await child.exited}finally{await rm(dir,{recursive:true,force:true})}'
+curl.exe -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ts | bun run -
+```
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/run-merge.ts | bun run -
 ```
 
 The small launcher downloads the pinned package metadata and hands control to
