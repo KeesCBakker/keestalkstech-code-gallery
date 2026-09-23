@@ -7,17 +7,14 @@ Windows and Linux.
 
 Run the merger without cloning the repository:
 
-```powershell
-& ([scriptblock]::Create((irm "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ps1")))
-```
-
 ```sh
-curl -fsSL https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.sh | bash
+bun -e 'const p=await import("node:path"),f=p.join(Bun.env.TEMP??Bun.env.TMPDIR??".",`run-merge-${crypto.randomUUID()}.ts`);try{const r=await fetch("https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts");if(!r.ok)throw Error(`Download failed: HTTP ${r.status}`);await Bun.write(f,r);const c=Bun.spawn(["bun",f],{stdin:"inherit",stdout:"inherit",stderr:"inherit"});process.exitCode=await c.exited}finally{await Bun.file(f).delete()}'
 ```
 
-The scripts install the pinned dependencies, merge the configuration, validate
-it, and remove their temporary files. They prompt before changing conflicting
-settings or installing missing skills.
+The bootstrap downloads the merger to a unique temporary file, starts it with
+the terminal attached, and removes the file afterwards. The merger downloads
+the pinned dependencies, performs the configuration merge, and cleans up its
+temporary project.
 
 ## Quick start
 
@@ -61,36 +58,32 @@ timestamped backup, and shows a preflight summary. It then:
 If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
 The merger downloads all files in its `config` directory and applies the
-configuration. The bootstraps remove their temporary files afterwards. Use a
-commit SHA instead of `main` in the URL when reproducibility is important, and
-pass the same SHA as `-Ref` (PowerShell) or the first argument (shell) to keep
-the downloaded files on that revision.
+configuration. Use a commit SHA in the bootstrap URL when reproducibility is
+important, then pass the same SHA to `scripts/run-merge.ts` if needed.
 
 ```mermaid
 flowchart TD
-    A[Start bootstrap] --> B{Platform}
-    B -->|Windows| C[scripts/run-merge.ps1]
-    B -->|Linux| D[scripts/run-merge.sh]
-    C --> E[Validate ref and create temp directory]
-    D --> E
-    E --> F[Download package.json, bun.lock, Prettier config and src/merger]
-    F --> G[Install pinned dependencies with Bun]
-    G --> H[Start src/merge-config.ts with terminal input]
-    H --> I[Download every file in config/ for the selected ref]
-    I --> J[Read local OpenCode config and JSONC fragments]
-    J --> K[Show preflight and ask about conflicts and secrets]
-    K --> L{Configuration changed?}
-    L -->|No| M[Leave config unchanged]
-    L -->|Yes| N[Create backup and write temporary config]
-    N --> O[Format with Prettier]
-    O --> P[Validate with opencode debug config]
-    P --> Q{Valid?}
-    Q -->|No| R[Keep original config and report error]
-    Q -->|Yes| S[Replace central config]
-    S --> T[Check and optionally install skills]
-    M --> U[Remove temp directory]
-    R --> U
-    T --> U
+    A[Bun bootstrap] --> B{Platform}
+    B -->|Windows or Linux| C[Run scripts/run-merge.ts]
+    C --> D[Validate ref and create temp directory]
+    D --> E[Download package.json, bun.lock, Prettier config and src/merger]
+    E --> F[Install pinned dependencies with Bun]
+    F --> G[Start src/merge-config.ts with terminal input]
+    G --> H[Download every file in config/ for the selected ref]
+    H --> I[Read local OpenCode config and JSONC fragments]
+    I --> J[Show preflight and ask about conflicts and secrets]
+    J --> K{Configuration changed?}
+    K -->|No| L[Leave config unchanged]
+    K -->|Yes| M[Create backup and write temporary config]
+    M --> N[Format with Prettier]
+    N --> O[Validate with opencode debug config]
+    O --> P{Valid?}
+    P -->|No| Q[Keep original config and report error]
+    P -->|Yes| R[Replace central config]
+    R --> S[Check and optionally install skills]
+    L --> T[Remove temp directory]
+    Q --> T
+    S --> T
 ```
 
 ## Configuration files
@@ -100,7 +93,9 @@ The configuration fragments are kept in the `config` directory:
 - `config/opencode*.jsonc`: configuration fragments, merged in filename order
 - `config/opencode-skills.yaml`: optional skills and their repositories
 - `src/merge-config.ts`: Bun-based JSONC merge
-- `scripts/`: installers and platform bootstraps
+- `scripts/install-opencode.ps1`: Windows installer
+- `scripts/install-opencode.sh`: Linux installer
+- `scripts/run-merge.ts`: cross-platform Bun bootstrap
 
 OpenCode does not automatically include arbitrary JSONC files; the merge script
 combines these fragments with the central configuration.
