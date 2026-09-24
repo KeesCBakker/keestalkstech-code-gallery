@@ -142,7 +142,7 @@
       "rustup -V": "allow",
 
       // Files, disks, permissions, and users.
-      "rm -f x": "allow",
+      "rm -f t": "allow",
       "rm *": "ask",
       "rm -rf*": "ask",
       "rm -r*": "ask",
