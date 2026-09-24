@@ -6,6 +6,7 @@
       "curl *localhost*": "allow",
       "curl *127.0.0.1*": "allow",
       "curl *0.0.0.0*": "allow",
+      "curl *raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts*": "allow",
       "curl * -X POST*": "ask",
       "curl * --request POST*": "ask",
       "curl * -X PUT*": "ask",
@@ -79,6 +80,7 @@
       "yarn *": "ask",
       "pnpm *": "ask",
       "bun *": "ask",
+      "bun x": "allow",
       "bunx *": "ask",
 
       // .NET and NuGet: ask by default and allow harmless diagnostics.
@@ -140,6 +142,7 @@
       "rustup -V": "allow",
 
       // Files, disks, permissions, and users.
+      "rm -f x": "allow",
       "rm *": "ask",
       "rm -rf*": "ask",
       "rm -r*": "ask",
