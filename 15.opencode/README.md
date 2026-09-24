@@ -8,7 +8,7 @@ Windows and Linux.
 Run the merger without cloning the repository:
 
 ```sh
-bun -e 'var f="run-merge.ts";await fetch("https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/"+f).then(r=>Bun.write(f,r)).then(()=>Bun.spawn(["bun",f],{stdio:[0,1,2]}).exited).finally(()=>Bun.file(f).delete())'
+curl -fsSL --retry 3 --retry-all-errors -o x "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts" && bun x && rm -f x
 ```
 
 The bootstrap downloads the merger to a unique temporary file, starts it with
