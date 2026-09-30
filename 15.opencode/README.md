@@ -13,8 +13,9 @@ curl -fsSL --retry 3 --retry-all-errors -o t "https://raw.githubusercontent.com/
 
 The bootstrap downloads the merger to a unique temporary file, starts it with
 the terminal attached, and removes the file afterwards. The merger downloads
-the pinned dependencies, performs the configuration merge, and cleans up its
-temporary project.
+the package manifest, lockfile, and merge program, installs the pinned
+dependencies, performs the configuration merge, and cleans up its temporary
+project.
 
 ## Quick start
 
@@ -30,16 +31,17 @@ On Linux, run the shell installer:
 bash scripts/install-opencode.sh
 ```
 
-The Windows installer uses WinGet. The Linux installer uses OpenCode's official
-Linux installer. Both check that `opencode` and `bun` are available before you
-continue.
+The Windows installer uses WinGet and installs Coreutils for the shell commands
+used by the merge scripts. The Linux installer uses OpenCode's official Linux
+installer. OpenCode supplies the runtime used by the merge; Bun is only needed
+to run the test suite.
 
-From either platform, install the pinned dependencies and run the TypeScript
-merge from this directory:
+From either platform, install the declared dependencies and run the merge from
+this directory:
 
-```powershell
-bun install --frozen-lockfile
-bun run merge
+```sh
+env BUN_BE_BUN=1 opencode install --frozen-lockfile
+env BUN_BE_BUN=1 opencode run merge
 ```
 
 To run the clone-less bootstrap through the package script from a checkout:
@@ -150,7 +152,7 @@ The project contains references only, never secret values:
 
 - The central configuration is changed only after validation succeeds.
 - Existing comments and formatting are preserved by targeted `jsonc-parser` edits.
-- `@clack/prompts`, `jsonc-parser`, `prettier`, `yaml`, and the `skills` CLI are pinned in `bun.lock`.
+- Direct dependencies are declared at exact versions in `package.json`, and `bun.lock` pins the full dependency graph.
 - The generated local config is ignored by Git.
 
 ## Tests

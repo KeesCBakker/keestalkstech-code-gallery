@@ -12,7 +12,6 @@
   # Load tools installed by WinGet into this PowerShell session.
   Update-Path
 
-  # Verify the tools used by the installer and merge scripts.
+  # Verify the installed OpenCode executable.
   Write-Host "opencode: $(opencode --version)"
-  Write-Host "bun: $(bun --version)"
 }

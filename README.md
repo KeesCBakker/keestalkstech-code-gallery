@@ -130,7 +130,7 @@ Let's explore validation using .NET Data Annotations and FluentValidation.
 ## 15. OpenCode Configuration
 
 Scripts and configuration fragments for installing and configuring OpenCode on
-Windows. The merge script creates a backup, interactively merges JSONC
+Windows and Linux. The merge script creates a backup, interactively merges JSONC
 fragments into the central OpenCode configuration, manages MCP secrets without
 overwriting existing files, and checks optional global skills.
 
