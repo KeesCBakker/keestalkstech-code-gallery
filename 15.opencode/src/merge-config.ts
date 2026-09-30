@@ -335,23 +335,37 @@ export function readRef(arguments_: string[]): string | undefined {
   return ref
 }
 
-async function saveSecrets(config: JsonObject, directory: string): Promise<void> {
-  if (!isObject(config.mcp)) return
+interface PendingSecret {
+  path: string
+  name: string
+  value: string
+}
+
+async function collectSecrets(config: JsonObject, directory: string): Promise<PendingSecret[]> {
+  if (!isObject(config.mcp)) return []
+  const pending: PendingSecret[] = []
   for (const reference of sortSecretReferences(collectFileReferences(config.mcp))) {
     const path = resolveSecretPath(directory, reference)
     if (existsSync(path)) continue
     const name = path.split(/[\\/]/).at(-1) ?? reference
     const value = await askSecret(`Enter value for MCP secret '${name}' (leave empty to skip):`)
     if (!value.trim()) continue
-    await mkdir(dirname(path), { recursive: true })
+    pending.push({ path, name, value })
+  }
+  return pending
+}
+
+async function saveSecrets(secrets: PendingSecret[]): Promise<void> {
+  for (const secret of secrets) {
+    await mkdir(dirname(secret.path), { recursive: true })
     try {
-      const file = await open(path, "wx", 0o600)
-      await file.writeFile(value, "utf8").finally(() => file.close())
-      if (process.platform !== "win32") await chmod(path, 0o600)
-      log.success(`Created secret file: ${name}`)
+      const file = await open(secret.path, "wx", 0o600)
+      await file.writeFile(secret.value, "utf8").finally(() => file.close())
+      if (process.platform !== "win32") await chmod(secret.path, 0o600)
+      log.success(`Created secret file: ${secret.name}`)
     } catch (error) {
       if ((error as NodeJS.ErrnoException).code !== "EEXIST") throw error
-      log.info(`Secret file already exists: ${name}`)
+      log.info(`Secret file already exists: ${secret.name}`)
     }
   }
 }
@@ -388,12 +402,17 @@ function findCentralConfig(directory: string): string {
 }
 
 async function validateConfig(path: string): Promise<void> {
-  const { exitCode } = await runProcess([process.execPath, "debug", "config"], {
-    env: { ...Bun.env, OPENCODE_CONFIG: path },
+  const env = { ...Bun.env, OPENCODE_CONFIG: path }
+  delete env.BUN_BE_BUN
+  const { exitCode, stderr, stdout } = await runProcess([process.execPath, "debug", "config"], {
+    env,
     stdin: "ignore",
-    output: "ignore"
+    output: "capture"
   })
-  if (exitCode !== 0) throw new Error("OpenCode rejected the merged configuration.")
+  if (exitCode !== 0) {
+    const details = (stderr || stdout).trim()
+    throw new Error(details || "OpenCode rejected the merged configuration.")
+  }
 }
 
 export async function formatConfig(path: string): Promise<void> {
@@ -453,9 +472,11 @@ async function main(): Promise<void> {
   log.step("Step 1/4: Configuration")
   const result = await mergeConfiguration(centralText, fragments, decideConflict)
   log.step("Step 2/4: MCP secrets")
-  await saveSecrets(result.data, configDirectory)
+  const pendingSecrets = await collectSecrets(result.data, configDirectory)
 
-  log.step("Step 3/4: Save and validate configuration")
+  log.step("Step 3/4: Apply and validate changes")
+  const changed = result.changed || pendingSecrets.length > 0
+  await saveSecrets(pendingSecrets)
   if (!result.changed) {
     log.info("No configuration changes detected; the central config is unchanged.")
   } else {
@@ -466,17 +487,18 @@ async function main(): Promise<void> {
     const backupPath = `${centralPath}.backup.${timestamp}`
     const temporaryPath = `${centralPath}.tmp.${crypto.randomUUID()}.jsonc`
 
-    await copyFile(centralPath, backupPath)
-    log.success(`Backup created at ${backupPath}`)
-
+    let backupCreated = false
     try {
       await writeFile(temporaryPath, result.text, "utf8")
       await formatConfig(temporaryPath)
       await validateConfig(temporaryPath)
+      await copyFile(centralPath, backupPath)
+      backupCreated = true
+      log.success(`Backup created at ${backupPath}`)
       await rename(temporaryPath, centralPath)
       log.success(`Merged configuration written to ${centralPath}`)
     } catch (error) {
-      log.warn(`The central config was not changed. Backup remains at ${backupPath}`)
+      log.warn(backupCreated ? `The central config was not changed. Backup remains at ${backupPath}` : "The central config was not changed; no backup was created.")
       throw error
     } finally {
       await rm(temporaryPath, { force: true })
@@ -484,7 +506,7 @@ async function main(): Promise<void> {
   }
 
   await runSkillsStep(installSkills)
-  outro(result.changed ? "OpenCode configuration updated." : "OpenCode configuration is up to date.")
+  outro(changed ? "OpenCode configuration updated." : "OpenCode configuration is up to date.")
 }
 
 if (import.meta.main) {
