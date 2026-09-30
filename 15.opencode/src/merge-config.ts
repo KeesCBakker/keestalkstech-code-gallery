@@ -8,6 +8,12 @@ import { applyEdits, modify, parse, printParseErrorCode, type FormattingOptions,
 import { parse as parseYaml } from "yaml"
 
 const projectDirectory = dirname(import.meta.dir)
+const banner = String.raw`  ____                   ______          __     ______            _____
+  / __ \____  ___  ____  / ____/___  ____/ /__  / ____/___  ____  / __(_)___ _
+ / / / / __ \/ _ \/ __ \/ /   / __ \/ __  / _ \/ /   / __ \/ __ \/ /_/ / __ ${"`"}/
+/ /_/ / /_/ /  __/ / / / /___/ /_/ / /_/ /  __/ /___/ /_/ / / / / __/ / /_/ /
+\____/ .___/\___/_/ /_/\____/\____/\__,_/\___/\____/\____/_/ /_/_/ /_/\__, /
+    /_/                                                              /____/`
 
 export type JsonObject = Record<string, unknown>
 type Decision = (path: string, current: unknown, incoming: unknown) => Promise<boolean>
@@ -15,11 +21,28 @@ export type Skill = { name: string; source: string }
 
 export type Fragments = Record<string, JsonObject>
 
+const compareNames = (left: string, right: string) => left.localeCompare(right, "en", { sensitivity: "base" })
+
+export function sortSkills(skills: Skill[]): Skill[] {
+  return [...skills].sort((left, right) => compareNames(left.name, right.name))
+}
+
+export function sortSecretReferences(references: Iterable<string>): string[] {
+  return [...references].sort((left, right) => compareNames(left.split(/[\\/]/).at(-1) ?? left, right.split(/[\\/]/).at(-1) ?? right))
+}
+
 type ProcessOptions = {
   cwd?: string
   env?: Record<string, string | undefined>
   output?: "capture" | "inherit" | "ignore"
   stdin?: "inherit" | "ignore"
+}
+
+async function runOpenCodeBun(args: string[], options: ProcessOptions = {}) {
+  return runProcess([process.execPath, ...args], {
+    ...options,
+    env: { ...Bun.env, BUN_BE_BUN: "1", ...options.env }
+  })
 }
 
 export async function runProcess(
@@ -130,7 +153,7 @@ class JsoncDocument {
 }
 
 async function mergeObject(document: JsoncDocument, values: JsonObject, path: JSONPath, decide: Decision): Promise<void> {
-  for (const [name, incoming] of Object.entries(values)) {
+  for (const [name, incoming] of Object.entries(values).sort(([left], [right]) => compareNames(left, right))) {
     const propertyPath = [...path, name]
     const current = document.get(propertyPath)
     if (current === undefined) document.set(propertyPath, incoming)
@@ -148,7 +171,7 @@ export async function mergeConfiguration(centralText: string, fragments: Fragmen
     await mergeObject(document, values, [], decide)
 
     if (isObject(mcp)) {
-      for (const [mcpName, incoming] of Object.entries(mcp)) {
+      for (const [mcpName, incoming] of Object.entries(mcp).sort(([left], [right]) => compareNames(left, right))) {
         const current = document.get(["mcp", mcpName])
         if (!equal(current, incoming) && (await decide(`.mcp[${JSON.stringify(mcpName)}]`, current, incoming))) {
           document.set(["mcp", mcpName], incoming)
@@ -263,9 +286,7 @@ export function hasSkill(output: string, name: string): boolean {
 }
 
 async function runSkills(args: string[]): Promise<string> {
-  const { stdout, stderr, exitCode } = await runProcess(["bun", "x", "--no-install", "skills", ...args], {
-    output: "capture"
-  })
+  const { stdout, stderr, exitCode } = await runOpenCodeBun(["x", "--no-install", "skills", ...args], { output: "capture" })
   if (exitCode !== 0) throw new Error((stderr || stdout).trim() || `skills exited with code ${exitCode}.`)
   return stdout
 }
@@ -316,7 +337,7 @@ export function readRef(arguments_: string[]): string | undefined {
 
 async function saveSecrets(config: JsonObject, directory: string): Promise<void> {
   if (!isObject(config.mcp)) return
-  for (const reference of collectFileReferences(config.mcp)) {
+  for (const reference of sortSecretReferences(collectFileReferences(config.mcp))) {
     const path = resolveSecretPath(directory, reference)
     if (existsSync(path)) continue
     const name = path.split(/[\\/]/).at(-1) ?? reference
@@ -362,7 +383,7 @@ function findCentralConfig(directory: string): string {
 }
 
 async function validateConfig(path: string): Promise<void> {
-  const { exitCode } = await runProcess(["opencode", "debug", "config"], {
+  const { exitCode } = await runProcess([process.execPath, "debug", "config"], {
     env: { ...Bun.env, OPENCODE_CONFIG: path },
     stdin: "ignore",
     output: "ignore"
@@ -371,15 +392,15 @@ async function validateConfig(path: string): Promise<void> {
 }
 
 export async function formatConfig(path: string): Promise<void> {
-  const { exitCode, stderr, stdout } = await runProcess(
-    ["bun", "x", "--no-install", "prettier", "--write", "--parser", "jsonc", "--config", join(projectDirectory, ".prettierrc"), path],
+  const { exitCode, stderr, stdout } = await runOpenCodeBun(
+    ["x", "--no-install", "prettier", "--write", "--parser", "jsonc", "--config", join(projectDirectory, ".prettierrc"), path],
     { cwd: projectDirectory, output: "capture" }
   )
   if (exitCode !== 0) throw new Error((stderr || stdout).trim() || "Prettier could not format the merged config.")
 }
 
 async function installSkills(): Promise<void> {
-  const skills = parseSkills(await readFile(join(projectDirectory, "config", "opencode-skills.yaml"), "utf8"))
+  const skills = sortSkills(parseSkills(await readFile(join(projectDirectory, "config", "opencode-skills.yaml"), "utf8")))
   note(skills.map(skill => `${skill.name.padEnd(20)} ${skill.source}`).join("\n"), "Configured skills")
   for (const skill of skills) {
     if (hasSkill(await runSkills(["list", "--global", "--agent", "opencode"]), skill.name)) {
@@ -398,55 +419,67 @@ async function installSkills(): Promise<void> {
   }
 }
 
+export async function runSkillsStep(install: () => Promise<void>): Promise<void> {
+  log.step("Step 4/4: Skills")
+  try {
+    await install()
+  } catch (error) {
+    log.warn(`The skill check failed: ${error instanceof Error ? error.message : error}`)
+  }
+}
+
 async function main(): Promise<void> {
-  intro("OpenCode configuration merge")
+  process.stdout.write(`${banner}\n\n`)
+  intro("OPENCODE CONFIGURATOR")
 
   const ref = readRef(process.argv.slice(2))
   if (ref) await downloadProjectFiles(ref)
 
   const configDirectory = join(homedir(), ".config", "opencode")
+  const opencodeExecutable = process.execPath
+  const version = await runProcess([opencodeExecutable, "--version"], { output: "capture" })
+  if (version.exitCode !== 0) throw new Error((version.stderr || version.stdout).trim() || "Could not run the OpenCode executable.")
+  log.info(`OpenCode executable: ${opencodeExecutable} (${version.stdout.trim()})`)
   const centralPath = findCentralConfig(configDirectory)
   const centralText = await readFile(centralPath, "utf8")
   const fragments = await readFragments(join(projectDirectory, "config"))
 
   showPreflight(parseJsonc(centralText, centralPath), fragments, centralPath)
+  log.step("Step 1/4: Configuration")
   const result = await mergeConfiguration(centralText, fragments, decideConflict)
+  log.step("Step 2/4: MCP secrets")
   await saveSecrets(result.data, configDirectory)
 
+  log.step("Step 3/4: Save and validate configuration")
   if (!result.changed) {
-    outro("No configuration changes detected; the central config is unchanged.")
-    return
+    log.info("No configuration changes detected; the central config is unchanged.")
+  } else {
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[-:TZ]/g, "")
+      .replace(".", "_")
+    const backupPath = `${centralPath}.backup.${timestamp}`
+    const temporaryPath = `${centralPath}.tmp.${crypto.randomUUID()}.jsonc`
+
+    await copyFile(centralPath, backupPath)
+    log.success(`Backup created at ${backupPath}`)
+
+    try {
+      await writeFile(temporaryPath, result.text, "utf8")
+      await formatConfig(temporaryPath)
+      await validateConfig(temporaryPath)
+      await rename(temporaryPath, centralPath)
+      log.success(`Merged configuration written to ${centralPath}`)
+    } catch (error) {
+      log.warn(`The central config was not changed. Backup remains at ${backupPath}`)
+      throw error
+    } finally {
+      await rm(temporaryPath, { force: true })
+    }
   }
 
-  const timestamp = new Date()
-    .toISOString()
-    .replace(/[-:TZ]/g, "")
-    .replace(".", "_")
-  const backupPath = `${centralPath}.backup.${timestamp}`
-  const temporaryPath = `${centralPath}.tmp.${crypto.randomUUID()}.jsonc`
-
-  await copyFile(centralPath, backupPath)
-  log.success(`Backup created at ${backupPath}`)
-
-  try {
-    await writeFile(temporaryPath, result.text, "utf8")
-    await formatConfig(temporaryPath)
-    await validateConfig(temporaryPath)
-    await rename(temporaryPath, centralPath)
-    log.success(`Merged configuration written to ${centralPath}`)
-  } catch (error) {
-    log.warn(`The central config was not changed. Backup remains at ${backupPath}`)
-    throw error
-  } finally {
-    await rm(temporaryPath, { force: true })
-  }
-
-  try {
-    await installSkills()
-  } catch (error) {
-    log.warn(`Configuration was updated, but the skill check failed: ${error instanceof Error ? error.message : error}`)
-  }
-  outro("OpenCode configuration updated.")
+  await runSkillsStep(installSkills)
+  outro(result.changed ? "OpenCode configuration updated." : "OpenCode configuration is up to date.")
 }
 
 if (import.meta.main) {

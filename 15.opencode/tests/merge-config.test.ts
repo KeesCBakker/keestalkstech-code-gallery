@@ -13,6 +13,9 @@ import {
   readRef,
   resolveSecretPath,
   runProcess,
+  runSkillsStep,
+  sortSecretReferences,
+  sortSkills,
   type Fragments
 } from "../src/merge-config"
 
@@ -129,6 +132,16 @@ describe("mergeConfiguration", () => {
     expect(result.data.share).toBe("manual")
   })
 
+  test("asks about configuration conflicts alphabetically", async () => {
+    const decisions: string[] = []
+    await mergeConfiguration('{ "zulu": 1, "alpha": 1 }', fragments({ "opencode.jsonc": { zulu: 2, alpha: 2 } }), async path => {
+      decisions.push(path)
+      return false
+    })
+
+    expect(decisions).toEqual([".alpha", ".zulu"])
+  })
+
   test("adds and replaces complete MCP definitions after approval", async () => {
     const decisions: string[] = []
     const result = await mergeConfiguration(
@@ -147,7 +160,7 @@ describe("mergeConfiguration", () => {
       }
     )
 
-    expect(decisions).toEqual(['.mcp["old"]', '.mcp["new"]'])
+    expect(decisions).toEqual(['.mcp["new"]', '.mcp["old"]'])
     expect(result.data.mcp).toEqual({
       old: { type: "remote", url: "https://new.example", enabled: false },
       new: { type: "local", command: ["bun", "x", "example"] }
@@ -216,6 +229,30 @@ describe("skills configuration", () => {
     expect(() => parseSkills("skills:\n  - name: missing-source\n")).toThrow("empty or invalid")
   })
 
+  test("sorts skills alphabetically without mutating the source list", () => {
+    const skills = [
+      { name: "skill-creator", source: "https://example.com/creator" },
+      { name: "find-skills", source: "https://example.com/find" },
+      { name: "htmx", source: "https://example.com/htmx" }
+    ]
+
+    expect(sortSkills(skills).map(skill => skill.name)).toEqual(["find-skills", "htmx", "skill-creator"])
+    expect(skills[0].name).toBe("skill-creator")
+  })
+
+  test("sorts secret references by filename", () => {
+    expect(sortSecretReferences(["./secrets/zulu", "./secrets/nested/alpha", "./secrets/bravo"])).toEqual(["./secrets/nested/alpha", "./secrets/bravo", "./secrets/zulu"])
+  })
+
+  test("runs the skill stage when configuration does not need updating", async () => {
+    let ran = false
+    await runSkillsStep(async () => {
+      ran = true
+    })
+
+    expect(ran).toBe(true)
+  })
+
   test("detects names in ANSI-colored output", () => {
     expect(hasSkill("  \x1b[32mfind-skills\x1b[0m  ~/.config/opencode\n", "find-skills")).toBe(true)
     expect(hasSkill("  skill-creator  ~/.config/opencode\n", "find-skills")).toBe(false)
@@ -261,7 +298,8 @@ describe("Prettier JSONC formatting", () => {
 
 describe("OpenCode config integration", () => {
   test("merged and formatted fragments pass opencode config validation", async () => {
-    if (!Bun.which("opencode")) return
+    const executable = Bun.which("opencode")
+    if (!executable) return
 
     const directory = await mkdtemp(join(tmpdir(), "opencode-config-validation-"))
     const path = join(directory, "opencode.jsonc")
@@ -276,7 +314,7 @@ describe("OpenCode config integration", () => {
       }
       await formatConfig(path)
 
-      const validation = await runProcess(["opencode", "debug", "config"], {
+      const validation = await runProcess([executable, "debug", "config"], {
         env: { ...Bun.env, OPENCODE_CONFIG: path },
         stdin: "ignore",
         output: "capture"

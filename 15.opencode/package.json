@@ -3,8 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "bootstrap": "env BUN_BE_BUN=1 opencode run scripts/run-merge.ts",
     "format": "prettier --write .",
-    "merge": "bun run src/merge-config.ts",
+    "merge": "mkdir -p tmp && cd tmp && env BUN_BE_BUN=1 opencode run ../src/merge-config.ts",
     "test": "bun test tests"
   },
   "dependencies": {

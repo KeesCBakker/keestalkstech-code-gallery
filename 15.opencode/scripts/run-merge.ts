@@ -34,16 +34,21 @@ async function main(): Promise<void> {
   try {
     for (const file of files) await download(ref, directory, file)
 
-    const install = Bun.spawn(["bun", "install", "--frozen-lockfile", "--production"], {
+    const opencode = Bun.which("opencode")
+    if (!opencode) throw new Error("Could not find the OpenCode executable on PATH.")
+    const env = { ...Bun.env, BUN_BE_BUN: "1" }
+    const install = Bun.spawn([opencode, "install", "--frozen-lockfile", "--production"], {
       cwd: directory,
+      env,
       stdin: "inherit",
       stdout: "inherit",
       stderr: "inherit"
     })
     if ((await install.exited) !== 0) throw new Error("Could not install the pinned merge dependencies.")
 
-    const merge = Bun.spawn(["bun", "run", "src/merge-config.ts", "--ref", ref], {
+    const merge = Bun.spawn([opencode, "run", "merge", "--ref", ref], {
       cwd: directory,
+      env,
       stdin: "inherit",
       stdout: "inherit",
       stderr: "inherit"

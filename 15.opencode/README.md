@@ -8,7 +8,7 @@ Windows and Linux.
 Run the merger without cloning the repository:
 
 ```sh
-curl -fsSL --retry 3 --retry-all-errors -o t "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts" && bun run ./t && rm -f t
+curl -fsSL --retry 3 --retry-all-errors -o t "https://raw.githubusercontent.com/KeesCBakker/keestalkstech-code-gallery/main/15.opencode/scripts/run-merge.ts" && env BUN_BE_BUN=1 opencode run ./t && rm -f t
 ```
 
 The bootstrap downloads the merger to a unique temporary file, starts it with
@@ -42,8 +42,18 @@ bun install --frozen-lockfile
 bun run merge
 ```
 
-The script finds the central `opencode.jsonc` or `opencode.json`, creates a
-timestamped backup, and shows a preflight summary. It then:
+To run the clone-less bootstrap through the package script from a checkout:
+
+```sh
+env BUN_BE_BUN=1 opencode run bootstrap
+```
+
+The script finds the central `opencode.jsonc` or `opencode.json` and shows a
+preflight summary and reports the OpenCode executable path and version it will
+use. It then walks through four numbered steps: configuration, MCP secrets,
+configuration validation and save, and skills. Choices are sorted alphabetically
+within each step. If configuration changes are needed, it creates a timestamped
+backup before validating and replacing the central file. It then:
 
 - Adds missing configuration values.
 - Asks before replacing different values.
@@ -53,7 +63,8 @@ timestamped backup, and shows a preflight summary. It then:
 - Uses Microsoft's `jsonc-parser` for targeted, comment-preserving JSONC edits.
 - Formats changed configuration with the project Prettier settings before validation.
 - Validates the result with `opencode debug config`.
-- Checks and optionally installs the configured global OpenCode skills.
+- Checks and optionally installs the configured global OpenCode skills, even
+  when the central configuration already matches.
 
 If there are no configuration changes, the central file is left byte-for-byte unchanged.
 
@@ -67,8 +78,8 @@ flowchart TD
     B -->|Windows or Linux| C[Run scripts/run-merge.ts]
     C --> D[Validate ref and create temp directory]
     D --> E[Download package.json, bun.lock, Prettier config and src/merger]
-    E --> F[Install pinned dependencies with Bun]
-    F --> G[Start src/merge-config.ts with terminal input]
+    E --> F[Install pinned dependencies through OpenCode]
+    F --> G[Run merge script through OpenCode with terminal input]
     G --> H[Download every file in config/ for the selected ref]
     H --> I[Read local OpenCode config and JSONC fragments]
     I --> J[Show preflight and ask about conflicts and secrets]
@@ -81,9 +92,9 @@ flowchart TD
     P -->|No| Q[Keep original config and report error]
     P -->|Yes| R[Replace central config]
     R --> S[Check and optionally install skills]
-    L --> T[Remove temp directory]
+    L --> S
+    S --> T[Remove temp directory]
     Q --> T
-    S --> T
 ```
 
 ## Configuration files
@@ -92,7 +103,7 @@ The configuration fragments are kept in the `config` directory:
 
 - `config/opencode*.jsonc`: configuration fragments, merged in filename order
 - `config/opencode-skills.yaml`: optional skills and their repositories
-- `src/merge-config.ts`: Bun-based JSONC merge
+- `src/merge-config.ts`: OpenCode-runtime JSONC merge
 - `scripts/install-opencode.ps1`: Windows installer
 - `scripts/install-opencode.sh`: Linux installer
 - `scripts/run-merge.ts`: cross-platform Bun bootstrap
@@ -100,9 +111,12 @@ The configuration fragments are kept in the `config` directory:
 OpenCode does not automatically include arbitrary JSONC files; the merge script
 combines these fragments with the central configuration.
 
-After a successful config merge, the merge program checks the optional skills.
-It skips skills that are already installed and asks before installing each
-missing skill. The skill list lives in `config/opencode-skills.yaml`.
+After configuration and secret handling, the merge program checks the optional
+skills, including when no config changes were needed. It skips skills that are
+already installed and asks before installing each missing skill in alphabetical
+order. Configuration conflict prompts, MCP secret prompts, and skill prompts
+are also alphabetized within their respective steps. The skill list lives in
+`config/opencode-skills.yaml`.
 
 ## Secrets
 
