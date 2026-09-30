@@ -149,3 +149,10 @@ Parse readable named arguments in a standalone Bash script or move the parser in
 - <a href="17.bash-named-arguments">17.bash-named-arguments</a>
 - <a href="https://keestalkstech.com/named-arguments-in-a-bash-script/">Named Arguments in a Bash Script</a>
 - <a href="https://keestalkstech.com/bash-script-with-a-lib-for-named-parameters/">Bash Script with a Lib for Named Parameters</a>
+
+## 18. WinGet
+
+Use WinGet to generate installation instructions, install a package list, and create a scheduled upgrade task.
+
+- <a href="18.winget">18.winget</a>
+- <a href="https://keestalkstech.com/notes-on-winget/">Notes on winget</a>
