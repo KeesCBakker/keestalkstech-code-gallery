@@ -20,9 +20,17 @@ if ($LASTEXITCODE -ne 0) {
 
     Set-Content -LiteralPath $scriptPath -Value $upgradeScript -Encoding UTF8
 
+    $quotedScriptPath = $scriptPath.Replace("'", "''")
+    $launcher = @"
+`$arguments = '-NoProfile -ExecutionPolicy Bypass -File `"$quotedScriptPath`"'
+`$process = Start-Process -FilePath 'powershell.exe' -ArgumentList `$arguments -Verb RunAs -Wait -PassThru
+exit `$process.ExitCode
+"@
+    $encodedLauncher = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($launcher))
+
     $action = New-ScheduledTaskAction `
       -Execute 'powershell.exe' `
-      -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
+      -Argument "-NoProfile -EncodedCommand $encodedLauncher"
 
     $trigger = New-ScheduledTaskTrigger `
       -Weekly `
