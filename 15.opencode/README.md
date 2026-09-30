@@ -15,7 +15,8 @@ The bootstrap downloads the merger to a unique temporary file, starts it with
 the terminal attached, and removes the file afterwards. The merger downloads
 the package manifest, lockfile, and merge program, installs the pinned
 dependencies, performs the configuration merge, and cleans up its temporary
-project.
+project. Its downloads use unique cache-busting URLs to avoid stale CDN
+responses.
 
 ## Quick start
 

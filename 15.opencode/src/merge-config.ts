@@ -357,8 +357,11 @@ async function saveSecrets(config: JsonObject, directory: string): Promise<void>
 }
 
 async function downloadProjectFiles(ref: string): Promise<void> {
-  const listing = await fetch(`https://api.github.com/repos/KeesCBakker/keestalkstech-code-gallery/contents/15.opencode/config?ref=${encodeURIComponent(ref)}`, {
-    headers: { Accept: "application/vnd.github+json" }
+  const listingUrl = new URL(`https://api.github.com/repos/KeesCBakker/keestalkstech-code-gallery/contents/15.opencode/config`)
+  listingUrl.searchParams.set("ref", ref)
+  listingUrl.searchParams.set("cachebust", crypto.randomUUID())
+  const listing = await fetch(listingUrl, {
+    headers: { Accept: "application/vnd.github+json", "Cache-Control": "no-cache" }
   })
   if (!listing.ok) throw new Error(`Could not list remote config files: HTTP ${listing.status}`)
 
@@ -367,7 +370,9 @@ async function downloadProjectFiles(ref: string): Promise<void> {
     if (file.type !== "file") continue
     if (!file.download_url) throw new Error(`No download URL for ${file.name}.`)
     log.step(`Downloading ${file.name}`)
-    const response = await fetch(file.download_url)
+    const downloadUrl = new URL(file.download_url)
+    downloadUrl.searchParams.set("cachebust", crypto.randomUUID())
+    const response = await fetch(downloadUrl, { headers: { "Cache-Control": "no-cache" } })
     if (!response.ok) throw new Error(`Could not download ${file.name}: HTTP ${response.status}`)
 
     const destination = join(projectDirectory, "config", file.name)

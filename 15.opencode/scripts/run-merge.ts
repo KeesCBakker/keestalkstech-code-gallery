@@ -21,7 +21,9 @@ function readRef(): string {
 }
 
 async function download(ref: string, directory: string, file: string): Promise<void> {
-  const response = await fetch(`https://raw.githubusercontent.com/${repository}/${ref}/15.opencode/${file}`)
+  const url = new URL(`https://raw.githubusercontent.com/${repository}/${ref}/15.opencode/${file}`)
+  url.searchParams.set("cachebust", crypto.randomUUID())
+  const response = await fetch(url, { headers: { "Cache-Control": "no-cache" } })
   if (!response.ok) throw new Error(`Could not download ${file}: HTTP ${response.status}`)
   const destination = join(directory, file)
   await mkdir(dirname(destination), { recursive: true })
