@@ -9,9 +9,6 @@
   winget install --id SST.opencode
   winget install --id Microsoft.Coreutils
 
-  # Load tools installed by WinGet into this PowerShell session.
-  Update-Path
-
   # Verify the installed OpenCode executable.
   Write-Host "opencode: $(opencode --version)"
 }
