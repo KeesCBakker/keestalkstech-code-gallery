@@ -1,4 +1,6 @@
 {
   "$schema": "https://opencode.ai/config.json",
-  "share": "disabled"
+  "share": "disabled",
+  "model": "openai/gpt-6-luna",
+  "small_model": "openai/gpt-6-luna"
 }
