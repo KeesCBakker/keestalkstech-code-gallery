@@ -8,7 +8,8 @@ Use the Windows Package Manager to generate installation instructions, install a
 
 - `list.ps1` exports recognized packages and prints install commands, retaining each package source.
 - `packages.ps1` installs the curated package list, with Microsoft Store apps in a separate section.
-- `upgrade-task.ps1` writes the upgrade command to the current user's local app data and registers a weekly Task Scheduler task. It requests silent, non-interactive operation where supported.
+- `upgrade-task.ps1` writes the upgrade command to the current user's local app data and registers a weekly Task Scheduler task that requests elevation for the full upgrade run.
+- `upgrade-task-with-make-me-admin.ps1` updates the task action to launch Make Me Admin, wait for confirmation, and then start the elevated upgrade.
 - `post-install.ps1` installs Node.js with NVM and npm-check-updates.
 
 ## Checkout only this project

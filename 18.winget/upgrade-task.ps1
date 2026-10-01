@@ -1,54 +1,62 @@
-  & {
-    $taskName = 'UpgradeWingetPackages'
-    $scriptPath = Join-Path $env:LOCALAPPDATA 'Upgrade-WingetPackages.ps1'
+& {
+  $taskName = 'UpgradeWingetPackages'
+  $scriptPath = Join-Path $env:LOCALAPPDATA 'Upgrade-WingetPackages.ps1'
 
-    $upgradeScript = @'
+  $upgradeScript = @'
 winget source update
 if ($LASTEXITCODE -ne 0) {
-    throw "WinGet source update failed (exit code $LASTEXITCODE)."
+  throw "WinGet source update failed (exit code $LASTEXITCODE)."
 }
 
 winget upgrade --all `
-    --silent `
-    --disable-interactivity `
-    --accept-source-agreements `
-    --accept-package-agreements
+  --silent `
+  --disable-interactivity `
+  --accept-source-agreements `
+  --accept-package-agreements
 if ($LASTEXITCODE -ne 0) {
-    throw "WinGet upgrade failed (exit code $LASTEXITCODE)."
+  throw "WinGet upgrade failed (exit code $LASTEXITCODE)."
 }
 '@
 
-    Set-Content -LiteralPath $scriptPath -Value $upgradeScript -Encoding UTF8
+  Set-Content -LiteralPath $scriptPath -Value $upgradeScript -Encoding UTF8
 
-    $action = New-ScheduledTaskAction `
-      -Execute 'powershell.exe' `
-      -Argument "-NoProfile -ExecutionPolicy Bypass -File `"$scriptPath`""
+  $quotedScriptPath = $scriptPath.Replace("'", "''")
+  $launcher = @"
+`$arguments = '-NoProfile -ExecutionPolicy Bypass -File `"$quotedScriptPath`"'
+`$process = Start-Process -FilePath 'powershell.exe' -ArgumentList `$arguments -Verb RunAs -Wait -PassThru
+exit `$process.ExitCode
+"@
+  $encodedLauncher = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($launcher))
 
-    $trigger = New-ScheduledTaskTrigger `
-      -Weekly `
-      -DaysOfWeek Monday `
-      -At '9:30AM'
+  $action = New-ScheduledTaskAction `
+    -Execute 'powershell.exe' `
+    -Argument "-NoProfile -EncodedCommand $encodedLauncher"
 
-    $settings = New-ScheduledTaskSettingsSet `
-      -AllowStartIfOnBatteries `
-      -DontStopIfGoingOnBatteries `
-      -StartWhenAvailable
+  $trigger = New-ScheduledTaskTrigger `
+    -Weekly `
+    -DaysOfWeek Monday `
+    -At '9:30AM'
 
-    $principal = New-ScheduledTaskPrincipal `
-      -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) `
-      -LogonType Interactive `
-      -RunLevel Limited
+  $settings = New-ScheduledTaskSettingsSet `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -StartWhenAvailable
 
-    $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-    if ($existingTask) {
-      Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-    }
+  $principal = New-ScheduledTaskPrincipal `
+    -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) `
+    -LogonType Interactive `
+    -RunLevel Limited
 
-    Register-ScheduledTask `
-      -TaskName $taskName `
-      -Description 'Upgrade all WinGet packages' `
-      -Action $action `
-      -Trigger $trigger `
-      -Settings $settings `
-      -Principal $principal
+  $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+  if ($existingTask) {
+    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
   }
+
+  Register-ScheduledTask `
+    -TaskName $taskName `
+    -Description 'Upgrade all WinGet packages' `
+    -Action $action `
+    -Trigger $trigger `
+    -Settings $settings `
+    -Principal $principal
+}
