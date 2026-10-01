@@ -2,6 +2,7 @@
   # development tools
   winget install --id Amazon.AWSCLI --exact
   winget install --id Amazon.Kiro --exact
+  winget install --id ByteNess.AWSVault --exact
   ## Node Version Manager for Windows
   winget install --id CoreyButler.NVMforWindows --exact
   winget install --id Git.Git --exact
@@ -13,6 +14,7 @@
   winget install --id MikeFarah.yq --exact
   winget install --id ScooterSoftware.BeyondCompare.5 --exact
   winget install --id SST.opencode --exact
+  winget install --id StablyAI.Orca --exact
   winget install --id SUSE.RancherDesktop --exact
   winget install --id wagoodman.dive --exact
   winget install --id xhcoding.sshpass-win32 --exact
@@ -36,11 +38,12 @@
   winget install --id Microsoft.Coreutils --exact
   winget install --id Microsoft.PowerShell --exact
   winget install --id Microsoft.PowerToys --exact
-  winget install --id RavensburgerAG.tiptoiManager --exact
   ## OpenSSL command-line toolkit
   winget install --id ShiningLight.OpenSSL.Light --exact
+
+  # other
+  winget install --id RavensburgerAG.tiptoiManager --exact
   winget install --id SparkLabs.Viscosity --exact
-  winget install --id StablyAI.Orca --exact
 
   # Microsoft Store apps
   ## Dynamic Theme: daily Bing and Windows Spotlight wallpapers
