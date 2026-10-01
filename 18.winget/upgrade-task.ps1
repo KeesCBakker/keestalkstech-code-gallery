@@ -1,8 +1,10 @@
-  & {
-    $taskName = 'UpgradeWingetPackages'
-    $scriptPath = Join-Path $env:LOCALAPPDATA 'Upgrade-WingetPackages.ps1'
+& {
+  $day = 'Monday'
+  $time = '9:30AM'
+  $taskName = 'UpgradeWingetPackages'
+  $scriptPath = Join-Path $env:LOCALAPPDATA 'Upgrade-WingetPackages.ps1'
 
-    $upgradeScript = @'
+  $upgradeScript = @'
 winget source update
 if ($LASTEXITCODE -ne 0) {
     throw "WinGet source update failed (exit code $LASTEXITCODE)."
@@ -18,45 +20,46 @@ if ($LASTEXITCODE -ne 0) {
 }
 '@
 
-    Set-Content -LiteralPath $scriptPath -Value $upgradeScript -Encoding UTF8
+  Set-Content -LiteralPath $scriptPath -Value $upgradeScript -Encoding UTF8
 
-    $quotedScriptPath = $scriptPath.Replace("'", "''")
-    $launcher = @"
+  $quotedScriptPath = $scriptPath.Replace("'", "''")
+  $launcher = @"
 `$arguments = '-NoProfile -ExecutionPolicy Bypass -File `"$quotedScriptPath`"'
 `$process = Start-Process -FilePath 'powershell.exe' -ArgumentList `$arguments -Verb RunAs -Wait -PassThru
 exit `$process.ExitCode
 "@
-    $encodedLauncher = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($launcher))
+  $encodedLauncher = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($launcher))
 
-    $action = New-ScheduledTaskAction `
-      -Execute 'powershell.exe' `
-      -Argument "-NoProfile -EncodedCommand $encodedLauncher"
+  $action = New-ScheduledTaskAction `
+    -Execute 'powershell.exe' `
+    -Argument "-NoProfile -EncodedCommand $encodedLauncher"
 
-    $trigger = New-ScheduledTaskTrigger `
-      -Weekly `
-      -DaysOfWeek Monday `
-      -At '9:30AM'
+  $trigger = New-ScheduledTaskTrigger `
+    -Weekly `
+    -DaysOfWeek $day `
+    -At $time
 
-    $settings = New-ScheduledTaskSettingsSet `
-      -AllowStartIfOnBatteries `
-      -DontStopIfGoingOnBatteries `
-      -StartWhenAvailable
+  $settings = New-ScheduledTaskSettingsSet `
+    -AllowStartIfOnBatteries `
+    -DontStopIfGoingOnBatteries `
+    -StartWhenAvailable `
+    -RunOnlyIfNetworkAvailable
 
-    $principal = New-ScheduledTaskPrincipal `
-      -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) `
-      -LogonType Interactive `
-      -RunLevel Limited
+  $principal = New-ScheduledTaskPrincipal `
+    -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) `
+    -LogonType Interactive `
+    -RunLevel Limited
 
-    $existingTask = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
-    if ($existingTask) {
-      Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-    }
-
-    Register-ScheduledTask `
-      -TaskName $taskName `
-      -Description 'Upgrade all WinGet packages' `
-      -Action $action `
-      -Trigger $trigger `
-      -Settings $settings `
-      -Principal $principal
+  $taskExists = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
+  if ($taskExists) {
+    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
   }
+
+  Register-ScheduledTask `
+    -Action $action `
+    -Trigger $trigger `
+    -TaskName $taskName `
+    -Description 'Upgrade all WinGet packages' `
+    -Settings $settings `
+    -Principal $principal
+}
