@@ -8,7 +8,7 @@
     },
     "atlassian": {
       "type": "remote",
-      "url": "https://mcp.atlassian.com/v1/mcp/authv2",
+      "url": "https://mcp.atlassian.com/v2/mcp?tools=all",
       "enabled": false
     },
     "aws-knowledge": {

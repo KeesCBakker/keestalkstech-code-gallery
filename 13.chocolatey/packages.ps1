@@ -14,16 +14,12 @@
   ## git and git signing
   ## more info here: https://keestalkstech.com/2023/06/github-windows-ssh-gpg-devcontainer/
   choco install -y git.install gpg4win
-  ## testing APIs
-  choco install -y postman
   ## edit YAML files
   choco install -y yq
   ## edit JS files
   choco install -y jq
   ## Node.js
   choco install -y nvm.install
-  ## NSwag Studio to generate Swagger clients
-  choco install -y NSwagStudio
 
   # image editing tools
   ## diagrams

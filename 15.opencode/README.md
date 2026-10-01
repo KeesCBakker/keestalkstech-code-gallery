@@ -53,10 +53,12 @@ env BUN_BE_BUN=1 opencode run bootstrap
 
 The script finds the central `opencode.jsonc` or `opencode.json` and shows a
 preflight summary and reports the OpenCode executable path and version it will
-use. It then walks through four numbered steps: configuration, MCP secrets,
-configuration validation and save, and skills. Choices are sorted alphabetically
-within each step. If configuration changes are needed, it creates a timestamped
-backup before validating and replacing the central file. It then:
+use. It then walks through seven numbered steps: Config, Bash rules, Sensitive
+files, Watcher excludes, MCPs, Update config, and Install skills. Missing Bash
+rules, read rules, and watcher patterns are offered as selectable lists.
+Choices are sorted alphabetically within each step. If configuration changes
+are needed, it validates the merged file before creating a timestamped backup
+and replacing the central file. It then:
 
 - Adds missing configuration values.
 - Asks before replacing different values.
