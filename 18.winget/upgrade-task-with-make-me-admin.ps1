@@ -1,42 +1,26 @@
-  & {
-    $taskName = 'UpgradeWingetPackages'
-    $makeMeAdminDir = Join-Path $env:ProgramFiles 'Make Me Admin'
-    $makeMeAdminPath = Join-Path $makeMeAdminDir 'MakeMeAdminUI.exe'
-    $scriptPath = Join-Path $env:LOCALAPPDATA 'Upgrade-WingetPackages.ps1'
+& {
+  # check if task exists
+  $taskName = "UpgradeWingetPackages";
+  $taskExists = Get-ScheduledTask | Where-Object { $_.TaskName -eq $taskName };
+  if (-not $taskExists) {
+      Write-Host "Task '$taskName' does not exist. Exiting." -ForegroundColor Red;
+      exit 1;
+  };
 
-    if (-not (Test-Path -LiteralPath $makeMeAdminPath)) {
-      throw "Make Me Admin was not found at '$makeMeAdminPath'."
-    }
+  Unregister-ScheduledTask -TaskName $taskName -Confirm:$false;
 
-    if (-not (Test-Path -LiteralPath $scriptPath)) {
-      throw "The WinGet upgrade script was not found at '$scriptPath'. Run upgrade-task.ps1 first."
-    }
+  $makeMeAdminDir = "C:\Program Files\Make Me Admin\";
 
-    $task = Get-ScheduledTask -TaskName $taskName -ErrorAction Stop
-    $quotedMakeMeAdminDir = $makeMeAdminDir.Replace("'", "''")
-    $quotedScriptPath = $scriptPath.Replace("'", "''")
+  $newAction = New-ScheduledTaskAction `
+      -Execute "powershell.exe" `
+      -Argument "-Command ""cd '$makeMeAdminDir'; ./MakeMeAdminUI.exe; Read-Host 'Make sure you are admin before proceeding...'; Start-Process powershell -ArgumentList '-Command & {choco upgrade all -y}' -Verb RunAs"""; `
 
-    $launcher = @"
-Set-Location -LiteralPath '$quotedMakeMeAdminDir'
-& (Join-Path '$quotedMakeMeAdminDir' 'MakeMeAdminUI.exe')
-Read-Host 'Request temporary administrator access, then press Enter to continue'
-`$arguments = '-NoProfile -ExecutionPolicy Bypass -File `"$quotedScriptPath`"'
-`$process = Start-Process -FilePath 'powershell.exe' -ArgumentList `$arguments -Verb RunAs -Wait -PassThru
-exit `$process.ExitCode
-"@
-    $encodedLauncher = [Convert]::ToBase64String([Text.Encoding]::Unicode.GetBytes($launcher))
-
-    $action = New-ScheduledTaskAction `
-      -Execute 'powershell.exe' `
-      -Argument "-NoProfile -EncodedCommand $encodedLauncher"
-
-    Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-
-    Register-ScheduledTask `
+  Register-ScheduledTask `
+      -Action $newAction `
+      -Trigger $taskExists.Triggers `
       -TaskName $taskName `
-      -Description 'Upgrade all WinGet packages with Make Me Admin' `
-      -Action $action `
-      -Trigger $task.Triggers `
-      -Settings $task.Settings `
-      -Principal $task.Principal
-  }
+      -Description "Upgrade all Chocolatey packages with admin prompt" `
+      -Settings $taskExists.Settings;
+
+  Write-Host "Task '$taskName' has been updated with the new action."
+}
