@@ -6,6 +6,7 @@ import {
   hasSkill,
   fragmentFileNames,
   formatConfig,
+  createConfigDiff,
   mergeConfiguration,
   parseJsonc,
   parseSkills,
@@ -14,6 +15,7 @@ import {
   resolveSecretPath,
   runProcess,
   runSkillsStep,
+  selectStageFragments,
   sortSecretReferences,
   sortSkills,
   type Fragments
@@ -33,6 +35,27 @@ function fragments(overrides: Partial<Fragments> = {}): Fragments {
 const accept = async () => true
 
 describe("mergeConfiguration", () => {
+  test("partitions fragments into the five configuration stages", () => {
+    const source: Fragments = {
+      "opencode.jsonc": { $schema: "https://opencode.ai/config.json", share: "disabled" },
+      "opencode-ask.jsonc": { permission: { bash: { "git status*": "allow" }, edit: "ask" } },
+      "opencode-config-files.jsonc": { permission: { read: { ".env*": "deny" } } },
+      "opencode-watcher.jsonc": { watcher: { ignore: ["node_modules/**"] } },
+      "opencode-mcps.jsonc": { mcp: { atlassian: { enabled: false } } }
+    }
+
+    expect(selectStageFragments(source, "configuration")).toEqual({
+      "opencode.jsonc": { share: "disabled" },
+      "opencode-ask.jsonc": { permission: { edit: "ask" } }
+    })
+    expect(selectStageFragments(source, "bash")).toEqual({ "opencode-ask.jsonc": { permission: { bash: { "git status*": "allow" } } } })
+    expect(selectStageFragments(source, "sensitive-files")).toEqual({
+      "opencode-config-files.jsonc": { permission: { read: { ".env*": "deny" } } }
+    })
+    expect(selectStageFragments(source, "watcher")).toEqual({ "opencode-watcher.jsonc": { watcher: { ignore: ["node_modules/**"] } } })
+    expect(selectStageFragments(source, "mcps")).toEqual({ "opencode-mcps.jsonc": { mcp: { atlassian: { enabled: false } } } })
+  })
+
   test("selects all opencode JSONC files and ignores unrelated files", () => {
     expect(fragmentFileNames(["opencode.jsonc", "opencode-custom.jsonc", "other.jsonc", "opencode-skills.yaml"])).toEqual(["opencode.jsonc", "opencode-custom.jsonc"])
   })
@@ -142,6 +165,73 @@ describe("mergeConfiguration", () => {
     expect(decisions).toEqual([".alpha", ".zulu"])
   })
 
+  test("allows selecting missing Bash rules individually", async () => {
+    const source = { permission: { bash: { "pip --version": "allow", "pip -V": "allow", "pip *": "ask" } } }
+    const central = '{ "permission": { "bash": {} } }'
+    let offered: string[] = []
+    const declined = await mergeConfiguration(
+      central,
+      { "opencode-ask.jsonc": source },
+      async () => false,
+      async (section, additions) => {
+        expect(section).toBe('.permission["bash"]')
+        offered = additions.map(addition => addition.id)
+        return []
+      }
+    )
+    const accepted = await mergeConfiguration(
+      central,
+      { "opencode-ask.jsonc": source },
+      async () => false,
+      async (_section, additions) => {
+        const selection = additions.find(addition => addition.path.at(-1) === "pip -V")
+        if (!selection) throw new Error("Expected the pip version rule to be selectable")
+        return [selection.id]
+      }
+    )
+
+    expect(offered).toHaveLength(3)
+    expect(declined.changed).toBe(false)
+    expect((declined.data.permission as { bash: Record<string, string> }).bash).toEqual({})
+    expect((accepted.data.permission as { bash: Record<string, string> }).bash).toEqual({ "pip -V": "allow" })
+  })
+
+  test("allows selecting missing read rules", async () => {
+    const source = { permission: { read: { ".env*": "deny", "*.key": "deny" } } }
+    const result = await mergeConfiguration(
+      '{ "permission": { "read": {} } }',
+      { "opencode-config-files.jsonc": source },
+      async () => false,
+      async (section, additions) => {
+        expect(section).toBe('.permission["read"]')
+        expect(new Set(additions.map(addition => addition.path.at(-1)))).toEqual(new Set([".env*", "*.key"]))
+        const selected = additions.find(addition => addition.path.at(-1) === ".env*")
+        if (!selected) throw new Error("Expected the environment-file rule to be selectable")
+        return [selected.id]
+      }
+    )
+
+    expect((result.data.permission as { read: Record<string, string> }).read).toEqual({ ".env*": "deny" })
+  })
+
+  test("shows only changed JSON values and redacts sensitive fields", () => {
+    const diff = Bun.stripANSI(
+      createConfigDiff(
+        { model: "old-model", share: "disabled", mcp: { headers: { Authorization: "old-secret" } } },
+        { model: "new-model", share: "disabled", mcp: { headers: { Authorization: "new-secret" } } }
+      )
+    )
+
+    expect(diff).toMatch(/^- .*"model"/m)
+    expect(diff).toMatch(/^\+ .*"model"/m)
+    expect(diff).not.toContain("disabled")
+    expect(diff).not.toContain("old-secret")
+    expect(diff).not.toContain("new-secret")
+    const newSecretDiff = Bun.stripANSI(createConfigDiff(undefined, { headers: { Authorization: "new-secret" } }))
+    expect(newSecretDiff).toContain("<redacted>")
+    expect(newSecretDiff).not.toContain("new-secret")
+  })
+
   test("adds and replaces complete MCP definitions after approval", async () => {
     const decisions: string[] = []
     const result = await mergeConfiguration(
@@ -177,6 +267,42 @@ describe("mergeConfiguration", () => {
     )
 
     expect((result.data.watcher as { ignore: string[] }).ignore).toEqual(["node_modules/**", "dist/**", ".git/**"])
+  })
+
+  test("allows selecting watcher patterns individually", async () => {
+    let offered: string[] = []
+    const result = await mergeConfiguration(
+      '{ "watcher": { "ignore": ["node_modules/**"] } }',
+      { "opencode-watcher.jsonc": { watcher: { ignore: ["z/**", "dist/**", "node_modules/**"] } } },
+      async () => false,
+      async (section, additions) => {
+        expect(section).toBe('.watcher["ignore"]')
+        offered = additions.map(addition => addition.id)
+        const selected = additions.find(addition => addition.value === "dist/**")
+        if (!selected) throw new Error("Expected the dist watcher pattern to be selectable")
+        return [selected.id]
+      }
+    )
+
+    expect(offered).toEqual(['.watcher["ignore"]["dist/**"]', '.watcher["ignore"]["z/**"]'])
+    expect(result.changed).toBe(true)
+    expect((result.data.watcher as { ignore: string[] }).ignore).toEqual(["node_modules/**", "dist/**"])
+  })
+
+  test("does not ask for watcher patterns that are already configured", async () => {
+    let prompted = false
+    const result = await mergeConfiguration(
+      '{ "watcher": { "ignore": ["node_modules/**"] } }',
+      { "opencode-watcher.jsonc": { watcher: { ignore: ["node_modules/**"] } } },
+      accept,
+      async () => {
+        prompted = true
+        return []
+      }
+    )
+
+    expect(prompted).toBe(false)
+    expect(result.changed).toBe(false)
   })
 
   test("creates missing MCP and watcher parents", async () => {

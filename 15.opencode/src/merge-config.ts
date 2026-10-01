@@ -2,8 +2,9 @@ import { chmod, copyFile, mkdir, open, readFile, readdir, rename, rm, writeFile 
 import { existsSync } from "node:fs"
 import { homedir } from "node:os"
 import { dirname, isAbsolute, join, relative, resolve, sep } from "node:path"
-import { parseArgs } from "node:util"
-import { cancel, confirm, intro, isCancel, log, note, outro, password } from "@clack/prompts"
+import { parseArgs, styleText } from "node:util"
+import { cancel, confirm, intro, isCancel, log, multiselect, note, outro, password } from "@clack/prompts"
+import { diffLines } from "diff"
 import { applyEdits, modify, parse, printParseErrorCode, type FormattingOptions, type JSONPath, type ParseError } from "jsonc-parser"
 import { parse as parseYaml } from "yaml"
 
@@ -17,9 +18,18 @@ const banner = String.raw`  ____                   ______          __     ______
 
 export type JsonObject = Record<string, unknown>
 type Decision = (path: string, current: unknown, incoming: unknown) => Promise<boolean>
+type SelectAdditions = (section: string, additions: ConfigAddition[]) => Promise<string[]>
 export type Skill = { name: string; source: string }
 
+interface ConfigAddition {
+  id: string
+  path: JSONPath
+  label: string
+  value: unknown
+}
+
 export type Fragments = Record<string, JsonObject>
+export type MergeStage = "configuration" | "bash" | "sensitive-files" | "watcher" | "mcps"
 
 const compareNames = (left: string, right: string) => left.localeCompare(right, "en", { sensitivity: "base" })
 
@@ -72,6 +82,36 @@ class CancelledError extends Error {
 
 function isObject(value: unknown): value is JsonObject {
   return value !== null && typeof value === "object" && !Array.isArray(value)
+}
+
+export function selectStageFragments(fragments: Fragments, stage: MergeStage): Fragments {
+  const selected: Fragments = {}
+
+  for (const [file, fragment] of Object.entries(fragments)) {
+    const section: JsonObject = {}
+
+    if (stage === "configuration") {
+      const { $schema: _schema, permission, mcp: _mcp, watcher: _watcher, ...settings } = fragment
+      Object.assign(section, settings)
+      if (isObject(permission)) {
+        const otherPermissions = Object.fromEntries(Object.entries(permission).filter(([name]) => name !== "bash" && name !== "read"))
+        if (Object.keys(otherPermissions).length > 0) section.permission = otherPermissions
+      }
+    } else if (stage === "bash" || stage === "sensitive-files") {
+      const permission = isObject(fragment.permission) ? fragment.permission : undefined
+      const ruleName = stage === "bash" ? "bash" : "read"
+      const rules = permission && isObject(permission[ruleName]) ? permission[ruleName] : undefined
+      if (rules) section.permission = { [ruleName]: rules }
+    } else if (stage === "watcher" && isObject(fragment.watcher)) {
+      section.watcher = fragment.watcher
+    } else if (stage === "mcps" && isObject(fragment.mcp)) {
+      section.mcp = fragment.mcp
+    }
+
+    if (Object.keys(section).length > 0) selected[file] = section
+  }
+
+  return selected
 }
 
 export function fragmentFileNames(names: string[]): string[] {
@@ -152,23 +192,55 @@ class JsoncDocument {
   }
 }
 
-async function mergeObject(document: JsoncDocument, values: JsonObject, path: JSONPath, decide: Decision): Promise<void> {
+async function mergeObject(document: JsoncDocument, values: JsonObject, path: JSONPath, decide: Decision, selectAdditions: SelectAdditions): Promise<void> {
+  const additions: ConfigAddition[] = []
   for (const [name, incoming] of Object.entries(values).sort(([left], [right]) => compareNames(left, right))) {
     const propertyPath = [...path, name]
     const current = document.get(propertyPath)
-    if (current === undefined) document.set(propertyPath, incoming)
-    else if (isObject(current) && isObject(incoming)) await mergeObject(document, incoming, propertyPath, decide)
+    if (current === undefined) {
+      if (isObject(incoming)) await mergeObject(document, incoming, propertyPath, decide, selectAdditions)
+      else {
+        const itemPath = pathLabel(propertyPath)
+        additions.push({
+          id: itemPath,
+          path: propertyPath,
+          label: `${styleText(["bold", "yellow"], name)}: ${styleText("blueBright", formatInlineValue(itemPath, incoming))}`,
+          value: incoming
+        })
+      }
+    } else if (isObject(current) && isObject(incoming)) await mergeObject(document, incoming, propertyPath, decide, selectAdditions)
     else if (!equal(current, incoming) && (await decide(pathLabel(propertyPath), current, incoming))) {
       document.set(propertyPath, incoming)
     }
   }
+
+  if (additions.length === 0) return
+  const section = path.length === 0 ? "OpenCode settings" : pathLabel(path)
+  const selected = new Set(await selectAdditions(section, additions))
+  for (const addition of additions) {
+    if (selected.has(addition.id)) document.set(addition.path, addition.value)
+  }
 }
 
-export async function mergeConfiguration(centralText: string, fragments: Fragments, decide: Decision): Promise<{ text: string; data: JsonObject; changed: boolean }> {
+async function selectAdditionsIndividually(additions: ConfigAddition[], decide: Decision): Promise<string[]> {
+  const selected: string[] = []
+  for (const addition of additions) {
+    if (await decide(addition.id, undefined, addition.value)) selected.push(addition.id)
+  }
+  return selected
+}
+
+export async function mergeConfiguration(
+  centralText: string,
+  fragments: Fragments,
+  decide: Decision,
+  selectAdditions?: SelectAdditions
+): Promise<{ text: string; data: JsonObject; changed: boolean }> {
   const document = new JsoncDocument(centralText)
+  const select = selectAdditions ?? ((_, additions) => selectAdditionsIndividually(additions, decide))
   for (const fragment of Object.values(fragments)) {
     const { $schema: _schema, mcp, watcher, ...values } = fragment
-    await mergeObject(document, values, [], decide)
+    await mergeObject(document, values, [], decide, select)
 
     if (isObject(mcp)) {
       for (const [mcpName, incoming] of Object.entries(mcp).sort(([left], [right]) => compareNames(left, right))) {
@@ -182,14 +254,29 @@ export async function mergeConfiguration(centralText: string, fragments: Fragmen
     if (isObject(watcher) && Array.isArray(watcher.ignore)) {
       const current = document.get(["watcher", "ignore"])
       const merged = Array.isArray(current) ? [...current] : []
-      for (const pattern of watcher.ignore) {
-        if (!merged.some(item => equal(item, pattern))) merged.push(pattern)
+      const additions = [...new Set(watcher.ignore)]
+        .filter(pattern => !merged.some(item => equal(item, pattern)))
+        .sort(compareNames)
+        .map(pattern => {
+          const patternPath = ["watcher", "ignore", pattern]
+          return {
+            id: pathLabel(patternPath),
+            path: patternPath,
+            label: styleText("yellow", pattern),
+            value: pattern
+          }
+        })
+      if (additions.length > 0) {
+        const selected = new Set(await select(pathLabel(["watcher", "ignore"]), additions))
+        for (const addition of additions) {
+          if (selected.has(addition.id)) merged.push(addition.value)
+        }
+        if (selected.size > 0) document.set(["watcher", "ignore"], merged)
       }
-      if (!equal(current, merged)) document.set(["watcher", "ignore"], merged)
       const { ignore: _ignore, ...otherWatcherValues } = watcher
-      await mergeObject(document, otherWatcherValues, ["watcher"], decide)
+      await mergeObject(document, otherWatcherValues, ["watcher"], decide, select)
     } else if (isObject(watcher)) {
-      await mergeObject(document, watcher, ["watcher"], decide)
+      await mergeObject(document, watcher, ["watcher"], decide, select)
     }
   }
   return { text: `${document.bom}${document.text}`, data: document.data, changed: document.changed }
@@ -197,6 +284,29 @@ export async function mergeConfiguration(centralText: string, fragments: Fragmen
 
 async function askYesNo(message: string): Promise<boolean> {
   const answer = await confirm({ message, initialValue: false })
+  if (isCancel(answer)) {
+    cancel("Operation cancelled.")
+    throw new CancelledError()
+  }
+  return answer
+}
+
+async function selectConfigAdditions(section: string, additions: ConfigAddition[]): Promise<string[]> {
+  const message =
+    section === '.permission["bash"]'
+      ? "Choose which Bash rules to include"
+      : section === '.permission["read"]'
+        ? "Choose which Read rules to include"
+        : section === '.watcher["ignore"]'
+          ? "Choose which watcher patterns to include"
+          : `Choose which settings to include under ${section}`
+  const answer = await multiselect({
+    message,
+    options: additions.map(addition => ({ value: addition.id, label: addition.label })),
+    initialValues: [],
+    maxItems: 10,
+    required: false
+  })
   if (isCancel(answer)) {
     cancel("Operation cancelled.")
     throw new CancelledError()
@@ -213,23 +323,121 @@ async function askSecret(message: string): Promise<string> {
   return answer
 }
 
-function safeValue(name: string, value: unknown): string {
-  if (/(secret|token|password|api.?key|private.?key|credential)/i.test(name)) return "<sensitive>"
-  if (Array.isArray(value)) return `[${value.map(item => safeValue(name, item)).join(", ")}]`
+const sensitiveKey = /(secret|token|password|credential|authorization|api.?key|private.?key)/i
+
+function redactValue(value: unknown, key = ""): unknown {
+  if (sensitiveKey.test(key)) return "<redacted>"
+  if (Array.isArray(value)) return value.map(item => redactValue(item))
   if (isObject(value)) {
-    return `{ ${Object.entries(value)
-      .sort(([left], [right]) => left.localeCompare(right))
-      .map(([key, item]) => `${key}=${safeValue(key, item)}`)
-      .join(", ")} }`
+    return Object.fromEntries(
+      Object.entries(value)
+        .sort(([left], [right]) => left.localeCompare(right))
+        .map(([name, item]) => [name, redactValue(item, name)])
+    )
   }
-  return value === null ? "null" : String(value)
+  return value
+}
+
+function highlightJsonValue(value: string): string {
+  return value.replace(/("(?:\\.|[^"\\])*"|-?\b\d+(?:\.\d+)?(?:[eE][+-]?\d+)?\b|\b(?:true|false|null)\b|[{}\[\],:])/g, token => {
+    if (token.startsWith('"')) return styleText("green", token)
+    if (token === "true") return styleText("cyan", token)
+    if (token === "false" || token === "null") return styleText("magenta", token)
+    if (/^-?\d/.test(token)) return styleText("magenta", token)
+    return styleText("dim", token)
+  })
+}
+
+function highlightJsonLine(line: string): string {
+  const keyMatch = /^(\s*)((?:"(?:\\.|[^"\\])*"))(:)(.*)$/.exec(line)
+  if (!keyMatch) return highlightJsonValue(line)
+  const [, indent, key, colon, value] = keyMatch
+  return `${indent}${styleText("yellowBright", key)}${styleText("dim", colon)}${highlightJsonValue(value)}`
+}
+
+function formatDiffValue(value: unknown): string {
+  const redacted = redactValue(value)
+  const serialized = JSON.stringify(redacted, null, 2) ?? ""
+  if (!isObject(redacted)) return serialized
+  const entries = Object.keys(redacted)
+  if (entries.length === 0) return ""
+  if (entries.length === 1)
+    return serialized
+      .split("\n")
+      .slice(1, -1)
+      .map(line => line.replace(/^  /, ""))
+      .join("\n")
+  return serialized
+}
+
+export function createConfigDiff(before: unknown, after: unknown, path?: string): string {
+  const beforeValue = path ? (before === undefined ? {} : { [path]: before }) : before
+  const afterValue = path ? { [path]: after } : after
+  const beforeText = beforeValue === undefined ? "" : formatDiffValue(beforeValue)
+  const afterText = formatDiffValue(afterValue)
+  const rows: string[] = []
+
+  for (const change of diffLines(beforeText, afterText)) {
+    if (!change.added && !change.removed) continue
+    const prefix = change.removed ? "- " : "+ "
+    const color = change.removed ? "red" : "green"
+    for (const line of change.value.split("\n")) {
+      if (line) rows.push(`${styleText(color, prefix)}${highlightJsonLine(line)}`)
+    }
+  }
+
+  return rows.join("\n")
+}
+
+function isInlineValue(value: unknown): boolean {
+  return value === undefined || value === null || ["string", "number", "boolean"].includes(typeof value)
+}
+
+function formatInlineValue(path: string, value: unknown): string {
+  if (value === undefined) return "<unset>"
+  return JSON.stringify(redactValue(value, path)) ?? "null"
+}
+
+function formatInlinePath(path: string): { section: string; name: string } {
+  const firstSegment = /^\.([^.[\]]+)/.exec(path)?.[1]
+  const bracketSegments = [...path.matchAll(/\[("(?:\\.|[^"\\])*")\]/g)].map(match => JSON.parse(match[1]) as string)
+  const segments = [firstSegment, ...bracketSegments].filter((segment): segment is string => segment !== undefined)
+  if (segments[0] === "watcher" && segments.length > 2) return { section: "watcher pattern", name: segments.at(-1) ?? path }
+  if (segments[0] === "permission" && segments.length > 1) return { section: "permission", name: segments.at(-1) ?? path }
+  if (segments.length === 1) return { section: "setting", name: segments[0] }
+  return { section: segments[0]?.replace(/[-_]/g, " ") ?? "setting", name: segments.at(-1) ?? path }
 }
 
 async function decideConflict(path: string, current: unknown, incoming: unknown): Promise<boolean> {
   const mcpName = path.startsWith(".mcp[") ? (JSON.parse(path.slice(5, -1)) as string) : undefined
-  if (mcpName && current === undefined) return await askYesNo(`MCP '${mcpName}' is not configured. Add it?`)
-  note(`Current:  ${safeValue(path, current)}\nIncoming: ${safeValue(path, incoming)}`, `Conflict: ${path}`)
-  return await askYesNo(mcpName ? `Overwrite MCP '${mcpName}' with the project version?` : "Use incoming value?")
+  if (isInlineValue(current) && isInlineValue(incoming)) {
+    const { section, name } = formatInlinePath(path)
+    const highlightedName = styleText(["bold", "yellow"], name)
+    const highlightedIncoming = styleText("blueBright", formatInlineValue(path, incoming))
+    if (section === "watcher pattern" && current === undefined) {
+      return await askYesNo(`Add watcher pattern ${highlightedName}?`)
+    }
+    if (current === undefined) {
+      return await askYesNo(`Add ${section} ${highlightedName} as ${highlightedIncoming}?`)
+    }
+    return await askYesNo(`Change ${section} ${highlightedName} to ${highlightedIncoming}?`)
+  }
+
+  if (current === undefined) {
+    note(
+      mcpName ? createConfigDiff(undefined, incoming) : createSettingsPreview(incoming),
+      styleText(["bold", "yellowBright"], mcpName ? `New MCP: ${mcpName}` : `New settings: ${path}`)
+    )
+    if (mcpName) return await askYesNo(`Add MCP '${styleText(["bold", "yellow"], mcpName)}'?`)
+    const count = isObject(incoming) ? Object.keys(incoming).length : 1
+    const noun = count === 1 ? "setting" : "settings"
+    return await askYesNo(`Add ${count} ${noun} under ${styleText(["bold", "yellow"], path)}?`)
+  }
+
+  note(createConfigDiff(current, incoming, mcpName ? undefined : path), styleText(["bold", "yellowBright"], mcpName ? `MCP ${mcpName}` : `Config conflict: ${path}`))
+  return await askYesNo(
+    mcpName ? `Overwrite MCP '${styleText(["bold", "yellow"], mcpName)}' with the project version?` : `Use incoming value for ${styleText(["bold", "yellow"], path)}?`
+  )
 }
 
 function showPreflight(central: JsonObject, fragments: Fragments, path: string): void {
@@ -444,7 +652,6 @@ async function installSkills(): Promise<void> {
 }
 
 export async function runSkillsStep(install: () => Promise<void>): Promise<void> {
-  log.step("Step 4/4: Skills")
   try {
     await install()
   } catch (error) {
@@ -469,12 +676,26 @@ async function main(): Promise<void> {
   const fragments = await readFragments(join(projectDirectory, "config"))
 
   showPreflight(parseJsonc(centralText, centralPath), fragments, centralPath)
-  log.step("Step 1/4: Configuration")
-  const result = await mergeConfiguration(centralText, fragments, decideConflict)
-  log.step("Step 2/4: MCP secrets")
+  let mergedText = centralText
+  let mergedData = parseJsonc(centralText, centralPath)
+  let configurationChanged = false
+  const applyStage = async (index: number, title: string, stage: MergeStage): Promise<void> => {
+    log.step(`Step ${index}/7: ${title}`)
+    const result = await mergeConfiguration(mergedText, selectStageFragments(fragments, stage), decideConflict, selectConfigAdditions)
+    mergedText = result.text
+    mergedData = result.data
+    configurationChanged ||= result.changed
+  }
+
+  await applyStage(1, "Config", "configuration")
+  await applyStage(2, "Bash rules", "bash")
+  await applyStage(3, "Sensitive files", "sensitive-files")
+  await applyStage(4, "Watcher excludes", "watcher")
+  await applyStage(5, "MCPs", "mcps")
+  const result = { text: mergedText, data: mergedData, changed: configurationChanged }
   const pendingSecrets = await collectSecrets(result.data, configDirectory)
 
-  log.step("Step 3/4: Apply and validate changes")
+  log.step("Step 6/7: Update config")
   const changed = result.changed || pendingSecrets.length > 0
   await saveSecrets(pendingSecrets)
   if (!result.changed) {
@@ -505,6 +726,7 @@ async function main(): Promise<void> {
     }
   }
 
+  log.step("Step 7/7: Install skills")
   await runSkillsStep(installSkills)
   outro(changed ? "OpenCode configuration updated." : "OpenCode configuration is up to date.")
 }
