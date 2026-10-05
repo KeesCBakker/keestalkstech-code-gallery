@@ -34,8 +34,9 @@ models, and MCP servers.
    skipped, offer the full model list.
 5. For MCP defaults, run `opencode mcp list` and let the user multi-select
    servers to enable by default. Preserve each server's existing definition
-   and change only its `enabled` value to `true` if selected and `false` if
-   unselected. Do not invent MCP definitions or write an `mcp` section if the
+   and set `enabled` to `true` for selected servers. Do not explicitly set
+   `enabled` to `false` for unselected servers; leave their existing setting
+   unchanged. Do not invent MCP definitions or write an `mcp` section if the
    user skips this option. If a listed server has no definition in the
    current project's config, do not copy unknown connection details into the
    project file; explain that it is inherited and ask before adding an
@@ -48,10 +49,10 @@ models, and MCP servers.
    ask the user to confirm before writing anything. If they decline, leave the
    file unchanged. For a new file, show the proposed JSON and ask for
    confirmation before creating it.
-8. Validate the proposed configuration before saving where possible, using
-   `opencode debug config` from this directory. If validation fails, report the
-   error and do not replace the existing file. After a successful write, tell
-   the user to restart OpenCode for the directory configuration to take effect.
+8. Do not run `opencode debug config` to validate the proposed configuration.
+   If the exact schema or supported field shapes are uncertain, consult
+   <https://opencode.ai/config.json>. After a successful write, tell the user
+   to restart OpenCode for the directory configuration to take effect.
 
 ## Editing rules
 
