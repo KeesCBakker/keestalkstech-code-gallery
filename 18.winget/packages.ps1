@@ -18,7 +18,7 @@
   winget install Microsoft.VisualStudioCode SST.opencode StablyAI.Orca --exact
   ## Compare files and directories
   winget install ScooterSoftware.BeyondCompare.5 --exact
-    ## GNU-compatible command-line utilities for Windows
+  ## GNU-compatible command-line utilities for Windows
   winget install Microsoft.Coreutils ezwinports.make --exact
 
   # image and video tools
