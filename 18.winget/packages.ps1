@@ -47,9 +47,9 @@
 
   # other
   ## Manage and update Ravensburger tiptoi devices
-  winget install --id RavensburgerAG.tiptoiManager --exact
+  winget install RavensburgerAG.tiptoiManager --exact
   ## VPN client
-  winget install --id SparkLabs.Viscosity --exact
+  winget install SparkLabs.Viscosity --exact
 
   # Microsoft Store apps
   ## Daily Bing and Windows Spotlight wallpapers
