@@ -18,6 +18,8 @@
   winget install Microsoft.VisualStudioCode SST.opencode StablyAI.Orca --exact
   ## Compare files and directories
   winget install ScooterSoftware.BeyondCompare.5 --exact
+    ## GNU-compatible command-line utilities for Windows
+  winget install Microsoft.Coreutils ezwinports.make --exact
 
   # image and video tools
   ## Raster image and SVG editing
@@ -38,8 +40,6 @@
   winget install JAMSoftware.TreeSize.Free --exact
   ## Configure Logitech peripherals
   winget install Logitech.Options --exact
-  ## GNU-compatible command-line utilities for Windows
-  winget install Microsoft.Coreutils --exact
   ## PowerShell and Windows productivity tools
   winget install Microsoft.PowerShell Microsoft.PowerToys --exact
   ## OpenSSL command-line toolkit for working with certificates and secrets
