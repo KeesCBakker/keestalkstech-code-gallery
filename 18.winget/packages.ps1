@@ -14,6 +14,8 @@
   winget install MikeFarah.yq jqlang.jq --exact
   ## Node.js version management for Windows
   winget install CoreyButler.NVMforWindows --exact
+  ## .NET 10 SDK
+  winget install Microsoft.DotNet.SDK.10 --exact
   ## IDEs and development assistants
   winget install Microsoft.VisualStudioCode SST.opencode StablyAI.Orca --exact
   ## Compare files and directories
